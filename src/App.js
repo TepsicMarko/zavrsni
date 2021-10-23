@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import "./global.css";
+import Desktop from "./components/desktop/Desktop";
+import Taskbar from "./components/taskbar/Taskbar";
 
-function App() {
+import { useState } from "react";
+import useDraggableTaskbar from "./hooks/useDraggableTaskbar";
+
+const App = () => {
+  const [taskbarDimensions, setTaskbarDimensions] = useState({
+    width: "100vw",
+    height: "3rem",
+  });
+  const [dekstopDimensions, setDekstopDimensions] = useState({
+    width: "100vw",
+    height: "100vh",
+  });
+  const { isDragging, handleDragStart, handleDrag, handleDragEnd } =
+    useDraggableTaskbar();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Desktop {...dekstopDimensions} />
+      <Taskbar
+        {...taskbarDimensions}
+        handleDragStart={handleDragStart}
+        handleDrag={handleDrag}
+        handleDragEnd={handleDragEnd}
+      />
     </div>
   );
-}
+};
 
 export default App;
