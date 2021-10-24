@@ -4,7 +4,6 @@ import Desktop from "./components/desktop/Desktop";
 import Taskbar from "./components/taskbar/Taskbar";
 
 import { useState } from "react";
-import useDraggableTaskbar from "./hooks/useDraggableTaskbar";
 
 const App = () => {
   const [taskbarDimensions, setTaskbarDimensions] = useState({
@@ -15,18 +14,10 @@ const App = () => {
     width: "100vw",
     height: "100vh",
   });
-  const { isDragging, handleDragStart, handleDrag, handleDragEnd } =
-    useDraggableTaskbar();
-
   return (
     <div className='App'>
       <Desktop {...dekstopDimensions} />
-      <Taskbar
-        {...taskbarDimensions}
-        handleDragStart={handleDragStart}
-        handleDrag={handleDrag}
-        handleDragEnd={handleDragEnd}
-      />
+      <Taskbar {...taskbarDimensions} />
     </div>
   );
 };

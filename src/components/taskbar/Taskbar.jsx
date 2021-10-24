@@ -2,24 +2,36 @@ import "./Taskbar.css";
 import { useState } from "react";
 import { BsWindows } from "react-icons/bs";
 import { VscSearch } from "react-icons/vsc";
-import useToggle from "../../hooks/useToggle";
 
-const Taskbar = ({
-  width,
-  height,
-  accentColor,
-  handleDragStart,
-  handleDrag,
-  handleDragEnd,
-}) => {
+import useToggle from "../../hooks/useToggle";
+import useDraggableTaskbar from "../../hooks/useDraggableTaskbar";
+
+const Taskbar = ({ width, height, accentColor }) => {
   const [isSearchFocused, toggleFocused] = useToggle();
+  const {
+    isDragging,
+    taskbarPosition,
+    handleDragStart,
+    handleDrag,
+    handleDragEnd,
+  } = useDraggableTaskbar();
   return (
     <div
       className='taskbar'
-      style={{ backgroundColor: accentColor, width, height }}
+      style={{
+        backgroundColor: accentColor,
+        width,
+        height,
+        ...taskbarPosition,
+        transform:
+          Object.keys(taskbarPosition)[0] === "left" ||
+          Object.keys(taskbarPosition)[0] === "right"
+            ? "rotate(90deg)"
+            : "",
+      }}
       draggable
       onDragStart={handleDragStart}
-      // onDrag={handleDrag}
+      onDrag={handleDrag}
       onDragEnd={handleDragEnd}
     >
       <div className='start-and-serch'>
