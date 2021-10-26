@@ -4,52 +4,59 @@ import { BsWindows } from "react-icons/bs";
 import { VscSearch } from "react-icons/vsc";
 
 import useToggle from "../../hooks/useToggle";
-import useDraggableTaskbar from "../../hooks/useDraggableTaskbar";
 
-const Taskbar = ({ width, height, accentColor }) => {
+const Taskbar = ({
+  width,
+  height,
+  accentColor,
+  handleDragStart,
+  handleDrag,
+  handleDragEnd,
+  taskbarPosition,
+  taskbarOrientation,
+}) => {
   const [isSearchFocused, toggleFocused] = useToggle();
-  const {
-    isDragging,
-    taskbarPosition,
-    handleDragStart,
-    handleDrag,
-    handleDragEnd,
-  } = useDraggableTaskbar();
+
   return (
     <div
-      className='taskbar'
+      className={`taskbar${
+        taskbarOrientation === "vertical" ? "-vertical" : ""
+      }`}
       style={{
         backgroundColor: accentColor,
         width,
         height,
         ...taskbarPosition,
-        transform:
-          Object.keys(taskbarPosition)[0] === "left" ||
-          Object.keys(taskbarPosition)[0] === "right"
-            ? "rotate(90deg)"
-            : "",
       }}
       draggable
       onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
     >
-      <div className='start-and-serch'>
+      <div
+        className={`start-and-search${
+          taskbarOrientation === "vertical" ? "-vertical" : ""
+        }`}
+      >
         <div className='flex-center start'>
           <BsWindows color='white' />
         </div>
-        <div className='windows-search'>
+        <div className='flex-center windows-search'>
           <VscSearch
-            className='search-icon'
+            className={`search-icon${
+              taskbarOrientation === "vertical" ? "-vertical" : ""
+            }`}
             color={isSearchFocused ? "black" : "white"}
           />
-          <input
-            onFocus={toggleFocused}
-            onBlur={toggleFocused}
-            type='text'
-            placeholder='Type here to search'
-            className='search-input'
-          />
+          {taskbarOrientation !== "vertical" && (
+            <input
+              onFocus={toggleFocused}
+              onBlur={toggleFocused}
+              type='text'
+              placeholder='Type here to search'
+              className='search-input'
+            />
+          )}
         </div>
       </div>
       <div className='app-shortcuts'></div>
