@@ -30,8 +30,8 @@ const App = () => {
       taskbarDimensions.width !== "100vw" &&
       setTaskbarDimensions({ width: "100vw", height: "3rem" });
     taskbarOrientation === "vertical" &&
-      taskbarDimensions.width !== "4rem" &&
-      setTaskbarDimensions({ width: "4rem", height: "100vh" });
+      taskbarDimensions.width !== "4.25rem" &&
+      setTaskbarDimensions({ width: "4.25rem", height: "100vh" });
   }, [taskbarOrientation]);
 
   return (

@@ -68,6 +68,43 @@
   font-weight: 400;
 }
 
+.app-shortcuts {
+  flex-grow: 1;
+}
+
+.system-tray,
+.system-tray-vertical {
+  display: flex;
+}
+
+.system-tray > div,
+.system-tray-vertical > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1.75rem;
+  height: 3rem;
+  color: white;
+}
+
+.language,
+.current-date,
+.language-vertical,
+.current-date-vertical {
+  width: fit-content !important;
+  font-size: 0.85rem;
+  font-weight: 100;
+  padding-left: 0.5rem;
+}
+
+.windows-notifications {
+  width: 3rem !important;
+}
+
+.current-date {
+  padding-left: 0.75rem;
+}
+
 .taskbar-vertical {
   flex-direction: column;
 }
@@ -76,4 +113,19 @@
   flex-basis: 6rem;
   flex-wrap: wrap;
   flex-direction: column;
+}
+
+.system-tray-vertical {
+  flex-direction: column;
+}
+
+.system-tray-vertical > div {
+  min-width: 100%;
+  height: 2rem;
+  padding-left: 0;
+}
+
+.current-date-vertical,
+.windows-notifications-vertical {
+  height: 3rem !important;
 }
