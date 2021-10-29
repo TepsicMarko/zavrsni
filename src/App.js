@@ -44,6 +44,7 @@ const App = () => {
         handleDragEnd={handleDragEnd}
         taskbarPosition={taskbarPosition}
         taskbarOrientation={taskbarOrientation}
+        setTaskbarDimensions={setTaskbarDimensions}
       />
     </div>
   );

@@ -6,6 +6,15 @@
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   display: flex;
+  min-height: 3rem;
+}
+
+.taskbar-resize {
+  /* height: 0.35rem; */
+  position: absolute;
+  /* top: 0; */
+  background-color: red;
+  z-index: 1;
 }
 
 .start-and-search,
@@ -75,6 +84,8 @@
 .system-tray,
 .system-tray-vertical {
   display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 .system-tray > div,
