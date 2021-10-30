@@ -7,13 +7,11 @@
   -webkit-backdrop-filter: blur(15px);
   display: flex;
   min-height: 3rem;
+  min-width: 4.25rem;
 }
 
 .taskbar-resize {
-  /* height: 0.35rem; */
   position: absolute;
-  /* top: 0; */
-  background-color: red;
   z-index: 1;
 }
 

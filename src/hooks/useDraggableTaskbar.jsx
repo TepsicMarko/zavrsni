@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const useDraggableTaskbar = () => {
   const [isDragging, setIsDragging] = useState(false);
-  const [taskbarPosition, setTaskbarPosition] = useState({});
+  const [taskbarPosition, setTaskbarPosition] = useState({ bottom: 0 });
   const [taskbarOrientation, setTaskbarOrientation] = useState("horizontal");
 
   const handleDragStart = (e) => {
@@ -34,7 +34,12 @@ const useDraggableTaskbar = () => {
     }
     // drugi kvadrant
     if (pageY <= clientHeight / 2 && pageX <= clientWidth / 2) {
-      if (pageX < pageY) setTaskbarOrientation("vertical");
+      if (pageX < pageY) {
+        updateStateIfNeeded({
+          left: 0,
+        });
+        setTaskbarOrientation("vertical");
+      }
       if (pageX > pageY) {
         updateStateIfNeeded({ top: 0 });
         setTaskbarOrientation("horizontal");
@@ -42,7 +47,12 @@ const useDraggableTaskbar = () => {
     }
     // treci kvadrant
     if (pageY >= clientHeight / 2 && pageX <= clientWidth / 2) {
-      if (pageX < clientHeight - pageY) setTaskbarOrientation("vertical");
+      if (pageX < clientHeight - pageY) {
+        updateStateIfNeeded({
+          left: 0,
+        });
+        setTaskbarOrientation("vertical");
+      }
       if (pageX > clientHeight - pageY) {
         updateStateIfNeeded({ bottom: 0 });
         setTaskbarOrientation("horizontal");

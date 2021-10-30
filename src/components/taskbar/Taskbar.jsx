@@ -23,6 +23,8 @@ const Taskbar = ({
   const [isSearchFocused, toggleFocused] = useToggle();
   const [time, setTime] = useState(moment().format("h:mm a"));
   const [isResizing, toggleResizing] = useToggle();
+  const verticalWidthRef = useRef(0);
+  const horizontalHeightRef = useRef(0);
 
   const isVerticalClassName = (className) => {
     return `${className}${
@@ -32,20 +34,16 @@ const Taskbar = ({
 
   const determineRotaion = () => {
     switch (Object.keys(taskbarPosition)[0]) {
-      case "top": {
-        if (taskbarOrientation === "horizontal") return "180deg";
-        else return "90deg";
-      }
+      case "top":
+        return "180deg";
       case "right":
         return "270deg";
-      case "bottom": {
-        if (taskbarOrientation === "horizontal") return "0deg";
-        else return "90deg";
-      }
+      case "bottom":
+        return "0deg";
+      case "left":
+        return "90deg";
     }
   };
-
-  const getAbsoluteValue = (x) => (x * x) / x;
 
   const handleResizeStart = () => {
     toggleResizing();
@@ -56,7 +54,7 @@ const Taskbar = ({
     const maxHeight = clientHeight * 0.5;
     const newHeight =
       e.clientY < maxHeight
-        ? position === "bottom" || position === undefined
+        ? position === "bottom"
           ? maxHeight
           : e.clientY
         : position === "top"
@@ -68,11 +66,10 @@ const Taskbar = ({
         ? position === "right"
           ? maxWidth
           : e.clientX
-        : (position === "bottom" && taskbarOrientation === "vertical") ||
-          (position === "top" && taskbarOrientation === " vertical")
+        : position === "left"
         ? maxWidth
         : clientWidth - e.clientX;
-    setTaskbarDimensions({
+    const newTaskbarDimensions = {
       width:
         taskbarOrientation === "horizontal"
           ? width
@@ -85,7 +82,12 @@ const Taskbar = ({
           : newHeight <= maxHeight
           ? newHeight
           : maxHeight,
-    });
+    };
+    setTaskbarDimensions(newTaskbarDimensions);
+    taskbarOrientation === "vertical" &&
+      (verticalWidthRef.current = newTaskbarDimensions.width);
+    taskbarOrientation === "horizontal" &&
+      (horizontalHeightRef.current = newTaskbarDimensions.height);
   };
   const handleResizeEnd = (e) => {
     handleResize(e);
@@ -94,25 +96,22 @@ const Taskbar = ({
 
   const calcResizePosition = () => {
     switch (Object.keys(taskbarPosition)[0]) {
-      case "top": {
-        if (taskbarOrientation === "vertical")
-          return { right: 0, width: "0.35rem ", height: "100%" };
-        return { bottom: 0, width: "100%", height: "0.35rem" };
-      }
-      case "right": {
-        if (taskbarOrientation === "vertical")
-          return { left: 0, width: "0.35rem ", height: "100%" };
-        return { left: 0, width: "100% ", height: "0.35rem" };
-      }
-      case "bottom": {
-        if (taskbarOrientation === "vertical")
-          return { right: 0, width: "0.35rem ", height: "100%" };
-        return { top: 0, width: "100% ", height: "0.35rem" };
-      }
-      case undefined: {
-        return { top: 0, width: "100% ", height: "0.35rem" };
-      }
+      case "top":
+        return { bottom: 0, height: "0.35rem ", width: "100%" };
+      case "right":
+        return { left: 0, width: "0.35rem ", height: "100%" };
+      case "bottom":
+        return { top: 0, height: "0.35rem ", width: "100%" };
+      case "left":
+        return { right: 0, width: "0.35rem ", height: "100%" };
     }
+  };
+
+  const remToPx = (rem) => {
+    if (typeof rem === "number") return rem;
+    const regex = /[+-]?\d+(\.\d+)?/g;
+    const nums = rem.match(regex).map((el) => parseFloat(el));
+    return nums * 16;
   };
 
   useEffect(() => {
@@ -128,8 +127,16 @@ const Taskbar = ({
     <div
       style={{
         backgroundColor: accentColor,
-        width,
-        height,
+        width:
+          verticalWidthRef.current > remToPx(width) &&
+          taskbarOrientation === "vertical"
+            ? verticalWidthRef.current
+            : width,
+        height:
+          horizontalHeightRef.current > remToPx(height) &&
+          taskbarOrientation === "horizontal"
+            ? horizontalHeightRef.current
+            : height,
         ...taskbarPosition,
       }}
       className={isVerticalClassName("taskbar")}
