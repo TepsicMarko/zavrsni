@@ -2,9 +2,12 @@ import "./App.css";
 import "./global.css";
 import Desktop from "./components/desktop/Desktop";
 import Taskbar from "./components/taskbar/Taskbar";
+import RightClickMenu from "./components/right-click-menu/RightClickMenu";
 
 import { useEffect, useState } from "react";
 import useDraggableTaskbar from "./hooks/useDraggableTaskbar";
+import { FileSystemProvider } from "./contexts/FileSystemContext";
+import { RightClickMenuProvider } from "./contexts/RightClickMenuContext";
 
 const App = () => {
   const {
@@ -35,18 +38,23 @@ const App = () => {
   }, [taskbarOrientation]);
 
   return (
-    <div className='App'>
-      <Desktop {...dekstopDimensions} />
-      <Taskbar
-        {...taskbarDimensions}
-        handleDragStart={handleDragStart}
-        handleDrag={handleDrag}
-        handleDragEnd={handleDragEnd}
-        taskbarPosition={taskbarPosition}
-        taskbarOrientation={taskbarOrientation}
-        setTaskbarDimensions={setTaskbarDimensions}
-      />
-    </div>
+    <FileSystemProvider>
+      <RightClickMenuProvider>
+        <div className='App'>
+          <Desktop {...dekstopDimensions} />
+          <Taskbar
+            {...taskbarDimensions}
+            handleDragStart={handleDragStart}
+            handleDrag={handleDrag}
+            handleDragEnd={handleDragEnd}
+            taskbarPosition={taskbarPosition}
+            taskbarOrientation={taskbarOrientation}
+            setTaskbarDimensions={setTaskbarDimensions}
+          />
+        </div>
+        <RightClickMenu />
+      </RightClickMenuProvider>
+    </FileSystemProvider>
   );
 };
 

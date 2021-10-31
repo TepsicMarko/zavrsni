@@ -1,0 +1,5 @@
+.rc-menu-option,
+.submenu-option {
+  padding: 0.15rem 0;
+  cursor: pointer;
+}

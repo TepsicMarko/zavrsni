@@ -1,0 +1,11 @@
+.right-click-menu,
+.submenu {
+  position: absolute;
+  background-color: #2b2b2b;
+  color: #f8f8f8;
+  font-weight: 100;
+  border: 1px solid #919191;
+  width: 13rem;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
