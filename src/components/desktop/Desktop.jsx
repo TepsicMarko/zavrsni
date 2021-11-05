@@ -7,10 +7,10 @@ import { FileSystemContext } from "../../contexts/FileSystemContext";
 import DesktopIcon from "./desktop-icon/DesktopIcon";
 
 const Desktop = ({ width, height }) => {
-  const [wallpaper, setWallpaper] = useState(windows);
-  const { fs, create } = useContext(FileSystemContext);
+  const wallpaper = windows;
+  const { fs, createFSO, getFSO } = useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
-  const location = "C.users.default.Desktop";
+  const origin = "C\\users\\admin\\Desktop";
   const handleRightClick = (e) => {
     e.preventDefault();
     const { clientX, clientY } = e;
@@ -20,20 +20,26 @@ const Desktop = ({ width, height }) => {
         submenu: [
           {
             name: "Folder",
-            handler: () => create("Folder", "New Folder", location),
+            handler: () => createFSO("Folder", "New Folder", origin),
           },
         ],
       },
     ]);
   };
 
-  const renderObj = (obj) => {
-    let res = [];
-    for (let key in obj) {
-      const data = obj[key];
-      res.push(<DesktopIcon name={key} isFolder={data.data} />);
+  const renderFSO = () => {
+    const fileSystemObjects = getFSO(origin);
+    let fsoArray = [];
+    for (let fso in fileSystemObjects) {
+      fsoArray.push(
+        <DesktopIcon
+          name={fso}
+          path={origin}
+          isFolder={!fileSystemObjects[fso].content}
+        />
+      );
     }
-    return res;
+    return fsoArray;
   };
 
   return (
@@ -46,7 +52,7 @@ const Desktop = ({ width, height }) => {
         height: `calc(${height})`,
       }}
     >
-      {renderObj(eval(`fs.${location}`))}
+      {renderFSO()}
     </div>
   );
 };

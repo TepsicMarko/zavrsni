@@ -3,66 +3,75 @@ import { createContext, useState } from "react";
 export const FileSystemContext = createContext();
 
 export const FileSystemProvider = ({ children }) => {
-  const [state, setState] = useState({
+  const [fs, setFs] = useState({
     C: {
       users: {
-        default: {
-          "3D Objects": {},
-          Desktop: {
-            test: {
-              name: "test",
-              data: [
-                {
-                  "test.txt": {
-                    name: "test.txt",
-                    location: "C:\\users\\default\\desktop\\test",
-                    content: "another test",
-                  },
-                },
-              ],
-            },
-            "index.html": {
-              name: "index.html",
-              location: "C:\\users\\default\\desktop",
-              content: "just a simple test",
-            },
-          },
+        admin: {
+          Desktop: {},
           Documents: {},
-          Downloads: {},
-          Music: {},
           Pictures: {},
           Videos: {},
+          "test.txt": {
+            content: "hello world",
+          },
         },
       },
     },
   });
+  const createFSOAtPath = (path, obj, step, fsoName) => {
+    if (step === path.length - 1) obj[path[step]][fsoName] = {};
+    else createFSOAtPath(path, obj[path[step]], step + 1, fsoName);
+  };
 
-  const create = (fileType, fileName, fileLocation) => {
-    console.log(
-      fileType,
-      fileName,
-      fileLocation,
-      `temp.${fileLocation}${fileName} = 10`
-    );
-    const temp = { ...state };
-    if (fileType === "Folder") {
-      console.log(
-        `temp.${fileLocation}${`['${fileName}']`} = { name: '${fileName}', location: '${fileLocation}', data: []}`
-      );
-      eval(
-        `temp.${fileLocation}${`['${fileName}']`} = { name: '${fileName}', location: '${fileLocation}', data: []}`
-      );
+  const convertPathToSteps = (fsoPath) => {
+    let step = "";
+    let steps = [];
+    [...fsoPath].forEach((c, i) => {
+      if (c === "\\") {
+        steps.push(step);
+        step = "";
+      } else if (i === fsoPath.length - 1) {
+        steps.push(step + c);
+      } else step += c;
+    });
+    return steps;
+  };
+
+  const createFSO = (fileType, fsoName, fsoPath) => {
+    let temp = JSON.parse(JSON.stringify(fs));
+    const steps = convertPathToSteps(fsoPath);
+    createFSOAtPath(steps, temp, 0, fsoName);
+    setFs(temp);
+  };
+
+  const updateFSOAtPath = (tempFs, fsoName, steps, step) => {
+    if (steps.length - 1 === step) {
+      tempFs[steps[step]][fsoName.new] = tempFs[steps[step]][fsoName.old];
+      delete tempFs[steps[step]][fsoName.old];
+    } else updateFSOAtPath(tempFs[steps[step]], fsoName, steps, step + 1);
+  };
+
+  const updateFSO = (fsoName, fsoPath) => {
+    const tempFs = JSON.parse(JSON.stringify(fs));
+    const steps = convertPathToSteps(fsoPath);
+    updateFSOAtPath(tempFs, fsoName, steps, 0);
+    setFs(tempFs);
+  };
+
+  const getFSOAtPath = (steps, step, tempFs) => {
+    if (steps.length - 1 === step) {
+      return tempFs[steps[step]];
     }
-    if (fileType === "File") {
-      eval(
-        `temp.${fileLocation}.${`['${fileName}']`} = { location: '${fileLocation}', name: '${fileName}'}`
-      );
-    }
-    setState(temp);
+    return getFSOAtPath(steps, step + 1, tempFs[steps[step]]);
+  };
+
+  const getFSO = (fsoPath) => {
+    const steps = convertPathToSteps(fsoPath);
+    return getFSOAtPath(steps, 0, fs);
   };
 
   return (
-    <FileSystemContext.Provider value={{ fs: state, create }}>
+    <FileSystemContext.Provider value={{ fs, createFSO, updateFSO, getFSO }}>
       {children}
     </FileSystemContext.Provider>
   );
