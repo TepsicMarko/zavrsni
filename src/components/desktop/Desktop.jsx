@@ -8,7 +8,7 @@ import DesktopIcon from "./desktop-icon/DesktopIcon";
 
 const Desktop = ({ width, height }) => {
   const wallpaper = windows;
-  const { fs, createFSO, getFSO } = useContext(FileSystemContext);
+  const { createFSO, getFSO } = useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const origin = "C\\users\\admin\\Desktop";
   const handleRightClick = (e) => {
@@ -22,6 +22,12 @@ const Desktop = ({ width, height }) => {
             name: "Folder",
             handler: () => createFSO("Folder", "New Folder", origin),
           },
+          ...["Shortcut", "Text Document"].map((option) => {
+            return {
+              name: option,
+              handler: () => createFSO(option, "New " + option, origin),
+            };
+          }),
         ],
       },
     ]);
@@ -31,11 +37,13 @@ const Desktop = ({ width, height }) => {
     const fileSystemObjects = getFSO(origin);
     let fsoArray = [];
     for (let fso in fileSystemObjects) {
+      const fsoData = fileSystemObjects[fso];
       fsoArray.push(
         <DesktopIcon
           name={fso}
           path={origin}
-          isFolder={!fileSystemObjects[fso].content}
+          isTextDocument={fsoData.content !== undefined}
+          isShortcut={fsoData.pathTo !== undefined}
         />
       );
     }

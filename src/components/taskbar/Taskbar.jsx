@@ -52,6 +52,7 @@ const Taskbar = ({
     const position = Object.keys(taskbarPosition)[0];
     const { clientHeight, clientWidth } = document.documentElement;
     const maxHeight = clientHeight * 0.5;
+
     const newHeight =
       e.clientY < maxHeight
         ? position === "bottom"
@@ -60,6 +61,7 @@ const Taskbar = ({
         : position === "top"
         ? maxHeight
         : clientHeight - e.clientY;
+
     const maxWidth = clientWidth * 0.5;
     const newWidth =
       e.clientX < maxWidth
@@ -69,6 +71,7 @@ const Taskbar = ({
         : position === "left"
         ? maxWidth
         : clientWidth - e.clientX;
+
     const newTaskbarDimensions = {
       width:
         taskbarOrientation === "horizontal"
@@ -83,6 +86,7 @@ const Taskbar = ({
           ? newHeight
           : maxHeight,
     };
+
     setTaskbarDimensions(newTaskbarDimensions);
     taskbarOrientation === "vertical" &&
       (verticalWidthRef.current = newTaskbarDimensions.width);
@@ -158,7 +162,7 @@ const Taskbar = ({
       ></div>
       <div className={isVerticalClassName("start-and-search")}>
         <div className='flex-center start'>
-          <BsWindows color='white' />
+          <BsWindows color='white' size='1.15rem' />
         </div>
         <div className='flex-center windows-search'>
           <VscSearch

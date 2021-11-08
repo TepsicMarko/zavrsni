@@ -18,9 +18,17 @@ export const FileSystemProvider = ({ children }) => {
       },
     },
   });
-  const createFSOAtPath = (path, obj, step, fsoName) => {
-    if (step === path.length - 1) obj[path[step]][fsoName] = {};
-    else createFSOAtPath(path, obj[path[step]], step + 1, fsoName);
+  const createFSOAtPath = (path, obj, step, fsoName, fileType) => {
+    if (step === path.length - 1) {
+      switch (fileType) {
+        case "Folder":
+          return (obj[path[step]][fsoName] = {});
+        case "Shortcut":
+          return (obj[path[step]][fsoName] = { pathTo: "" });
+        case "Text Document":
+          return (obj[path[step]][fsoName] = { content: "" });
+      }
+    } else createFSOAtPath(path, obj[path[step]], step + 1, fsoName, fileType);
   };
 
   const convertPathToSteps = (fsoPath) => {
@@ -40,7 +48,7 @@ export const FileSystemProvider = ({ children }) => {
   const createFSO = (fileType, fsoName, fsoPath) => {
     let temp = JSON.parse(JSON.stringify(fs));
     const steps = convertPathToSteps(fsoPath);
-    createFSOAtPath(steps, temp, 0, fsoName);
+    createFSOAtPath(steps, temp, 0, fsoName, fileType);
     setFs(temp);
   };
 
@@ -71,7 +79,7 @@ export const FileSystemProvider = ({ children }) => {
   };
 
   return (
-    <FileSystemContext.Provider value={{ fs, createFSO, updateFSO, getFSO }}>
+    <FileSystemContext.Provider value={{ createFSO, updateFSO, getFSO }}>
       {children}
     </FileSystemContext.Provider>
   );

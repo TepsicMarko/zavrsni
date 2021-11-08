@@ -1,21 +1,38 @@
-.desktop-icon {
+.desktop-icon,
+.desktop-icon-selected {
   display: inline-flex;
   flex-wrap: wrap;
-  width: 4rem;
+  width: 4.5rem;
+  padding: 0.15rem 0;
+  box-sizing: border-box;
+  border: 1px solid transparent;
 }
 
-.desktop-icon > svg {
+.desktop-icon:hover,
+.desktop-icon-selected {
+  border: 1px solid rgba(255, 255, 255, 0.267);
+  background-color: rgba(255, 255, 255, 0.116);
+}
+
+.desktop-icon > svg,
+.desktop-icon-selected > svg {
   flex-basis: 100%;
+  padding-bottom: 0.25rem;
 }
 
 .desktop-icon-name {
-  box-sizing: border-box;
   max-width: 100%;
+  min-width: 100%;
   background-color: transparent;
   border: none;
   color: white;
   font-weight: 100;
   text-align: center;
+  height: fit-content;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .desktop-icon-name:focus {

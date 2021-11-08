@@ -1,36 +1,76 @@
 import "./DesktopIcon.css";
 import { FcFolder } from "react-icons/fc";
 import { AiFillFileText } from "react-icons/ai";
-import { useContext } from "react";
+import { GoFileSymlinkFile } from "react-icons/go";
+import { useContext, useRef, useEffect } from "react";
+
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
 import useInput from "../../../hooks/useInput";
 
-const DesktopIcon = ({ name, path, isFolder }) => {
+const DesktopIcon = ({ name, path, isTextDocument, isShortcut }) => {
+  const divRef = useRef(null);
   const [inputValue, handleInputChange] = useInput(name);
   const { updateFSO } = useContext(FileSystemContext);
-  const handleClick = (e) => {
-    e.target.select();
+  const handleFocus = (e) => {
+    e.target.style.display = "block";
+    // e.target.select();
   };
 
-  const handleBlur = () => {
-    updateFSO({ old: name, new: inputValue }, path);
+  const handleBlur = (e) => {
+    e.target.style.display = "-webkit-box";
+    divRef.current.setAttribute("class", "desktop-icon");
+    name !== inputValue && updateFSO({ old: name, new: inputValue }, path);
   };
+
+  const renderIcon = () => {
+    if (isTextDocument) return <AiFillFileText size='3rem' color='white' />;
+    else if (isShortcut) return <GoFileSymlinkFile size='3rem' color='white' />;
+    else return <FcFolder size='3rem' />;
+    //convert this to object when it becomes more complicated
+  };
+
+  const handleDivChange = (e) => {
+    handleInputChange({ target: { value: e.target.textContent } });
+  };
+
+  const handleClick = () => {
+    divRef.current.setAttribute("class", "desktop-icon-selected");
+  };
+  const handleSelect = () => {
+    divRef.current.setAttribute("class", "desktop-icon-selected");
+  };
+
+  useEffect(() => {
+    const eventHandler = (e) => {
+      divRef.current.setAttribute("class", "desktop-icon");
+    };
+    document.addEventListener("mousedown", eventHandler);
+
+    return () => {
+      document.removeEventListener("mousedown", eventHandler);
+    };
+  }, []);
 
   return (
-    <div className='desktop-icon'>
-      {isFolder ? (
-        <FcFolder size='3rem' />
-      ) : (
-        <AiFillFileText size='3rem' color='white' />
-      )}
-      <input
+    <div
+      ref={divRef}
+      className='desktop-icon'
+      onClick={handleClick}
+      onSelect={handleSelect}
+      onFocusOut={() => divRef.current.setAttribute("class", "desktop-icon")}
+    >
+      {renderIcon()}
+      <div
+        contentEditable
         className='desktop-icon-name'
         type='text'
-        value={inputValue}
-        onChange={handleInputChange}
         onClick={handleClick}
+        onInput={handleDivChange}
+        onFocus={handleFocus}
         onBlur={handleBlur}
-      />
+      >
+        {inputValue}
+      </div>
     </div>
   );
 };
