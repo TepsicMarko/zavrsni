@@ -47,6 +47,8 @@ const DesktopIcon = ({
     divRef.current.setAttribute("class", "desktop-icon-selected");
   };
 
+  const handleDragStart = (e) => e.dataTransfer.setData("text", name);
+
   useEffect(() => {
     const eventHandler = (e) => {
       divRef.current.setAttribute("class", "desktop-icon");
@@ -66,6 +68,8 @@ const DesktopIcon = ({
       onSelect={handleSelect}
       onFocusOut={() => divRef.current.setAttribute("class", "desktop-icon")}
       style={{ gridArea: gridPosition }}
+      draggable
+      onDragStart={handleDragStart}
     >
       {renderIcon()}
       <div

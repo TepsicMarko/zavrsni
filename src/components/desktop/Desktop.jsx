@@ -76,6 +76,17 @@ const Desktop = ({ width, height, taskbarHeight }) => {
     return fsoArray;
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const name = e.dataTransfer.getData("text");
+    addToGrid(
+      name,
+      calculateGridPosition({ x: e.clientX, y: e.clientY }),
+      true
+    );
+  };
+  const preventDefault = (e) => e.preventDefault();
+
   return (
     <div
       className='desktop'
@@ -91,6 +102,9 @@ const Desktop = ({ width, height, taskbarHeight }) => {
           (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
         )}, 5rem)`,
       }}
+      onDragEnter={preventDefault}
+      onDragOver={preventDefault}
+      onDrop={handleDrop}
     >
       {renderFSO()}
     </div>
