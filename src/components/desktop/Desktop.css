@@ -1,4 +1,9 @@
 .desktop {
   padding-top: 0.25rem;
   box-sizing: border-box;
+  display: grid;
+  /* grid-template-columns: repeat(15, 1fr);
+  grid-template-rows: repeat(10, 1fr); */
+  grid-column-gap: 1px;
+  grid-row-gap: 0.5rem;
 }

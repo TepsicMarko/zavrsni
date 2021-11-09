@@ -7,7 +7,13 @@ import { useContext, useRef, useEffect } from "react";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
 import useInput from "../../../hooks/useInput";
 
-const DesktopIcon = ({ name, path, isTextDocument, isShortcut }) => {
+const DesktopIcon = ({
+  name,
+  path,
+  isTextDocument,
+  isShortcut,
+  gridPosition,
+}) => {
   const divRef = useRef(null);
   const [inputValue, handleInputChange] = useInput(name);
   const { updateFSO } = useContext(FileSystemContext);
@@ -23,9 +29,10 @@ const DesktopIcon = ({ name, path, isTextDocument, isShortcut }) => {
   };
 
   const renderIcon = () => {
-    if (isTextDocument) return <AiFillFileText size='3rem' color='white' />;
-    else if (isShortcut) return <GoFileSymlinkFile size='3rem' color='white' />;
-    else return <FcFolder size='3rem' />;
+    if (isTextDocument) return <AiFillFileText size='2.5rem' color='white' />;
+    else if (isShortcut)
+      return <GoFileSymlinkFile size='2.5rem' color='white' />;
+    else return <FcFolder size='2.5rem' />;
     //convert this to object when it becomes more complicated
   };
 
@@ -58,6 +65,7 @@ const DesktopIcon = ({ name, path, isTextDocument, isShortcut }) => {
       onClick={handleClick}
       onSelect={handleSelect}
       onFocusOut={() => divRef.current.setAttribute("class", "desktop-icon")}
+      style={{ gridArea: gridPosition }}
     >
       {renderIcon()}
       <div

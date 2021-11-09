@@ -21,7 +21,7 @@ const App = () => {
 
   const [taskbarDimensions, setTaskbarDimensions] = useState({
     width: "100vw",
-    height: "3rem",
+    height: "2.75rem",
   });
   const [dekstopDimensions, setDekstopDimensions] = useState({
     width: "100vw",
@@ -31,7 +31,7 @@ const App = () => {
   useEffect(() => {
     taskbarOrientation === "horizontal" &&
       taskbarDimensions.width !== "100vw" &&
-      setTaskbarDimensions({ width: "100vw", height: "3rem" });
+      setTaskbarDimensions({ width: "100vw", height: "2.75rem" });
     taskbarOrientation === "vertical" &&
       taskbarDimensions.width !== "4.25rem" &&
       setTaskbarDimensions({ width: "4.25rem", height: "100vh" });
@@ -41,7 +41,10 @@ const App = () => {
     <FileSystemProvider>
       <RightClickMenuProvider>
         <div className='App'>
-          <Desktop {...dekstopDimensions} />
+          <Desktop
+            {...dekstopDimensions}
+            taskbarHeight={taskbarDimensions.height}
+          />
           <Taskbar
             {...taskbarDimensions}
             handleDragStart={handleDragStart}

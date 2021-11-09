@@ -2,10 +2,13 @@
 .desktop-icon-selected {
   display: inline-flex;
   flex-wrap: wrap;
-  width: 4.5rem;
+  width: 4.25rem;
+  height: fit-content;
+  max-height: 5rem;
   padding: 0.15rem 0;
   box-sizing: border-box;
   border: 1px solid transparent;
+  align-content: flex-start;
 }
 
 .desktop-icon:hover,
@@ -21,6 +24,7 @@
 }
 
 .desktop-icon-name {
+  font-size: 0.7rem;
   max-width: 100%;
   min-width: 100%;
   background-color: transparent;

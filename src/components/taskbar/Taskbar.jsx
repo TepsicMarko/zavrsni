@@ -202,7 +202,7 @@ const Taskbar = ({
           {moment().format("DD/MM/yyyy")}
         </div>
         <div className={isVerticalClassName("windows-notifications")}>
-          <MdMessage size='1.35em' />
+          <MdMessage size='1.35rem' />
         </div>
       </div>
     </div>

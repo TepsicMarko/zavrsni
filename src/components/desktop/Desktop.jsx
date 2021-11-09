@@ -1,31 +1,56 @@
 import "./Desktop.css";
-
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import windows from "../../assets/windows.jpg";
 import { RightClickMenuContext } from "../../contexts/RightClickMenuContext";
 import { FileSystemContext } from "../../contexts/FileSystemContext";
+import useDesktopGrid from "../../hooks/useDesktopGrid";
 import DesktopIcon from "./desktop-icon/DesktopIcon";
 
-const Desktop = ({ width, height }) => {
+const Desktop = ({ width, height, taskbarHeight }) => {
+  const origin = "C\\users\\admin\\Desktop";
   const wallpaper = windows;
   const { createFSO, getFSO } = useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
-  const origin = "C\\users\\admin\\Desktop";
+
+  const evalTaskbarHeight = () =>
+    typeof taskbarHeight !== "number"
+      ? parseInt(taskbarHeight) * 16
+      : taskbarHeight < 48
+      ? 48
+      : taskbarHeight;
+
+  const { grid, addToGrid, calculateGridPosition } = useDesktopGrid({
+    maxRows: Math.floor(
+      (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
+    ),
+    maxColumns: Math.floor(document.documentElement.clientWidth / 68),
+  });
+
   const handleRightClick = (e) => {
     e.preventDefault();
     const { clientX, clientY } = e;
-    renderOptions({ x: clientX, y: clientY }, [
+    const mousePosition = { x: clientX, y: clientY };
+    renderOptions(mousePosition, [
       {
         name: "New",
         submenu: [
           {
             name: "Folder",
-            handler: () => createFSO("Folder", "New Folder", origin),
+            handler: () => {
+              createFSO("Folder", "New Folder", origin);
+              addToGrid("New Folder", calculateGridPosition(mousePosition));
+            },
           },
           ...["Shortcut", "Text Document"].map((option) => {
             return {
               name: option,
-              handler: () => createFSO(option, "New " + option, origin),
+              handler: () => {
+                createFSO(option, "New " + option, origin);
+                addToGrid(
+                  "New " + option,
+                  calculateGridPosition(mousePosition)
+                );
+              },
             };
           }),
         ],
@@ -44,6 +69,7 @@ const Desktop = ({ width, height }) => {
           path={origin}
           isTextDocument={fsoData.content !== undefined}
           isShortcut={fsoData.pathTo !== undefined}
+          gridPosition={grid[fso]}
         />
       );
     }
@@ -58,6 +84,12 @@ const Desktop = ({ width, height }) => {
         backgroundImage: `url(${wallpaper})`,
         width: `calc(${width})`,
         height: `calc(${height})`,
+        gridTemplateColumns: `repeat(${Math.floor(
+          document.documentElement.clientWidth / 68
+        )}, 4.25rem)`,
+        gridTemplateRows: `repeat(${Math.floor(
+          (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
+        )}, 5rem)`,
       }}
     >
       {renderFSO()}
@@ -66,10 +98,3 @@ const Desktop = ({ width, height }) => {
 };
 
 export default Desktop;
-
-/* trebam napravit useWindowsSettings context tak da mogu
- * u postavkama mijenjat stvari koje se odnose na vise
- * komponenata. npr sta ak korinisk promjeni boju za taskbar
- * ta boja onda treba bit primjenjena i na drugim djelovima
- * aplikacije
- */
