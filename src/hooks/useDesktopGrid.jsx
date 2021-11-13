@@ -1,24 +1,42 @@
 import { useState, useEffect } from "react";
 
 const useDesktopGrid = ({ maxRows, maxColumns }) => {
+  console.log(maxRows, maxColumns);
   const [grid, setGrid] = useState({});
 
   const checkIsOccupied = (cellPosition, temp, name) => {
     let foundNum = 0;
+    let cellPositionObj = {
+      xStart: 0,
+      yStart: 0,
+      xEnd: 0,
+      yEnd: 0,
+    };
     for (let cell in temp) {
       if (temp[cell] === cellPosition && name !== cell) {
-        const newCellPosition = [...cellPosition]
-          .map((c) => {
-            if (!isNaN(c)) {
-              if (foundNum === 0 || foundNum === 2) {
-                foundNum += 1;
-                return parseInt(c) + 1;
-              }
-              foundNum += 1;
-            }
-            return c;
-          })
-          .reduce((p, c) => p + c);
+        let num = "";
+        [...cellPosition].forEach((c, i) => {
+          if (!isNaN(c)) {
+            num += c;
+            i === cellPosition.length - 1 &&
+              (cellPositionObj[Object.keys(cellPositionObj)[foundNum]] =
+                parseInt(num));
+          } else {
+            cellPositionObj[Object.keys(cellPositionObj)[foundNum]] =
+              parseInt(num);
+            num = "";
+            foundNum += 1;
+          }
+        });
+
+        const { xStart, yStart, xEnd, yEnd } = cellPositionObj;
+        let newCellPosition = "";
+        if (xStart >= maxRows)
+          newCellPosition = `${1}/${
+            yStart >= maxColumns ? 1 : yStart + 1
+          }/${1}/${yStart >= maxColumns ? 1 : yStart + 1}`;
+        else newCellPosition = `${xStart + 1}/${yStart}/${xEnd + 1}/${yEnd}`;
+
         temp[cell] = newCellPosition;
         checkIsOccupied(newCellPosition, temp, cell);
       }
