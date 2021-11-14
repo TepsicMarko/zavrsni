@@ -40,7 +40,7 @@ const DesktopIcon = ({
     handleInputChange({ target: { value: e.target.textContent } });
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
     divRef.current.setAttribute("class", "desktop-icon-selected");
   };
   const handleSelect = () => {
@@ -48,6 +48,10 @@ const DesktopIcon = ({
   };
 
   const handleDragStart = (e) => e.dataTransfer.setData("text", name);
+  const stopPropagation = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  };
 
   useEffect(() => {
     const eventHandler = (e) => {
@@ -65,6 +69,7 @@ const DesktopIcon = ({
       ref={divRef}
       className='desktop-icon'
       onClick={handleClick}
+      onContextMenu={stopPropagation}
       onSelect={handleSelect}
       onFocusOut={() => divRef.current.setAttribute("class", "desktop-icon")}
       style={{ gridArea: gridPosition }}

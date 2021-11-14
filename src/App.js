@@ -2,7 +2,7 @@ import "./App.css";
 import "./global.css";
 import Desktop from "./components/desktop/Desktop";
 import Taskbar from "./components/taskbar/Taskbar";
-import RightClickMenu from "./components/right-click-menu/RightClickMenu";
+import ContextMenu from "./components/context-menu/ContextMenu";
 
 import { useEffect, useState } from "react";
 import useDraggableTaskbar from "./hooks/useDraggableTaskbar";
@@ -55,7 +55,7 @@ const App = () => {
             setTaskbarDimensions={setTaskbarDimensions}
           />
         </div>
-        <RightClickMenu />
+        <ContextMenu />
       </RightClickMenuProvider>
     </FileSystemProvider>
   );

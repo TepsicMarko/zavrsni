@@ -1,0 +1,40 @@
+import "./ContextMenuItem.css";
+import { VscCircleFilled } from "react-icons/vsc";
+import { MdArrowForwardIos } from "react-icons/md";
+const ContextMenuItem = ({
+  name,
+  openSubmenu,
+  onClick,
+  children,
+  divider,
+  radio,
+  active,
+  closeMenu,
+}) => {
+  const handleClick = () => {
+    onClick();
+    closeMenu();
+  };
+
+  return (
+    <div
+      className='context-menu-item'
+      onClick={children ? () => onClick(name) : handleClick}
+    >
+      <div className='cm-item-icon'>
+        {radio && active && <VscCircleFilled />}
+      </div>
+      <div className='cm-item-name'>{name}</div>
+      {children && (
+        <div className='flex-center cm-item-expand'>
+          <MdArrowForwardIos />
+        </div>
+      )}
+      {children && openSubmenu && (
+        <div className='submenu'>{children.map((child) => child)}</div>
+      )}
+    </div>
+  );
+};
+
+export default ContextMenuItem;

@@ -1,0 +1,26 @@
+.context-menu-item {
+  position: relative;
+  padding: 0.2rem 0;
+  cursor: pointer;
+  display: flex;
+}
+
+.cm-item-icon {
+  flex-basis: 1.5rem;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.cm-item-icon > svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.cm-item-name {
+  flex-grow: 1;
+}
+
+.cm-item-expand {
+  flex-basis: 0.5rem;
+}

@@ -1,16 +1,18 @@
 import "./Desktop.css";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import windows from "../../assets/windows.jpg";
 import { RightClickMenuContext } from "../../contexts/RightClickMenuContext";
 import { FileSystemContext } from "../../contexts/FileSystemContext";
 import useDesktopGrid from "../../hooks/useDesktopGrid";
 import DesktopIcon from "./desktop-icon/DesktopIcon";
+import DesktopContextMenu from "./DesktopContextMenu";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
+  const [view, setView] = useState("Medium icons");
   const origin = "C\\users\\admin\\Desktop";
   const wallpaper = windows;
   const { createFSO, getFSO } = useContext(FileSystemContext);
-  const { renderOptions } = useContext(RightClickMenuContext);
+  const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
 
   const evalTaskbarHeight = () =>
     typeof taskbarHeight !== "number"
@@ -30,32 +32,19 @@ const Desktop = ({ width, height, taskbarHeight }) => {
     e.preventDefault();
     const { clientX, clientY } = e;
     const mousePosition = { x: clientX, y: clientY };
-    renderOptions(mousePosition, [
-      {
-        name: "New",
-        submenu: [
-          {
-            name: "Folder",
-            handler: () => {
-              createFSO("Folder", "New Folder", origin);
-              addToGrid("New Folder", calculateGridPosition(mousePosition));
-            },
-          },
-          ...["Shortcut", "Text Document"].map((option) => {
-            return {
-              name: option,
-              handler: () => {
-                createFSO(option, "New " + option, origin);
-                addToGrid(
-                  "New " + option,
-                  calculateGridPosition(mousePosition)
-                );
-              },
-            };
-          }),
-        ],
-      },
-    ]);
+    renderOptions(
+      mousePosition,
+      <DesktopContextMenu
+        path={origin}
+        createFSO={createFSO}
+        addToGrid={addToGrid}
+        calculateGridPosition={calculateGridPosition}
+        mousePosition={mousePosition}
+        closeMenu={closeMenu}
+        view={view}
+        setView={setView}
+      />
+    );
   };
 
   const renderFSO = () => {
