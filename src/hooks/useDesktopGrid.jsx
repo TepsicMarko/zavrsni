@@ -60,15 +60,21 @@ const useDesktopGrid = ({ maxRows, maxColumns }) => {
     return `${row}/${column}/${row}/${column}`;
   };
 
-  const isNameTaken = (name, i) => {
-    if (grid.hasOwnProperty(i > 0 ? `${name} (${i})` : name))
-      return isNameTaken(name, i === 0 ? i + 2 : i + 1);
+  const isNameTaken = (temp, name, i) => {
+    if (temp.hasOwnProperty(i > 0 ? `${name} (${i})` : name))
+      return isNameTaken(temp, name, i === 0 ? i + 2 : i + 1);
     return i > 0 ? `${name} (${i})` : name;
   };
 
-  const addToGrid = (name, gridPositon, checkIsCellOccupied) => {
+  const addToGrid = (
+    name,
+    gridPositon,
+    checkIsCellOccupied,
+    checkIsNameTaken
+  ) => {
     const temp = JSON.parse(JSON.stringify(grid));
-    temp[isNameTaken(name, 0)] = gridPositon;
+    checkIsNameTaken && (name = isNameTaken(temp, name, 0));
+    temp[name] = gridPositon;
     checkIsCellOccupied && checkIsOccupied(gridPositon, temp, name);
     setGrid(temp);
   };
