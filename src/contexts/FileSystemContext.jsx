@@ -18,15 +18,29 @@ export const FileSystemProvider = ({ children }) => {
       },
     },
   });
+
+  const doesFsoExist = (obj, fsoName, i) => {
+    if (obj.hasOwnProperty(i > 0 ? `${fsoName} (${i})` : fsoName))
+      return doesFsoExist(obj, fsoName, i === 0 ? i + 2 : i + 1);
+    return i > 0 ? `${fsoName} (${i})` : fsoName;
+  };
+
   const createFSOAtPath = (path, obj, step, fsoName, fileType) => {
     if (step === path.length - 1) {
       switch (fileType) {
         case "Folder":
-          return (obj[path[step]][fsoName] = {});
+          return (obj[path[step]][doesFsoExist(obj[path[step]], fsoName, 0)] =
+            {});
         case "Shortcut":
-          return (obj[path[step]][fsoName] = { pathTo: "" });
+          doesFsoExist(obj, fsoName, 0);
+          return (obj[path[step]][doesFsoExist(obj[path[step]], fsoName, 0)] = {
+            pathTo: "",
+          });
         case "Text Document":
-          return (obj[path[step]][fsoName] = { content: "" });
+          doesFsoExist(obj, fsoName, 0);
+          return (obj[path[step]][doesFsoExist(obj[path[step]], fsoName, 0)] = {
+            content: "",
+          });
       }
     } else createFSOAtPath(path, obj[path[step]], step + 1, fsoName, fileType);
   };

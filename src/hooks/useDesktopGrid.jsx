@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 const useDesktopGrid = ({ maxRows, maxColumns }) => {
-  console.log(maxRows, maxColumns);
   const [grid, setGrid] = useState({});
 
   const checkIsOccupied = (cellPosition, temp, name) => {
@@ -61,9 +60,15 @@ const useDesktopGrid = ({ maxRows, maxColumns }) => {
     return `${row}/${column}/${row}/${column}`;
   };
 
+  const isNameTaken = (name, i) => {
+    if (grid.hasOwnProperty(i > 0 ? `${name} (${i})` : name))
+      return isNameTaken(name, i === 0 ? i + 2 : i + 1);
+    return i > 0 ? `${name} (${i})` : name;
+  };
+
   const addToGrid = (name, gridPositon, checkIsCellOccupied) => {
     const temp = JSON.parse(JSON.stringify(grid));
-    temp[name] = gridPositon;
+    temp[isNameTaken(name, 0)] = gridPositon;
     checkIsCellOccupied && checkIsOccupied(gridPositon, temp, name);
     setGrid(temp);
   };
