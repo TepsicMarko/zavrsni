@@ -21,12 +21,13 @@ const Desktop = ({ width, height, taskbarHeight }) => {
       ? 48
       : taskbarHeight;
 
-  const { grid, addToGrid, calculateGridPosition } = useDesktopGrid({
-    maxRows: Math.floor(
-      (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
-    ),
-    maxColumns: Math.floor(document.documentElement.clientWidth / 68),
-  });
+  const { grid, addToGrid, updateGridItemName, calculateGridPosition } =
+    useDesktopGrid({
+      maxRows: Math.floor(
+        (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
+      ),
+      maxColumns: Math.floor(document.documentElement.clientWidth / 68),
+    });
 
   const handleRightClick = (e) => {
     e.preventDefault();
@@ -59,6 +60,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
           isTextDocument={fsoData.content !== undefined}
           isShortcut={fsoData.pathTo !== undefined}
           gridPosition={grid[fso]}
+          updateGridItemName={updateGridItemName}
         />
       );
     }

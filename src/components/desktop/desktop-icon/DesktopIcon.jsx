@@ -2,7 +2,7 @@ import "./DesktopIcon.css";
 import { FcFolder } from "react-icons/fc";
 import { AiFillFileText } from "react-icons/ai";
 import { GoFileSymlinkFile } from "react-icons/go";
-import { useContext, useRef, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
 import useInput from "../../../hooks/useInput";
@@ -13,19 +13,19 @@ const DesktopIcon = ({
   isTextDocument,
   isShortcut,
   gridPosition,
+  updateGridItemName,
 }) => {
-  const divRef = useRef(null);
+  const [isSelected, setIsSelected] = useState(false);
+  const [display, setDisplay] = useState("-webkit-box");
   const [inputValue, handleInputChange] = useInput(name);
   const { updateFSO } = useContext(FileSystemContext);
-  const handleFocus = (e) => {
-    e.target.style.display = "block";
-    // e.target.select();
-  };
 
+  const handleFocus = (e) => setDisplay("inline-block");
   const handleBlur = (e) => {
-    e.target.style.display = "-webkit-box";
-    divRef.current.setAttribute("class", "desktop-icon");
+    setDisplay("-webkit-box");
+    setIsSelected(false);
     name !== inputValue && updateFSO({ old: name, new: inputValue }, path);
+    updateGridItemName({ old: name, new: inputValue });
   };
 
   const renderIcon = () => {
@@ -40,25 +40,17 @@ const DesktopIcon = ({
     handleInputChange({ target: { value: e.target.textContent } });
   };
 
-  const handleClick = (e) => {
-    divRef.current.setAttribute("class", "desktop-icon-selected");
-  };
-  const handleSelect = () => {
-    divRef.current.setAttribute("class", "desktop-icon-selected");
-  };
+  const handleClick = () => setIsSelected(true);
 
   const handleDragStart = (e) => e.dataTransfer.setData("text", name);
   const stopPropagation = (e) => {
-    e.stopPropagation();
     e.preventDefault();
+    e.stopPropagation();
   };
 
   useEffect(() => {
-    const eventHandler = (e) => {
-      divRef.current.setAttribute("class", "desktop-icon");
-    };
+    const eventHandler = (e) => setIsSelected(false);
     document.addEventListener("mousedown", eventHandler);
-
     return () => {
       document.removeEventListener("mousedown", eventHandler);
     };
@@ -66,12 +58,9 @@ const DesktopIcon = ({
 
   return (
     <div
-      ref={divRef}
-      className='desktop-icon'
+      className={`desktop-icon${isSelected ? "-selected" : ""}`}
       onClick={handleClick}
       onContextMenu={stopPropagation}
-      onSelect={handleSelect}
-      onFocusOut={() => divRef.current.setAttribute("class", "desktop-icon")}
       style={{ gridArea: gridPosition }}
       draggable
       onDragStart={handleDragStart}
@@ -80,13 +69,13 @@ const DesktopIcon = ({
       <div
         contentEditable
         className='desktop-icon-name'
-        type='text'
+        style={{ display }}
         onClick={handleClick}
         onInput={handleDivChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
       >
-        {inputValue}
+        {name}
       </div>
     </div>
   );
