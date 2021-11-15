@@ -80,20 +80,29 @@ export const FileSystemProvider = ({ children }) => {
     setFs(tempFs);
   };
 
-  const getFSOAtPath = (steps, step, tempFs) => {
+  const getFolderAtPath = (steps, step, tempFs) => {
     if (steps.length - 1 === step) {
       return tempFs[steps[step]];
     }
-    return getFSOAtPath(steps, step + 1, tempFs[steps[step]]);
+    return getFolderAtPath(steps, step + 1, tempFs[steps[step]]);
   };
 
-  const getFSO = (fsoPath) => {
+  const getFolder = (fsoPath) => {
     const steps = convertPathToSteps(fsoPath);
-    return getFSOAtPath(steps, 0, fs);
+    return getFolderAtPath(steps, 0, fs);
+  };
+
+  const deleteFSO = (fsoName, fsoPath) => {
+    let temp = JSON.parse(JSON.stringify(fs));
+    const steps = convertPathToSteps(fsoPath);
+    delete getFolderAtPath(steps, 0, temp)[fsoName];
+    setFs(temp);
   };
 
   return (
-    <FileSystemContext.Provider value={{ createFSO, updateFSO, getFSO }}>
+    <FileSystemContext.Provider
+      value={{ createFSO, getFolder, updateFSO, deleteFSO }}
+    >
       {children}
     </FileSystemContext.Provider>
   );

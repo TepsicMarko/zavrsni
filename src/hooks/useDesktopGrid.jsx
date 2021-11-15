@@ -82,12 +82,23 @@ const useDesktopGrid = ({ maxRows, maxColumns }) => {
   const updateGridItemName = (name) => {
     let temp = JSON.parse(JSON.stringify(grid));
     temp[name.new] = temp[name.old];
-    console.log(temp);
-    name.old !== name.new && delete temp[name.old];
+    delete temp[name.old];
     setGrid(temp);
   };
 
-  return { grid, addToGrid, updateGridItemName, calculateGridPosition };
+  const deleteFromGrid = (name) => {
+    let temp = JSON.parse(JSON.stringify(grid));
+    delete temp[name];
+    setGrid(temp);
+  };
+
+  return {
+    grid,
+    addToGrid,
+    updateGridItemName,
+    deleteFromGrid,
+    calculateGridPosition,
+  };
 };
 
 export default useDesktopGrid;

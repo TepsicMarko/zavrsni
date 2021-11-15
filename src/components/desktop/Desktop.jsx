@@ -5,13 +5,13 @@ import { RightClickMenuContext } from "../../contexts/RightClickMenuContext";
 import { FileSystemContext } from "../../contexts/FileSystemContext";
 import useDesktopGrid from "../../hooks/useDesktopGrid";
 import DesktopIcon from "./desktop-icon/DesktopIcon";
-import DesktopContextMenu from "./DesktopContextMenu";
+import DesktopContextMenu from "../../context-menus/DesktopContextMenu";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
   const [view, setView] = useState("Medium icons");
   const origin = "C\\users\\admin\\Desktop";
   const wallpaper = windows;
-  const { createFSO, getFSO } = useContext(FileSystemContext);
+  const { createFSO, getFolder } = useContext(FileSystemContext);
   const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
 
   const evalTaskbarHeight = () =>
@@ -21,13 +21,18 @@ const Desktop = ({ width, height, taskbarHeight }) => {
       ? 48
       : taskbarHeight;
 
-  const { grid, addToGrid, updateGridItemName, calculateGridPosition } =
-    useDesktopGrid({
-      maxRows: Math.floor(
-        (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
-      ),
-      maxColumns: Math.floor(document.documentElement.clientWidth / 68),
-    });
+  const {
+    grid,
+    addToGrid,
+    updateGridItemName,
+    deleteFromGrid,
+    calculateGridPosition,
+  } = useDesktopGrid({
+    maxRows: Math.floor(
+      (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
+    ),
+    maxColumns: Math.floor(document.documentElement.clientWidth / 68),
+  });
 
   const handleRightClick = (e) => {
     e.preventDefault();
@@ -49,7 +54,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
   };
 
   const renderFSO = () => {
-    const fileSystemObjects = getFSO(origin);
+    const fileSystemObjects = getFolder(origin);
     let fsoArray = [];
     for (let fso in fileSystemObjects) {
       const fsoData = fileSystemObjects[fso];
@@ -61,6 +66,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
           isShortcut={fsoData.pathTo !== undefined}
           gridPosition={grid[fso]}
           updateGridItemName={updateGridItemName}
+          deleteFromGrid={deleteFromGrid}
         />
       );
     }

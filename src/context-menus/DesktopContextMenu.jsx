@@ -1,4 +1,4 @@
-import ContextMenuItem from "../context-menu/context-menu-item/ContextMenuItem";
+import ContextMenuItem from "../components/context-menu/context-menu-item/ContextMenuItem";
 import { useState } from "react";
 
 const DesktopContextMenu = ({

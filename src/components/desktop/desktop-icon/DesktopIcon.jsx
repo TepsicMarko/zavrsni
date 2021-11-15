@@ -2,10 +2,12 @@ import "./DesktopIcon.css";
 import { FcFolder } from "react-icons/fc";
 import { AiFillFileText } from "react-icons/ai";
 import { GoFileSymlinkFile } from "react-icons/go";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
+import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
 import useInput from "../../../hooks/useInput";
+import DesktopIconContextMenu from "../../../context-menus/DesktopIconContextMenu";
 
 const DesktopIcon = ({
   name,
@@ -14,18 +16,23 @@ const DesktopIcon = ({
   isShortcut,
   gridPosition,
   updateGridItemName,
+  deleteFromGrid,
 }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [display, setDisplay] = useState("-webkit-box");
   const [inputValue, handleInputChange] = useInput(name);
-  const { updateFSO } = useContext(FileSystemContext);
+  const { updateFSO, deleteFSO } = useContext(FileSystemContext);
+  const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
+  const inputRef = useRef(null);
 
   const handleFocus = (e) => setDisplay("inline-block");
   const handleBlur = (e) => {
     setDisplay("-webkit-box");
     setIsSelected(false);
-    name !== inputValue && updateFSO({ old: name, new: inputValue }, path);
-    updateGridItemName({ old: name, new: inputValue });
+    if (name !== inputValue && isSelected) {
+      updateFSO({ old: name, new: inputValue }, path);
+      updateGridItemName({ old: name, new: inputValue });
+    }
   };
 
   const renderIcon = () => {
@@ -43,9 +50,22 @@ const DesktopIcon = ({
   const handleClick = () => setIsSelected(true);
 
   const handleDragStart = (e) => e.dataTransfer.setData("text", name);
-  const stopPropagation = (e) => {
-    e.preventDefault();
+  const handleRightClick = (e) => {
     e.stopPropagation();
+    e.preventDefault();
+    const { clientX, clientY } = e;
+    const mousePosition = { x: clientX, y: clientY };
+    renderOptions(
+      mousePosition,
+      <DesktopIconContextMenu
+        name={name}
+        path={path}
+        closeMenu={closeMenu}
+        deleteFSO={deleteFSO}
+        deleteFromGrid={deleteFromGrid}
+        inputRef={inputRef}
+      />
+    );
   };
 
   useEffect(() => {
@@ -60,13 +80,14 @@ const DesktopIcon = ({
     <div
       className={`desktop-icon${isSelected ? "-selected" : ""}`}
       onClick={handleClick}
-      onContextMenu={stopPropagation}
+      onContextMenu={handleRightClick}
       style={{ gridArea: gridPosition }}
       draggable
       onDragStart={handleDragStart}
     >
       {renderIcon()}
       <div
+        ref={inputRef}
         contentEditable
         className='desktop-icon-name'
         style={{ display }}
