@@ -7,7 +7,7 @@ import { FcFolder } from "react-icons/fc";
 
 const FileExplorer = () => {
   return (
-    <Window>
+    <Window minWidth='14rem' minHeight='16rem'>
       <TitleBar
         icon={<FcFolder />}
         name='File Explorer'

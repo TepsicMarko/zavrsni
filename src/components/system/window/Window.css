@@ -4,6 +4,8 @@
   border: 1px solid #363636;
   display: flex;
   flex-direction: column;
+  min-width: fit-content;
+  min-height: fit-content;
 }
 
 .resize-l,
@@ -49,6 +51,7 @@
   width: 0.75rem;
   height: 0.75rem;
   border-radius: 50%;
+  z-index: 1;
 }
 
 .resize-bl {

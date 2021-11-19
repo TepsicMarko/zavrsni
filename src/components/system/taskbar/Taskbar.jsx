@@ -5,6 +5,7 @@ import { VscSearch } from "react-icons/vsc";
 import { MdOutlineKeyboardArrowUp, MdMessage } from "react-icons/md";
 import { AiOutlineWifi } from "react-icons/ai";
 import { GiSpeaker } from "react-icons/gi";
+import remToPx from "../../../helpers/remToPx";
 import moment from "moment";
 
 import useToggle from "../../../hooks/useToggle";
@@ -109,13 +110,6 @@ const Taskbar = ({
       case "left":
         return { right: 0, width: "0.35rem ", height: "100%" };
     }
-  };
-
-  const remToPx = (rem) => {
-    if (typeof rem === "number") return rem;
-    const regex = /[+-]?\d+(\.\d+)?/g;
-    const nums = rem.match(regex).map((el) => parseFloat(el));
-    return nums * 16;
   };
 
   useEffect(() => {
