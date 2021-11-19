@@ -1,0 +1,34 @@
+.title-bar {
+  height: 1.75rem;
+  display: flex;
+}
+
+.aplication-icon {
+  width: 1.5rem;
+}
+
+.aplication-name {
+  flex-grow: 1;
+  color: white;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+}
+
+.window-controls {
+  width: 7.75rem;
+  display: flex;
+}
+
+.window-controls > div {
+  flex-grow: 1;
+}
+
+.window-controls > div:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.window-controls > div:last-child:hover {
+  background-color: rgba(255, 0, 0, 0.8);
+  color: white;
+}

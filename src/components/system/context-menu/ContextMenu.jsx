@@ -1,7 +1,7 @@
 import "./ContextMenu.css";
 import { useContext, useEffect } from "react";
 
-import { RightClickMenuContext } from "../../contexts/RightClickMenuContext";
+import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
 import ContextMenuOption from "./context-menu-item/ContextMenuItem";
 
 const ContextMenu = ({ width, height }) => {

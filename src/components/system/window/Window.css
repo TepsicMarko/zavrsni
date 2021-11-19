@@ -1,0 +1,95 @@
+.window {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid #363636;
+  display: flex;
+  flex-direction: column;
+}
+
+.resize-l,
+.resize-t,
+.resize-r,
+.resize-b {
+  /* background-color: aquamarine; */
+  position: absolute;
+}
+
+.resize-l,
+.resize-r {
+  width: 0.25rem;
+  height: 100%;
+}
+
+.resize-l {
+  left: -0.25rem;
+}
+.resize-r {
+  right: -0.25rem;
+}
+
+.resize-t,
+.resize-b {
+  width: 100%;
+  height: 0.25rem;
+}
+
+.resize-t {
+  top: -0.25rem;
+}
+.resize-b {
+  bottom: -0.25rem;
+}
+
+.resize-bl,
+.resize-tl,
+.resize-tr,
+.resize-br {
+  /* background-color: rgb(245, 28, 28); */
+  position: absolute;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.resize-bl {
+  bottom: calc(-0.75rem / 2);
+  left: calc(-0.75rem / 2);
+}
+.resize-tl {
+  top: calc(-0.75rem / 2);
+  left: calc(-0.75rem / 2);
+}
+.resize-tr {
+  top: calc(-0.75rem / 2);
+  right: calc(-0.75rem / 2);
+}
+.resize-br {
+  bottom: calc(-0.75rem / 2);
+  right: calc(-0.75rem / 2);
+}
+
+.resize-l:hover {
+  cursor: w-resize;
+}
+.resize-t:hover {
+  cursor: n-resize;
+}
+.resize-r:hover {
+  cursor: e-resize;
+}
+.resize-b:hover {
+  cursor: s-resize;
+}
+
+.resize-bl:hover {
+  cursor: sw-resize;
+}
+.resize-tl:hover {
+  cursor: nw-resize;
+}
+.resize-tr:hover {
+  cursor: ne-resize;
+}
+.resize-br:hover {
+  cursor: se-resize;
+}

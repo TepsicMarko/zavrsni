@@ -1,11 +1,11 @@
 import "./Desktop.css";
 import { useContext, useState } from "react";
-import windows from "../../assets/windows.jpg";
-import { RightClickMenuContext } from "../../contexts/RightClickMenuContext";
-import { FileSystemContext } from "../../contexts/FileSystemContext";
-import useDesktopGrid from "../../hooks/useDesktopGrid";
+import windows from "../../../assets/windows.jpg";
+import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
+import { FileSystemContext } from "../../../contexts/FileSystemContext";
+import useDesktopGrid from "../../../hooks/useDesktopGrid";
 import DesktopIcon from "./desktop-icon/DesktopIcon";
-import DesktopContextMenu from "../../context-menus/DesktopContextMenu";
+import DesktopContextMenu from "../../../context-menus/DesktopContextMenu";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
   const [view, setView] = useState("Medium icons");

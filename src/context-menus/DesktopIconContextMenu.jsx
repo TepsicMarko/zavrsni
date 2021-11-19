@@ -1,4 +1,4 @@
-import ContextMenuItem from "../components/context-menu/context-menu-item/ContextMenuItem";
+import ContextMenuItem from "../components/system/context-menu/context-menu-item/ContextMenuItem";
 
 const DesktopIconContextMenu = ({
   name,

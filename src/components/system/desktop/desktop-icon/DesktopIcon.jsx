@@ -4,10 +4,10 @@ import { AiFillFileText } from "react-icons/ai";
 import { GoFileSymlinkFile } from "react-icons/go";
 import { useContext, useState, useEffect, useRef } from "react";
 
-import { FileSystemContext } from "../../../contexts/FileSystemContext";
-import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
-import useInput from "../../../hooks/useInput";
-import DesktopIconContextMenu from "../../../context-menus/DesktopIconContextMenu";
+import { FileSystemContext } from "../../../../contexts/FileSystemContext";
+import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
+import useInput from "../../../../hooks/useInput";
+import DesktopIconContextMenu from "../../../../context-menus/DesktopIconContextMenu";
 
 const DesktopIcon = ({
   name,

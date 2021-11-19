@@ -1,13 +1,14 @@
 import "./App.css";
 import "./global.css";
-import Desktop from "./components/desktop/Desktop";
-import Taskbar from "./components/taskbar/Taskbar";
-import ContextMenu from "./components/context-menu/ContextMenu";
+import Desktop from "./components/system/desktop/Desktop";
+import Taskbar from "./components/system/taskbar/Taskbar";
+import ContextMenu from "./components/system/context-menu/ContextMenu";
 
 import { useEffect, useState } from "react";
 import useDraggableTaskbar from "./hooks/useDraggableTaskbar";
 import { FileSystemProvider } from "./contexts/FileSystemContext";
 import { RightClickMenuProvider } from "./contexts/RightClickMenuContext";
+import FileExplorer from "./components/apps/file-explorer/FileExplorer";
 
 const App = () => {
   const {
@@ -56,6 +57,7 @@ const App = () => {
           />
         </div>
         <ContextMenu />
+        <FileExplorer />
       </RightClickMenuProvider>
     </FileSystemProvider>
   );
