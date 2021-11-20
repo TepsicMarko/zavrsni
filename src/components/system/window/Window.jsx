@@ -1,8 +1,9 @@
 import "./Window.css";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import remToPx from "../../../helpers/remToPx";
+import { ProcessesContext } from "../../../contexts/ProcessesContext";
 
-const Window = ({ children, minWidth, minHeight }) => {
+const Window = ({ children, app, icon, minWidth, minHeight }) => {
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [width, setWidth] = useState(
@@ -11,6 +12,9 @@ const Window = ({ children, minWidth, minHeight }) => {
   const [height, setHeight] = useState(
     document.documentElement.clientHeight * 0.7
   );
+  const { endProcess, minimiseToTaskbar } = useContext(ProcessesContext);
+  const appDataRef = useRef({ width, height, position });
+  const previousDimensionsAndPositionRef = useRef({});
 
   const updateWindowPosition = (e) => {
     const { clientX, clientY } = e;
@@ -110,12 +114,60 @@ const Window = ({ children, minWidth, minHeight }) => {
   };
   const handleResizeEnd = (e) => e.stopPropagation();
 
+  const closeWindow = () => endProcess(app);
+  const minimiseWindow = () => minimiseToTaskbar(app);
+
   const maximiseWindow = () => {
     const { clientWidth, clientHeight } = document.documentElement;
-    setHeight(clientHeight);
-    setWidth(clientWidth);
-    setPosition({ top: 0, left: 0 });
+    console.log(width, clientWidth, height, clientHeight);
+    if (height >= clientHeight && width >= clientWidth) {
+      const { width, height, position } =
+        previousDimensionsAndPositionRef.current;
+      setHeight(height);
+      setWidth(width);
+      setPosition(position);
+    } else {
+      previousDimensionsAndPositionRef.current = { width, height, position };
+      setHeight(clientHeight);
+      setWidth(clientWidth);
+      setPosition({ top: 0, left: 0 });
+    }
   };
+
+  useEffect(() => {
+    appDataRef.current = { width, height, position };
+  }, [width, height, position]);
+
+  useEffect(() => {
+    const saveAppData = () => {
+      console.log("test");
+      sessionStorage.setItem(
+        app,
+        JSON.stringify({
+          ...appDataRef.current,
+          previousDimensionsAndPosition:
+            previousDimensionsAndPositionRef.current,
+        })
+      );
+    };
+
+    const loadAppData = () => {
+      const appData = sessionStorage.getItem(app);
+      if (appData) {
+        const { width, height, position, previousDimensionsAndPosition } =
+          JSON.parse(appData);
+        setWidth(width);
+        setHeight(height);
+        setPosition(position);
+        previousDimensionsAndPositionRef.current =
+          previousDimensionsAndPosition;
+      }
+    };
+
+    loadAppData();
+
+    return saveAppData;
+  }, []);
 
   return (
     <div
@@ -145,7 +197,15 @@ const Window = ({ children, minWidth, minHeight }) => {
         ></div>
       ))}
       {children.map((child, i) =>
-        i === 0 ? React.cloneElement(child, { maximiseWindow }) : child
+        i === 0
+          ? React.cloneElement(child, {
+              maximiseWindow,
+              closeWindow,
+              minimiseWindow,
+              name: app,
+              icon,
+            })
+          : child
       )}
     </div>
   );

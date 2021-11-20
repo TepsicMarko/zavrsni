@@ -1,5 +1,5 @@
 import "./Taskbar.css";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { BsWindows } from "react-icons/bs";
 import { VscSearch } from "react-icons/vsc";
 import { MdOutlineKeyboardArrowUp, MdMessage } from "react-icons/md";
@@ -7,7 +7,7 @@ import { AiOutlineWifi } from "react-icons/ai";
 import { GiSpeaker } from "react-icons/gi";
 import remToPx from "../../../helpers/remToPx";
 import moment from "moment";
-
+import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import useToggle from "../../../hooks/useToggle";
 
 const Taskbar = ({
@@ -26,6 +26,7 @@ const Taskbar = ({
   const [isResizing, toggleResizing] = useToggle();
   const verticalWidthRef = useRef(0);
   const horizontalHeightRef = useRef(0);
+  const { processes, startProcess } = useContext(ProcessesContext);
 
   const isVerticalClassName = (className) => {
     return `${className}${
@@ -112,6 +113,27 @@ const Taskbar = ({
     }
   };
 
+  const renderTaskbarIcons = () => {
+    const taskbarIcons = [];
+
+    for (let process in processes) {
+      const app = processes[process];
+      taskbarIcons.push({ ...app, name: process });
+    }
+
+    return taskbarIcons.map((app) => {
+      const handleClick = () => {
+        startProcess(app.name);
+      };
+      return (
+        <div className='flex-center taskbar-icon' onClick={handleClick}>
+          {React.cloneElement(app.icon, { size: "1.5rem" })}
+          {app.running && <span></span>}
+        </div>
+      );
+    });
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       console.log("updating time");
@@ -174,7 +196,7 @@ const Taskbar = ({
           )}
         </div>
       </div>
-      <div className='app-shortcuts'></div>
+      <div className='app-shortcuts'>{renderTaskbarIcons()}</div>
       <div className={isVerticalClassName("system-tray")}>
         <div
           className='open-apps'

@@ -7,13 +7,13 @@ import { FcFolder } from "react-icons/fc";
 
 const FileExplorer = () => {
   return (
-    <Window minWidth='14rem' minHeight='16rem'>
-      <TitleBar
-        icon={<FcFolder />}
-        name='File Explorer'
-        backgroundColor='black'
-        color='white'
-      />
+    <Window
+      app='File Explorer'
+      icon={<FcFolder />}
+      minWidth='14rem'
+      minHeight='16rem'
+    >
+      <TitleBar backgroundColor='black' color='white' />
       <WindowContent backgroundColor='#202020'></WindowContent>
       <StatusBar backgroundColor='#2e2e2e'></StatusBar>
     </Window>

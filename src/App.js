@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import useDraggableTaskbar from "./hooks/useDraggableTaskbar";
 import { FileSystemProvider } from "./contexts/FileSystemContext";
 import { RightClickMenuProvider } from "./contexts/RightClickMenuContext";
-import FileExplorer from "./components/apps/file-explorer/FileExplorer";
+import { ProcessesProvider } from "./contexts/ProcessesContext";
 
 const App = () => {
   const {
@@ -41,23 +41,24 @@ const App = () => {
   return (
     <FileSystemProvider>
       <RightClickMenuProvider>
-        <div className='App'>
-          <Desktop
-            {...dekstopDimensions}
-            taskbarHeight={taskbarDimensions.height}
-          />
-          <Taskbar
-            {...taskbarDimensions}
-            handleDragStart={handleDragStart}
-            handleDrag={handleDrag}
-            handleDragEnd={handleDragEnd}
-            taskbarPosition={taskbarPosition}
-            taskbarOrientation={taskbarOrientation}
-            setTaskbarDimensions={setTaskbarDimensions}
-          />
-        </div>
-        <ContextMenu />
-        <FileExplorer />
+        <ProcessesProvider>
+          <div className='App'>
+            <Desktop
+              {...dekstopDimensions}
+              taskbarHeight={taskbarDimensions.height}
+            />
+            <Taskbar
+              {...taskbarDimensions}
+              handleDragStart={handleDragStart}
+              handleDrag={handleDrag}
+              handleDragEnd={handleDragEnd}
+              taskbarPosition={taskbarPosition}
+              taskbarOrientation={taskbarOrientation}
+              setTaskbarDimensions={setTaskbarDimensions}
+            />
+          </div>
+          <ContextMenu />
+        </ProcessesProvider>
       </RightClickMenuProvider>
     </FileSystemProvider>
   );
