@@ -7,7 +7,7 @@ import { useContext, useState, useEffect, useRef } from "react";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import useInput from "../../../../hooks/useInput";
-import DesktopIconContextMenu from "../../../../context-menus/DesktopIconContextMenu";
+import DesktopIconContextMenu from "../../component-specific-context-menus/DesktopIconContextMenu";
 
 const DesktopIcon = ({
   name,
