@@ -1,0 +1,39 @@
+.fx-navbar {
+  width: 100%;
+  height: 1.25rem;
+  display: flex;
+  font-size: 0.7rem;
+  color: white;
+  font-weight: 100;
+  background-color: black;
+  /* font-family: Segoe UI; */
+}
+
+.nav-btn {
+  color: black;
+  background-color: #00a7b1;
+  font-weight: 400;
+}
+
+.nav-tab,
+.nav-tab-active,
+.nav-btn {
+  width: 3.25rem;
+  margin-right: 1.25px;
+}
+
+.nav-btn {
+  margin: 0;
+}
+
+.nav-tab-active {
+  background-color: #202020;
+}
+
+.nav-btn:hover {
+  background-color: #00cdda;
+}
+
+.nav-tab:hover {
+  background-color: #4d4d4d;
+}

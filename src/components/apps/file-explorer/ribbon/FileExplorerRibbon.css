@@ -1,0 +1,80 @@
+.fx-ribbon {
+  width: 100%;
+  height: 5.25rem;
+  font-weight: 100;
+  background-color: #202020;
+  border-bottom: 1px solid #3c3c3c;
+}
+
+.fx-ribbon > div {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0.35rem;
+  padding-bottom: 0.15rem;
+  display: flex;
+}
+
+.ribbon-settings-group {
+  width: fit-content;
+  height: 100%;
+  border-right: 1px solid gray;
+  display: flex;
+  flex-direction: column;
+}
+
+.group-settings {
+  flex-grow: 1;
+  display: flex;
+}
+
+.group-name {
+  font-size: 0.7rem;
+  color: #c6c6c6;
+  font-weight: 100;
+  text-align: center;
+}
+
+.group-setting {
+  max-width: fit-content;
+  padding: 0.25rem 0.35rem 0 0.35rem;
+  box-sizing: border-box;
+  color: gray;
+  font-size: 0.75rem;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
+.group-setting > svg {
+  flex-basis: 100%;
+}
+
+.group-setting-name {
+  font-weight: 100;
+  color: #c6c6c6;
+  font-size: 0.7rem;
+  min-width: max-content;
+  text-align: center;
+  padding-top: 0.4rem;
+  line-height: 0.7rem;
+}
+
+.subgroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.subgroup > .group-setting-name {
+  padding-top: 0;
+}
+
+.subgroup > .group-setting {
+  min-width: max-content;
+  max-height: 1.25rem;
+  padding-top: 0;
+}
+
+.subgroup > .group-setting > svg {
+  flex-basis: unset;
+  width: 1rem;
+  margin-right: 0.25rem;
+}
