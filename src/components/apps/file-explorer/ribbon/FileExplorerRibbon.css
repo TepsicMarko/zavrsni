@@ -63,7 +63,7 @@
   flex-direction: column;
 }
 
-.subgroup > .group-setting-name {
+.subgroup .group-setting-name {
   padding-top: 0;
 }
 
@@ -77,4 +77,13 @@
   flex-basis: unset;
   width: 1rem;
   margin-right: 0.25rem;
+}
+
+.checkbox {
+  box-sizing: border-box;
+  width: 0.75rem;
+  height: 0.75rem;
+  background-color: black;
+  border: 1px solid #898989;
+  margin: 3px 3px 3px 0;
 }

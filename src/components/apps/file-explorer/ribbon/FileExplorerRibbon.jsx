@@ -1,12 +1,14 @@
 import "./FileExplorerRibbon.css";
 import HomeRibbon from "./HomeRibbon";
 import ShareRibbon from "./ShareRibbon";
+import ViewRibbon from "./ViewRibbon";
 
 const FileExplorerRibbon = ({ activeTab }) => {
   return (
     <div className='fx-ribbon'>
       <HomeRibbon isActive={activeTab === "Home"} />
       <ShareRibbon isActive={activeTab === "Share"} />
+      <ViewRibbon isActive={activeTab === "View"} />
     </div>
   );
 };
@@ -15,7 +17,7 @@ export default FileExplorerRibbon;
 
 export const GroupSetting = ({ icon, name }) => (
   <div className='flex-center group-setting'>
-    {icon({ size: "1.5rem" })}
+    {typeof icon === "function" ? icon({ size: "1.5rem" }) : icon}
     <div className='group-setting-name'>{name}</div>
   </div>
 );
