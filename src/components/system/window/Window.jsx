@@ -171,12 +171,8 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
 
   return (
     <div
-      draggable
       className='window'
       style={{ width, height, ...position, minWidth, minHeight }}
-      onDragStart={handleDragStart}
-      onDrag={handleDrag}
-      onDragEnd={handleDragEnd}
     >
       {[
         "resize-l",
@@ -202,6 +198,9 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
               maximiseWindow,
               closeWindow,
               minimiseWindow,
+              handleDragStart,
+              handleDrag,
+              handleDragEnd,
               name: app,
               icon,
             })

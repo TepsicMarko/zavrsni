@@ -13,9 +13,19 @@ const TitleBar = ({
   maximiseWindow,
   closeWindow,
   minimiseWindow,
+  handleDragStart,
+  handleDrag,
+  handleDragEnd,
 }) => {
   return (
-    <div className='title-bar' style={{ backgroundColor, color }}>
+    <div
+      draggable
+      className='title-bar'
+      style={{ backgroundColor, color }}
+      onDragStart={handleDragStart}
+      onDrag={handleDrag}
+      onDragEnd={handleDragEnd}
+    >
       <div className='flex-center aplication-icon'>{icon}</div>
       <div className='aplication-name'>{name}</div>
       <div className='window-controls'>

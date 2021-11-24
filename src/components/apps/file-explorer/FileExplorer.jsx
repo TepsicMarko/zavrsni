@@ -7,6 +7,7 @@ import FileExplorerNavbar from "./navbar/FileExplorerNavbar";
 import FileExplorerRibbon from "./ribbon/FileExplorerRibbon";
 import { FcFolder } from "react-icons/fc";
 import { useState } from "react";
+import FileExplorerNavigationBar from "./navigation-bar/FileExplorerNavigationBar";
 
 const FileExplorer = () => {
   const [activeTab, setActiveTab] = useState("Home");
@@ -24,6 +25,7 @@ const FileExplorer = () => {
       <WindowContent backgroundColor='#202020'>
         <FileExplorerNavbar activeTab={activeTab} changeTab={changeTab} />
         <FileExplorerRibbon activeTab={activeTab} />
+        <FileExplorerNavigationBar />
       </WindowContent>
       <StatusBar backgroundColor='#2e2e2e'></StatusBar>
     </Window>
