@@ -1,0 +1,7 @@
+.fx-folder-contents {
+  flex-grow: 1;
+  align-self: stretch;
+  box-sizing: border-box;
+  border-left: 1px solid #2e2e2e;
+  height: 70%;
+}

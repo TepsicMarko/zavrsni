@@ -1,3 +1,5 @@
 .window-content {
   flex-grow: 1;
+  flex-wrap: wrap;
+  align-content: flex-start;
 }

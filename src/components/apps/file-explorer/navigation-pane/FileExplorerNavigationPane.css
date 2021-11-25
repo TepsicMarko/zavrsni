@@ -1,0 +1,14 @@
+.fx-navigation-pane {
+  background-color: #191919;
+  align-self: stretch;
+  min-width: fit-content;
+  position: relative;
+}
+
+.navigation-pane-resize {
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  right: -2.5px;
+  cursor: w-resize;
+}

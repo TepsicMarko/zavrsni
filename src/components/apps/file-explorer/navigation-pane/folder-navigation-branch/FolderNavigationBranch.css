@@ -1,0 +1,11 @@
+.folder-navigation-branch {
+  height: 1.25rem;
+  color: white;
+  padding-left: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 100;
+}
+
+.folder-navigation-branch:hover {
+  background-color: #4d4d4d;
+}

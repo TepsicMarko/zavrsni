@@ -8,6 +8,8 @@ import FileExplorerRibbon from "./ribbon/FileExplorerRibbon";
 import { FcFolder } from "react-icons/fc";
 import { useState } from "react";
 import FileExplorerNavigationBar from "./navigation-bar/FileExplorerNavigationBar";
+import FileExplorerNavigationPane from "./navigation-pane/FileExplorerNavigationPane";
+import FileExplorerFolderContents from "./folder-contents/FileExplorerFolderContents";
 
 const FileExplorer = () => {
   const [activeTab, setActiveTab] = useState("Home");
@@ -22,10 +24,12 @@ const FileExplorer = () => {
       minHeight='16rem'
     >
       <TitleBar backgroundColor='black' color='white' />
-      <WindowContent backgroundColor='#202020'>
+      <WindowContent backgroundColor='#202020' flex flexDirection='row'>
         <FileExplorerNavbar activeTab={activeTab} changeTab={changeTab} />
         <FileExplorerRibbon activeTab={activeTab} />
         <FileExplorerNavigationBar />
+        <FileExplorerNavigationPane />
+        <FileExplorerFolderContents />
       </WindowContent>
       <StatusBar backgroundColor='#2e2e2e'></StatusBar>
     </Window>

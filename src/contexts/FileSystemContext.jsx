@@ -101,7 +101,7 @@ export const FileSystemProvider = ({ children }) => {
 
   return (
     <FileSystemContext.Provider
-      value={{ createFSO, getFolder, updateFSO, deleteFSO }}
+      value={{ createFSO, getFolder, updateFSO, deleteFSO, fs }}
     >
       {children}
     </FileSystemContext.Provider>
