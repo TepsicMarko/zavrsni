@@ -4,13 +4,22 @@ import useToggle from "../../../../../hooks/useToggle";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FcFolder } from "react-icons/fc";
 
-const FolderNavigationBranch = ({ branchName, childFolders, icon, depth }) => {
-  const [isOpen, toggleOpen] = useToggle();
+const FolderNavigationBranch = ({
+  branchName,
+  childFolders,
+  icon,
+  depth,
+  open,
+  changePath,
+  path,
+}) => {
+  const [isOpen, toggleOpen] = useToggle(open);
   const [childBranches, setChildBranches] = useState([]);
 
-  const toggle = (e) => {
+  const handleClick = (e) => {
     e.stopPropagation();
     toggleOpen();
+    changePath(path, branchName);
   };
 
   useEffect(() => {
@@ -25,8 +34,8 @@ const FolderNavigationBranch = ({ branchName, childFolders, icon, depth }) => {
     <>
       <div
         className='folder-navigation-branch'
-        onClick={toggle}
         style={{ paddingLeft: depth * 0.5 * 16 }}
+        onClick={handleClick}
       >
         <div className='branch-name'>
           {isOpen ? <IoIosArrowDown /> : <IoIosArrowForward />}
@@ -40,6 +49,12 @@ const FolderNavigationBranch = ({ branchName, childFolders, icon, depth }) => {
             branchName={branch}
             childFolders={childFolders[branch]}
             depth={depth + 1}
+            changePath={changePath}
+            path={
+              branchName === "This PC"
+                ? `${path}\\admin`
+                : `${path}\\${branchName}`
+            }
           />
         ))}
     </>

@@ -1,0 +1,24 @@
+.column-heading {
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  position: relative;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 100;
+  line-height: 1.5rem;
+  border-right: 1px solid #646464;
+  padding-left: 0.5rem;
+}
+
+.column-heading-resize {
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  right: -2.5px;
+  top: 0;
+  cursor: w-resize;
+}
