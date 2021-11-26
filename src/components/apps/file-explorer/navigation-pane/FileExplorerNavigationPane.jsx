@@ -1,12 +1,13 @@
 import "./FileExplorerNavigationPane.css";
 import remToPx from "../../../../helpers/remToPx";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
+import { RiComputerFill } from "react-icons/ri";
 import FolderNavigationBranch from "./folder-navigation-branch/FolderNavigationBranch";
 
 const FileExplorerNavigationPane = () => {
   const [width, setWidth] = useState(remToPx("5rem"));
-  const { fs } = useContext(FileSystemContext);
+  const { getFolder } = useContext(FileSystemContext);
 
   const handleResizeStart = (e) => {
     e.dataTransfer.setDragImage(new Image(), 0, 0);
@@ -18,12 +19,17 @@ const FileExplorerNavigationPane = () => {
     setWidth(newWidth > 0 ? newWidth : width);
   };
 
+  useEffect(() => {
+    console.log("rerender");
+  });
+
   return (
     <div className='fx-navigation-pane' style={{ width }}>
       <div className='folder-navigation-tree'>
         <FolderNavigationBranch
-          branchName={Object.keys(fs || {})[0]}
-          childFolders={fs[Object.keys(fs || {})[0]]}
+          branchName='This PC'
+          childFolders={getFolder("C\\users\\admin")}
+          icon={RiComputerFill}
           depth={1}
         />
       </div>

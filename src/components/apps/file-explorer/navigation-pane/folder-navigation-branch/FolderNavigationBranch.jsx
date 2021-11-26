@@ -1,8 +1,10 @@
 import "./FolderNavigationBranch.css";
 import { useState, useEffect } from "react";
 import useToggle from "../../../../../hooks/useToggle";
+import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
+import { FcFolder } from "react-icons/fc";
 
-const FolderNavigationBranch = ({ branchName, childFolders, depth }) => {
+const FolderNavigationBranch = ({ branchName, childFolders, icon, depth }) => {
   const [isOpen, toggleOpen] = useToggle();
   const [childBranches, setChildBranches] = useState([]);
 
@@ -17,26 +19,30 @@ const FolderNavigationBranch = ({ branchName, childFolders, depth }) => {
       branches.push(folder);
     }
     setChildBranches(branches);
-  }, []);
+  }, [childFolders]);
 
   return (
-    <div
-      className='folder-navigation-branch'
-      onClick={toggle}
-      style={{ zIndex: depth }}
-    >
-      {branchName}
-      <div className='child-branches'>
-        {isOpen &&
-          childBranches.map((branch) => (
-            <FolderNavigationBranch
-              branchName={branch}
-              childFolders={childFolders[branch]}
-              depth={depth + 1}
-            />
-          ))}
+    <>
+      <div
+        className='folder-navigation-branch'
+        onClick={toggle}
+        style={{ paddingLeft: depth * 0.5 * 16 }}
+      >
+        <div className='branch-name'>
+          {isOpen ? <IoIosArrowDown /> : <IoIosArrowForward />}
+          {icon ? icon() : <FcFolder />}
+          {branchName}
+        </div>
       </div>
-    </div>
+      {isOpen &&
+        childBranches.map((branch) => (
+          <FolderNavigationBranch
+            branchName={branch}
+            childFolders={childFolders[branch]}
+            depth={depth + 1}
+          />
+        ))}
+    </>
   );
 };
 
