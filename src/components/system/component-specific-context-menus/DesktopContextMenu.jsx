@@ -37,13 +37,17 @@ const DesktopContextMenu = ({
         openSubmenu={openSubmenu === "New"}
         onClick={handleClick}
       >
-        {["Folder", "Shortcut", "Text Document"].map((el) => (
+        {[
+          { name: "New Folder", type: "folder" },
+          { name: "Shortcut", type: "lnk" },
+          { name: "Text Document", type: "txt" },
+        ].map(({ name, type }) => (
           <ContextMenuItem
-            name={el}
+            name={name}
             onClick={() => {
-              createFSO(el, `New ${el}`, path);
+              createFSO(path, name, type);
               addToGrid(
-                `New ${el}`,
+                name,
                 calculateGridPosition(mousePosition),
                 false,
                 true

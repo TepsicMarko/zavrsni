@@ -3,6 +3,7 @@ import ContextMenuItem from "../context-menu/context-menu-item/ContextMenuItem";
 const DesktopIconContextMenu = ({
   name,
   path,
+  type,
   closeMenu,
   deleteFSO,
   deleteFromGrid,
@@ -13,7 +14,7 @@ const DesktopIconContextMenu = ({
   };
 
   const handleDelete = () => {
-    deleteFSO(name, path);
+    deleteFSO(path, name, type.toLowerCase());
     deleteFromGrid(name);
   };
 

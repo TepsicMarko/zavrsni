@@ -1,5 +1,5 @@
 import "./Desktop.css";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import windows from "../../../assets/windows.jpg";
 import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
@@ -9,7 +9,9 @@ import DesktopContextMenu from "../component-specific-context-menus/DesktopConte
 
 const Desktop = ({ width, height, taskbarHeight }) => {
   const [view, setView] = useState("Medium icons");
-  const origin = "C\\users\\admin\\Desktop";
+  const [folderContent, setFolderContent] = useState([]);
+  const origin = "/C/users/admin/Desktop/";
+  const folderName = "Desktop";
   const wallpaper = windows;
   const { createFSO, getFolder } = useContext(FileSystemContext);
   const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
@@ -53,26 +55,6 @@ const Desktop = ({ width, height, taskbarHeight }) => {
     );
   };
 
-  const renderFSO = () => {
-    const fileSystemObjects = getFolder(origin);
-    let fsoArray = [];
-    for (let fso in fileSystemObjects) {
-      const fsoData = fileSystemObjects[fso];
-      fsoArray.push(
-        <DesktopIcon
-          name={fso}
-          path={origin}
-          isTextDocument={fsoData.content !== undefined}
-          isShortcut={fsoData.pathTo !== undefined}
-          gridPosition={grid[fso]}
-          updateGridItemName={updateGridItemName}
-          deleteFromGrid={deleteFromGrid}
-        />
-      );
-    }
-    return fsoArray;
-  };
-
   const handleDrop = (e) => {
     e.preventDefault();
     const name = e.dataTransfer.getData("text");
@@ -83,6 +65,10 @@ const Desktop = ({ width, height, taskbarHeight }) => {
     );
   };
   const preventDefault = (e) => e.preventDefault();
+
+  useEffect(() => {
+    getFolder(origin, setFolderContent);
+  }, [getFolder]);
 
   return (
     <div
@@ -103,7 +89,16 @@ const Desktop = ({ width, height, taskbarHeight }) => {
       onDragOver={preventDefault}
       onDrop={handleDrop}
     >
-      {renderFSO()}
+      {folderContent?.map(({ name, type }) => (
+        <DesktopIcon
+          name={name}
+          path={origin}
+          type={type}
+          gridPosition={grid[name]}
+          updateGridItemName={updateGridItemName}
+          deleteFromGrid={deleteFromGrid}
+        />
+      ))}
     </div>
   );
 };

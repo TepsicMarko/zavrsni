@@ -1,107 +1,97 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
+import { path as Path, fs } from "filer";
 
 export const FileSystemContext = createContext();
 
 export const FileSystemProvider = ({ children }) => {
-  const [fs, setFs] = useState({
-    C: {
-      users: {
-        admin: {
-          Desktop: {},
-          Documents: {},
-          Pictures: {},
-          Videos: {},
-          "test.txt": {
-            content: "hello world",
-          },
-        },
-      },
-    },
-  });
+  // FS.mkdir("/test", { recursive: true }, (err) => console.log(err));
+  // console.log(FS.readdir("/", (err, data) => console.log(data)));
+  // // Example 3: recursive watch on /data dir
+  // var watcher = FS.watch("/", { recursive: true }, (err, file) =>
+  //   console.log(err, file)
+  // );
+  // watcher.on("change", (event, fileName) => console.log(event, fileName));
+  const [state, setState] = useState(0);
 
-  const doesFsoExist = (obj, fsoName, i) => {
-    if (obj.hasOwnProperty(i > 0 ? `${fsoName} (${i})` : fsoName))
-      return doesFsoExist(obj, fsoName, i === 0 ? i + 2 : i + 1);
-    return i > 0 ? `${fsoName} (${i})` : fsoName;
+  const reRenderOnFileSystemChange = () => {
+    console.log("called");
+    setState(Math.random());
   };
 
-  const createFSOAtPath = (path, obj, step, fsoName, fileType) => {
-    if (step === path.length - 1) {
-      switch (fileType) {
-        case "Folder":
-          return (obj[path[step]][doesFsoExist(obj[path[step]], fsoName, 0)] =
-            {});
-        case "Shortcut":
-          doesFsoExist(obj, fsoName, 0);
-          return (obj[path[step]][doesFsoExist(obj[path[step]], fsoName, 0)] = {
-            pathTo: "",
-          });
-        case "Text Document":
-          doesFsoExist(obj, fsoName, 0);
-          return (obj[path[step]][doesFsoExist(obj[path[step]], fsoName, 0)] = {
-            content: "",
-          });
-      }
-    } else createFSOAtPath(path, obj[path[step]], step + 1, fsoName, fileType);
-  };
-
-  const convertPathToSteps = (fsoPath) => {
-    let step = "";
-    let steps = [];
-    [...fsoPath].forEach((c, i) => {
-      if (c === "\\") {
-        steps.push(step);
-        step = "";
-      } else if (i === fsoPath.length - 1) {
-        steps.push(step + c);
-      } else step += c;
+  const mkdir = (path, name) =>
+    new Promise((resolve, reject) => {
+      fs.mkdir(`${path}/${name}`, { recursive: true }, (err) => {
+        err ? reject(err) : resolve(true);
+      });
     });
-    return steps;
-  };
 
-  const createFSO = (fileType, fsoName, fsoPath) => {
-    let temp = JSON.parse(JSON.stringify(fs));
-    const steps = convertPathToSteps(fsoPath);
-    createFSOAtPath(steps, temp, 0, fsoName, fileType);
-    setFs(temp);
-  };
+  const writeFile = (path) =>
+    new Promise((resolve, reject) => {
+      fs.writeFile(path, "", (err) => {
+        err ? reject(err) : resolve(true);
+      });
+    });
 
-  const updateFSOAtPath = (tempFs, fsoName, steps, step) => {
-    if (steps.length - 1 === step) {
-      tempFs[steps[step]][fsoName.new] = tempFs[steps[step]][fsoName.old];
-      delete tempFs[steps[step]][fsoName.old];
-    } else updateFSOAtPath(tempFs[steps[step]], fsoName, steps, step + 1);
-  };
+  const readdir = (path) =>
+    new Promise((resolve, reject) => {
+      fs.readdir(path, { withFileTypes: true }, (err, files) =>
+        err ? reject(err) : resolve(files)
+      );
+    });
 
-  const updateFSO = (fsoName, fsoPath) => {
-    const tempFs = JSON.parse(JSON.stringify(fs));
-    const steps = convertPathToSteps(fsoPath);
-    updateFSOAtPath(tempFs, fsoName, steps, 0);
-    setFs(tempFs);
-  };
+  const rmdir = (path) =>
+    new Promise((resolve, reject) => {
+      fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)));
+    });
 
-  const getFolderAtPath = (steps, step, tempFs) => {
-    if (steps.length - 1 === step) {
-      return tempFs[steps[step]];
+  const unlink = (path, name) =>
+    new Promise((resolve, reject) => {
+      fs.unlink(Path.join(path, name), (err) =>
+        err ? reject(err) : resolve(true)
+      );
+    });
+
+  const createFSO = (path, name, type) => {
+    if (type === "folder") {
+      mkdir(path, name);
+    } else {
+      writeFile(Path.join(path, name));
     }
-    return getFolderAtPath(steps, step + 1, tempFs[steps[step]]);
   };
 
-  const getFolder = (fsoPath) => {
-    const steps = convertPathToSteps(fsoPath);
-    return getFolderAtPath(steps, 0, fs);
+  const getFolder = (path, callback) => {
+    readdir(path).then((dirContent) => callback(dirContent));
   };
 
-  const deleteFSO = (fsoName, fsoPath) => {
-    let temp = JSON.parse(JSON.stringify(fs));
-    const steps = convertPathToSteps(fsoPath);
-    delete getFolderAtPath(steps, 0, temp)[fsoName];
-    setFs(temp);
+  const deleteFSO = (path, name, type) => {
+    console.log(path, name, type, Path.join(path, name));
+    if (type === "directory") {
+      rmdir(Path.join(path, name));
+    } else {
+      unlink(Path.addTrailing(path), name);
+    }
   };
+
+  const initilizeFileSystem = () => {
+    mkdir("/", "C");
+    mkdir("/C", "users");
+    mkdir("/C/users", "admin");
+    mkdir("/C/users/admin", "Desktop");
+  };
+
+  useEffect(() => {
+    initilizeFileSystem();
+    const watcher = fs.watch("/", { recursive: true }, (e) =>
+      reRenderOnFileSystemChange()
+    );
+
+    // return watcher.close();
+  }, []);
 
   return (
     <FileSystemContext.Provider
-      value={{ createFSO, getFolder, updateFSO, deleteFSO, fs }}
+      value={{ createFSO, getFolder, deleteFSO }}
+      // value={{ createFSO, getFolder, updateFSO, deleteFSO, fs }}
     >
       {children}
     </FileSystemContext.Provider>

@@ -12,6 +12,7 @@ import DesktopIconContextMenu from "../../component-specific-context-menus/Deskt
 const DesktopIcon = ({
   name,
   path,
+  type,
   isTextDocument,
   isShortcut,
   gridPosition,
@@ -60,6 +61,7 @@ const DesktopIcon = ({
       <DesktopIconContextMenu
         name={name}
         path={path}
+        type={type}
         closeMenu={closeMenu}
         deleteFSO={deleteFSO}
         deleteFromGrid={deleteFromGrid}
