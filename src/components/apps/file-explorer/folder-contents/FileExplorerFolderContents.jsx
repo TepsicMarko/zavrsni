@@ -1,26 +1,45 @@
 import "./FileExplorerFolderContents.css";
 import ColumnHeading from "./column-heading/ColumnHeading";
+import FsoListItem from "./fso-list-item/FsoListItem";
+import { useState } from "react";
 
 const FileExplorerFolderContents = ({ changePath, folderContent, path }) => {
-  const renderFolderContents = () => {
-    let returnArr = [];
-    for (let fso in folderContent) {
-      returnArr.push({ name: fso, ...folderContent[fso] });
-    }
-    return returnArr.map((fso) => (
-      <div className='fso-list-item'>{fso.name}</div>
-    ));
+  const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
+    Name: "4.5rem",
+    "Date Modified": "4.5rem",
+    Type: "4.5rem",
+    Size: "4.5rem",
+  });
+
+  const setColumnHeadingWidth = (name, width) => {
+    setColumnHeadingsWidth({ ...columnHeadingsWidth, [name]: width });
   };
 
   return (
     <div className='fx-folder-contents'>
       <div className='column-headings'>
-        <ColumnHeading name='Name' />
-        <ColumnHeading name='Date modified test' />
-        <ColumnHeading name='Type' />
-        <ColumnHeading name='Size' />
+        {Object.keys(columnHeadingsWidth).map((columnHeading) => (
+          <ColumnHeading
+            name={columnHeading}
+            width={columnHeadingsWidth[columnHeading]}
+            setColumnHeadingWidth={setColumnHeadingWidth}
+          />
+        ))}
       </div>
-      <div className='fso-list'>{renderFolderContents()}</div>
+      <div className='fso-list'>
+        {Object.keys(folderContent).map((fso) => {
+          const { dateModified, type, size } = folderContent[fso];
+          return (
+            <FsoListItem
+              name={fso}
+              dateModified={dateModified}
+              type={type}
+              size={size}
+              columnHeadingsWidth={columnHeadingsWidth}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };
