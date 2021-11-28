@@ -18,16 +18,12 @@ const DesktopIcon = ({
   deleteFromGrid,
 }) => {
   const [isSelected, setIsSelected] = useState(false);
-  const [display, setDisplay] = useState("-webkit-box");
   const [inputValue, handleInputChange] = useInput(name);
   const { updateFSO, deleteFSO } = useContext(FileSystemContext);
   const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
 
-  const handleFocus = (e) => setDisplay("inline-block");
   const handleBlur = (e) => {
-    setDisplay("-webkit-box");
-    setIsSelected(false);
     if (name !== inputValue && isSelected) {
       updateFSO({ old: name, new: inputValue }, path);
       updateGridItemName({ old: name, new: inputValue });
@@ -46,7 +42,17 @@ const DesktopIcon = ({
     handleInputChange({ target: { value: e.target.textContent } });
   };
 
-  const handleClick = () => setIsSelected(true);
+  const handleClick = (e) => {
+    e.stopPropagation();
+    setIsSelected(true);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      inputRef.current.blur();
+    }
+  };
 
   const handleDragStart = (e) => e.dataTransfer.setData("text", name);
   const handleRightClick = (e) => {
@@ -70,9 +76,9 @@ const DesktopIcon = ({
 
   useEffect(() => {
     const eventHandler = (e) => setIsSelected(false);
-    document.addEventListener("mousedown", eventHandler);
+    document.addEventListener("click", eventHandler);
     return () => {
-      document.removeEventListener("mousedown", eventHandler);
+      document.removeEventListener("click", eventHandler);
     };
   }, []);
 
@@ -88,13 +94,12 @@ const DesktopIcon = ({
       {renderIcon()}
       <div
         ref={inputRef}
-        contentEditable
+        contentEditable={isSelected}
         className='desktop-icon-name'
-        style={{ display }}
         onClick={handleClick}
         onInput={handleDivChange}
-        onFocus={handleFocus}
         onBlur={handleBlur}
+        onKeyPress={handleKeyPress}
       >
         {name}
       </div>

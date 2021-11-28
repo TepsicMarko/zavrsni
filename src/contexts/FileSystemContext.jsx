@@ -69,6 +69,13 @@ export const FileSystemProvider = ({ children }) => {
     readdir(path).then((dirContent) => callback(dirContent));
   };
 
+  const updateFSO = (name, path) => {
+    console.log(name, path);
+    fs.rename(Path.join(path, name.old), Path.join(path, name.new), (err) =>
+      console.log(err)
+    );
+  };
+
   const deleteFSO = (path, name, type) => {
     if (type === "directory") {
       rmdir(Path.join(path, name));
@@ -99,7 +106,7 @@ export const FileSystemProvider = ({ children }) => {
 
   return (
     <FileSystemContext.Provider
-      value={{ createFSO, getFolder, deleteFSO, watch }}
+      value={{ createFSO, getFolder, updateFSO, deleteFSO, watch }}
     >
       {children}
     </FileSystemContext.Provider>
