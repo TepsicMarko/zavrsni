@@ -39,8 +39,8 @@ const DesktopContextMenu = ({
       >
         {[
           { name: "New Folder", type: "folder" },
-          { name: "Shortcut", type: "lnk" },
-          { name: "Text Document", type: "txt" },
+          { name: "New Shortcut", type: "lnk" },
+          { name: "New Text Document", type: "txt" },
         ].map(({ name, type }) => (
           <ContextMenuItem
             name={name}

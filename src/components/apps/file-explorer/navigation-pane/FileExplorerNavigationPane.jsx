@@ -4,7 +4,7 @@ import { useState } from "react";
 import { RiComputerFill } from "react-icons/ri";
 import FolderNavigationBranch from "./folder-navigation-branch/FolderNavigationBranch";
 
-const FileExplorerNavigationPane = ({ changePath, childFolders, path }) => {
+const FileExplorerNavigationPane = ({ changePath, path }) => {
   const [width, setWidth] = useState(remToPx("5rem"));
   const handleResizeStart = (e) => {
     e.dataTransfer.setDragImage(new Image(), 0, 0);
@@ -21,11 +21,10 @@ const FileExplorerNavigationPane = ({ changePath, childFolders, path }) => {
       <div className='folder-navigation-tree'>
         <FolderNavigationBranch
           branchName='This PC'
-          childFolders={childFolders}
-          changePath={changePath}
           icon={RiComputerFill}
           depth={1}
           path={path}
+          changePath={changePath}
           open
         />
       </div>

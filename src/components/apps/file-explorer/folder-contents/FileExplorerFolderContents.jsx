@@ -1,9 +1,12 @@
 import "./FileExplorerFolderContents.css";
 import ColumnHeading from "./column-heading/ColumnHeading";
 import FsoListItem from "./fso-list-item/FsoListItem";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import useWatchFolder from "../../../../hooks/useWatchFolder";
+import moment from "moment";
 
-const FileExplorerFolderContents = ({ changePath, folderContent, path }) => {
+const FileExplorerFolderContents = ({ changePath, path }) => {
+  const [folderContent, setWatcherPath] = useWatchFolder(path);
   const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
     Name: "4.5rem",
     "Date Modified": "4.5rem",
@@ -14,6 +17,10 @@ const FileExplorerFolderContents = ({ changePath, folderContent, path }) => {
   const setColumnHeadingWidth = (name, width) => {
     setColumnHeadingsWidth({ ...columnHeadingsWidth, [name]: width });
   };
+
+  useEffect(() => {
+    setWatcherPath(path);
+  }, [path]);
 
   return (
     <div className='fx-folder-contents'>
@@ -27,14 +34,13 @@ const FileExplorerFolderContents = ({ changePath, folderContent, path }) => {
         ))}
       </div>
       <div className='fso-list'>
-        {Object.keys(folderContent).map((fso) => {
-          const { dateModified, type, size } = folderContent[fso];
+        {folderContent.map((fso) => {
           return (
             <FsoListItem
-              name={fso}
-              dateModified={dateModified}
-              type={type}
-              size={size}
+              name={fso.name}
+              dateModified={moment(fso.ctime).format("DD/MM/YYYY hh:mm a")}
+              type={fso.type}
+              size={fso.size}
               columnHeadingsWidth={columnHeadingsWidth}
             />
           );

@@ -4,33 +4,15 @@ import { path as Path, fs } from "filer";
 export const FileSystemContext = createContext();
 
 export const FileSystemProvider = ({ children }) => {
-  // FS.mkdir("/test", { recursive: true }, (err) => console.log(err));
-  // console.log(FS.readdir("/", (err, data) => console.log(data)));
-  // // Example 3: recursive watch on /data dir
-  // var watcher = FS.watch("/", { recursive: true }, (err, file) =>
-  //   console.log(err, file)
-  // );
-  // watcher.on("change", (event, fileName) => console.log(event, fileName));
-  const [state, setState] = useState(0);
-
-  const reRenderOnFileSystemChange = () => {
-    console.log("called");
-    setState(Math.random());
-  };
-
   const mkdir = (path, name) =>
-    new Promise((resolve, reject) => {
-      fs.mkdir(`${path}/${name}`, { recursive: true }, (err) => {
-        err ? reject(err) : resolve(true);
-      });
-    });
+    fs.mkdir(`${path}/${name}`, (err) => console.log(err));
 
-  const writeFile = (path) =>
-    new Promise((resolve, reject) => {
-      fs.writeFile(path, "", (err) => {
-        err ? reject(err) : resolve(true);
-      });
-    });
+  const writeFile = (path) => fs.writeFile(path, "", (err) => console.log(err));
+
+  const link = (
+    filePath,
+    linkPath //hard coded for now
+  ) => fs.link(filePath, "/C/users/admin", (err) => console.log(err));
 
   const readdir = (path) =>
     new Promise((resolve, reject) => {
@@ -39,21 +21,17 @@ export const FileSystemProvider = ({ children }) => {
       );
     });
 
-  const rmdir = (path) =>
-    new Promise((resolve, reject) => {
-      fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)));
-    });
+  const rmdir = (path) => fs.rmdir(path, (err) => console.log(err));
 
   const unlink = (path, name) =>
-    new Promise((resolve, reject) => {
-      fs.unlink(Path.join(path, name), (err) =>
-        err ? reject(err) : resolve(true)
-      );
-    });
+    fs.unlink(Path.join(path, name), (err) => console.log(err));
 
   const createFSO = (path, name, type) => {
+    console.log(Path.join(path, name));
     if (type === "folder") {
       mkdir(path, name);
+    } else if (type === "lnk") {
+      link(Path.join(path, name));
     } else {
       writeFile(Path.join(path, name));
     }
@@ -64,7 +42,6 @@ export const FileSystemProvider = ({ children }) => {
   };
 
   const deleteFSO = (path, name, type) => {
-    console.log(path, name, type, Path.join(path, name));
     if (type === "directory") {
       rmdir(Path.join(path, name));
     } else {
@@ -79,19 +56,17 @@ export const FileSystemProvider = ({ children }) => {
     mkdir("/C/users/admin", "Desktop");
   };
 
-  useEffect(() => {
-    initilizeFileSystem();
-    const watcher = fs.watch("/", { recursive: true }, (e) =>
-      reRenderOnFileSystemChange()
-    );
+  const watch = (path, callback) => {
+    const watcher = fs.watch(path, { recursive: true }, (e) => callback());
 
-    // return watcher.close();
-  }, []);
+    return watcher;
+  };
+
+  useEffect(() => initilizeFileSystem(), []);
 
   return (
     <FileSystemContext.Provider
-      value={{ createFSO, getFolder, deleteFSO }}
-      // value={{ createFSO, getFolder, updateFSO, deleteFSO, fs }}
+      value={{ createFSO, getFolder, deleteFSO, watch }}
     >
       {children}
     </FileSystemContext.Provider>

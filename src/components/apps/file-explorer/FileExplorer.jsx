@@ -6,23 +6,18 @@ import StatusBar from "../../system/window/status-bar/StatusBar";
 import FileExplorerNavbar from "./navbar/FileExplorerNavbar";
 import FileExplorerRibbon from "./ribbon/FileExplorerRibbon";
 import { FcFolder } from "react-icons/fc";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import FileExplorerNavigationBar from "./navigation-bar/FileExplorerNavigationBar";
 import FileExplorerNavigationPane from "./navigation-pane/FileExplorerNavigationPane";
 import FileExplorerFolderContents from "./folder-contents/FileExplorerFolderContents";
-import { FileSystemContext } from "../../../contexts/FileSystemContext";
-import { VscDebugConsole } from "react-icons/vsc";
 
 const FileExplorer = () => {
   const [activeTab, setActiveTab] = useState("Home");
-  const [path, setPath] = useState("C\\users\\admin");
-  const { getFolder } = useContext(FileSystemContext);
+  const [path, setPath] = useState("/C/users/admin");
   const changeTab = (e) => setActiveTab(e.target.textContent);
 
-  const changePath = (folderPath, folderName) => {
-    setPath(
-      `${folderPath}${folderName === "This PC" ? "\\admin" : `\\${folderName}`}`
-    );
+  const changePath = (path) => {
+    setPath(path);
   };
 
   return (
@@ -39,14 +34,9 @@ const FileExplorer = () => {
         <FileExplorerNavigationBar />
         <FileExplorerNavigationPane
           changePath={changePath}
-          childFolders={getFolder("C\\users\\admin")}
-          path={"C\\users"}
+          path={"/C/users/admin"}
         />
-        <FileExplorerFolderContents
-          changePath={changePath}
-          folderContent={getFolder(path)}
-          path={path}
-        />
+        <FileExplorerFolderContents changePath={changePath} path={path} />
       </WindowContent>
       <StatusBar backgroundColor='#2e2e2e'></StatusBar>
     </Window>

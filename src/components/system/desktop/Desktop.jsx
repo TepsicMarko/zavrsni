@@ -6,14 +6,15 @@ import { FileSystemContext } from "../../../contexts/FileSystemContext";
 import useDesktopGrid from "../../../hooks/useDesktopGrid";
 import DesktopIcon from "./desktop-icon/DesktopIcon";
 import DesktopContextMenu from "../component-specific-context-menus/DesktopContextMenu";
+import useWatchFolder from "../../../hooks/useWatchFolder";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
+  const origin = "/C/users/admin/Desktop";
   const [view, setView] = useState("Medium icons");
-  const [folderContent, setFolderContent] = useState([]);
-  const origin = "/C/users/admin/Desktop/";
+  const [folderContent] = useWatchFolder(origin);
   const folderName = "Desktop";
   const wallpaper = windows;
-  const { createFSO, getFolder } = useContext(FileSystemContext);
+  const { createFSO } = useContext(FileSystemContext);
   const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
 
   const evalTaskbarHeight = () =>
@@ -66,10 +67,6 @@ const Desktop = ({ width, height, taskbarHeight }) => {
   };
   const preventDefault = (e) => e.preventDefault();
 
-  useEffect(() => {
-    getFolder(origin, setFolderContent);
-  }, [getFolder]);
-
   return (
     <div
       className='desktop'
@@ -93,7 +90,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
         <DesktopIcon
           name={name}
           path={origin}
-          type={type}
+          type={type.toLowerCase()}
           gridPosition={grid[name]}
           updateGridItemName={updateGridItemName}
           deleteFromGrid={deleteFromGrid}

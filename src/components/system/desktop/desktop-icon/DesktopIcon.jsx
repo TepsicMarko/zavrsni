@@ -13,8 +13,6 @@ const DesktopIcon = ({
   name,
   path,
   type,
-  isTextDocument,
-  isShortcut,
   gridPosition,
   updateGridItemName,
   deleteFromGrid,
@@ -37,8 +35,8 @@ const DesktopIcon = ({
   };
 
   const renderIcon = () => {
-    if (isTextDocument) return <AiFillFileText size='2.5rem' color='white' />;
-    else if (isShortcut)
+    if (type === "file") return <AiFillFileText size='2.5rem' color='white' />;
+    else if (type === "link")
       return <GoFileSymlinkFile size='2.5rem' color='white' />;
     else return <FcFolder size='2.5rem' />;
     //convert this to object when it becomes more complicated
