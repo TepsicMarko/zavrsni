@@ -1,3 +1,15 @@
 .fso-list-item {
   display: flex;
+  height: 1rem;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 100;
+}
+
+.fso-list-item > div {
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

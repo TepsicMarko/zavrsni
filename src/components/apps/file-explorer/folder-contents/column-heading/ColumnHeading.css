@@ -11,7 +11,7 @@
   font-weight: 100;
   line-height: 1.5rem;
   border-right: 1px solid #646464;
-  padding-left: 0.5rem;
+  padding: 0 0.5rem;
 }
 
 .column-heading-resize {
