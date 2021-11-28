@@ -1,5 +1,5 @@
 import "./Desktop.css";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import windows from "../../../assets/windows.jpg";
 import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
@@ -10,12 +10,12 @@ import useWatchFolder from "../../../hooks/useWatchFolder";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
   const origin = "/C/users/admin/Desktop";
+  const { createFSO, watch, getFolder } = useContext(FileSystemContext);
   const [view, setView] = useState("Medium icons");
-  const [folderContent] = useWatchFolder(origin);
+  const [folderContent] = useWatchFolder(origin, watch, getFolder);
   const folderName = "Desktop";
   const wallpaper = windows;
-  const { createFSO } = useContext(FileSystemContext);
-  const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
+  const { renderOptions } = useContext(RightClickMenuContext);
 
   const evalTaskbarHeight = () =>
     typeof taskbarHeight !== "number"
@@ -49,7 +49,6 @@ const Desktop = ({ width, height, taskbarHeight }) => {
         addToGrid={addToGrid}
         calculateGridPosition={calculateGridPosition}
         mousePosition={mousePosition}
-        closeMenu={closeMenu}
         view={view}
         setView={setView}
       />

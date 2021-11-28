@@ -20,11 +20,11 @@ const DesktopIcon = ({
   const [isSelected, setIsSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
   const { updateFSO, deleteFSO } = useContext(FileSystemContext);
-  const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
+  const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
 
   const handleBlur = (e) => {
-    if (name !== inputValue && isSelected) {
+    if (name !== inputValue && inputValue.length && isSelected) {
       updateFSO({ old: name, new: inputValue }, path);
       updateGridItemName({ old: name, new: inputValue });
     }
@@ -66,7 +66,6 @@ const DesktopIcon = ({
         name={name}
         path={path}
         type={type}
-        closeMenu={closeMenu}
         deleteFSO={deleteFSO}
         deleteFromGrid={deleteFromGrid}
         inputRef={inputRef}

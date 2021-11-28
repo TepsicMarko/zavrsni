@@ -56,7 +56,7 @@ export const FileSystemProvider = ({ children }) => {
 
   const createFSO = (path, name, type) => {
     console.log(Path.join(path, name));
-    if (type === "folder") {
+    if (type === "directory") {
       mkdir(path, name);
     } else if (type === "lnk") {
       link(Path.join(path, name));
@@ -90,10 +90,14 @@ export const FileSystemProvider = ({ children }) => {
     mkdir("/C", "users");
     mkdir("/C/users", "admin");
     mkdir("/C/users/admin", "Desktop");
+    mkdir("/C/users/admin", "Documents");
+    mkdir("/C/users/admin", "Downloads");
+    mkdir("/C/users/admin", "Pictures");
+    mkdir("/C/users/admin", "Videos");
   };
 
   const watch = (path, callback) => {
-    const watcher = fs.watch(path, { recursive: true }, (e) => callback());
+    const watcher = fs.watch(path, (e) => callback());
 
     return watcher;
   };

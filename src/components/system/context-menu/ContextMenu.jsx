@@ -1,8 +1,7 @@
 import "./ContextMenu.css";
 import { useContext, useEffect } from "react";
-
 import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
-import ContextMenuOption from "./context-menu-item/ContextMenuItem";
+import { cloneElement } from "react";
 
 const ContextMenu = ({ width, height }) => {
   const { menuPosition, menuOptions, isMenuOpen, closeMenu } = useContext(
@@ -24,7 +23,7 @@ const ContextMenu = ({ width, height }) => {
         style={{ top: y, left: x }}
         onMouseDown={stopPropagation}
       >
-        {menuOptions}
+        {cloneElement(menuOptions, { closeMenu })}
       </div>
     )
   );

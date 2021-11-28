@@ -30,9 +30,7 @@ const ContextMenuItem = ({
           <MdArrowForwardIos />
         </div>
       )}
-      {children && openSubmenu && (
-        <div className='submenu'>{children.map((child) => child)}</div>
-      )}
+      {children && openSubmenu && <div className='submenu'>{children}</div>}
     </div>
   );
 };

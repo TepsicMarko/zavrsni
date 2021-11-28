@@ -38,7 +38,7 @@ const DesktopContextMenu = ({
         onClick={handleClick}
       >
         {[
-          { name: "New Folder", type: "folder" },
+          { name: "New Folder", type: "directory" },
           { name: "New Shortcut", type: "lnk" },
           { name: "New Text Document", type: "txt" },
         ].map(({ name, type }) => (
