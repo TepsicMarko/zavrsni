@@ -21,8 +21,12 @@ const FolderNavigationBranch = ({
 
   const handleClick = (e) => {
     e.stopPropagation();
-    toggleOpen();
     changePath(Path.join(path, branchName === "This PC" ? "" : branchName));
+  };
+
+  const toggleChildBranches = (e) => {
+    e.stopPropagation();
+    toggleOpen();
   };
 
   return (
@@ -33,7 +37,11 @@ const FolderNavigationBranch = ({
         onClick={handleClick}
       >
         <div className='branch-name'>
-          {isOpen ? <IoIosArrowDown /> : <IoIosArrowForward />}
+          {isOpen ? (
+            <IoIosArrowDown onClick={toggleChildBranches} />
+          ) : (
+            <IoIosArrowForward onClick={toggleChildBranches} />
+          )}
           {icon ? icon() : <FcFolder />}
           {branchName}
         </div>
@@ -43,12 +51,9 @@ const FolderNavigationBranch = ({
         folderContent.map((branch) => (
           <FolderNavigationBranch
             branchName={branch.name}
-            childFolders={[]}
             depth={depth + 1}
             changePath={changePath}
-            path={
-              branchName === "This PC" ? `${path}` : `${path}/${branchName}`
-            }
+            path={branchName === "This PC" ? path : Path.join(path, branchName)}
           />
         ))}
     </>

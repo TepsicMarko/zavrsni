@@ -4,11 +4,34 @@ import { path as Path, fs } from "filer";
 export const FileSystemContext = createContext();
 
 export const FileSystemProvider = ({ children }) => {
-  const mkdir = (path, name) =>
-    fs.mkdir(`${path}/${name}`, (err) => console.log(err));
+  const mkdir = (path, name, i = 1) =>
+    fs.mkdir(`${path}/${name}`, (err) => {
+      console.log(err);
+      if (
+        err?.code === "EEXIST" &&
+        (name === "New Folder" ||
+          name.slice(0, name.indexOf("(") - 1) === "New Folder")
+      ) {
+        mkdir(
+          path,
+          (i > 1 ? name.slice(0, name.indexOf("(") - 1) : name) + ` (${i + 1})`,
+          i + 1
+        );
+      }
+    });
 
-  const writeFile = (path) => fs.writeFile(path, "", (err) => console.log(err));
-
+  const writeFile = (path, i = 1) => {
+    exists(path)
+      .then((exists) =>
+        writeFile(
+          (i > 1 ? path.slice(0, path.indexOf("(") - 1) : path) + ` (${i + 1})`,
+          i + 1
+        )
+      )
+      .catch((doesntExist) =>
+        fs.writeFile(path, "", (err) => console.log(err))
+      );
+  };
   const link = (
     filePath,
     linkPath //hard coded for now
@@ -19,6 +42,11 @@ export const FileSystemProvider = ({ children }) => {
       fs.readdir(path, { withFileTypes: true }, (err, files) =>
         err ? reject(err) : resolve(files)
       );
+    });
+
+  const exists = (path) =>
+    new Promise((resolve, reject) => {
+      fs.exists(path, (exists) => (exists ? resolve(true) : reject()));
     });
 
   const rmdir = (path) => fs.rmdir(path, (err) => console.log(err));
@@ -50,6 +78,7 @@ export const FileSystemProvider = ({ children }) => {
   };
 
   const initilizeFileSystem = () => {
+    console.log("initializing file system");
     mkdir("/", "C");
     mkdir("/C", "users");
     mkdir("/C/users", "admin");
@@ -62,7 +91,11 @@ export const FileSystemProvider = ({ children }) => {
     return watcher;
   };
 
-  useEffect(() => initilizeFileSystem(), []);
+  useEffect(() => {
+    exists("/C/users/admin")
+      .then((exists) => console.log("file system already initialized"))
+      .catch((err) => initilizeFileSystem());
+  }, []);
 
   return (
     <FileSystemContext.Provider
