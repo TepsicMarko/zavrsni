@@ -13,3 +13,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.navigation-pane-and-folder-contents-container {
+  height: calc(100% - 1.25rem - 5.25rem - 2.25rem);
+  width: 100%;
+  position: relative;
+  display: flex;
+}

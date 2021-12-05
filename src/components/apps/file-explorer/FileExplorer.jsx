@@ -11,10 +11,35 @@ import FileExplorerNavigationBar from "./navigation-bar/FileExplorerNavigationBa
 import FileExplorerNavigationPane from "./navigation-pane/FileExplorerNavigationPane";
 import FileExplorerFolderContents from "./folder-contents/FileExplorerFolderContents";
 
+const NavigationPaneAndFoldercontentsContaioner = ({
+  windowWidth,
+  path,
+  changePath,
+  width,
+  setWidth,
+}) => (
+  <div className='navigation-pane-and-folder-contents-container'>
+    <FileExplorerNavigationPane
+      changePath={changePath}
+      path={"/C/users/admin"}
+      windowWidth={windowWidth}
+      folderContentsWidth={width}
+    />
+    <FileExplorerFolderContents
+      windowWidth={windowWidth}
+      changePath={changePath}
+      path={path}
+      width={width}
+      setWidth={setWidth}
+    />
+  </div>
+);
+
 const FileExplorer = () => {
   const [activeTab, setActiveTab] = useState("Home");
   const [path, setPath] = useState("/C/users/admin");
   const changeTab = (e) => setActiveTab(e.target.textContent);
+  const [width, setWidth] = useState();
 
   const changePath = (path) => {
     setPath(path);
@@ -32,11 +57,12 @@ const FileExplorer = () => {
         <FileExplorerNavbar activeTab={activeTab} changeTab={changeTab} />
         <FileExplorerRibbon activeTab={activeTab} />
         <FileExplorerNavigationBar />
-        <FileExplorerNavigationPane
+        <NavigationPaneAndFoldercontentsContaioner
           changePath={changePath}
-          path={"/C/users/admin"}
+          path={path}
+          width={width}
+          setWidth={setWidth}
         />
-        <FileExplorerFolderContents changePath={changePath} path={path} />
       </WindowContent>
       <StatusBar backgroundColor='#2e2e2e'></StatusBar>
     </Window>

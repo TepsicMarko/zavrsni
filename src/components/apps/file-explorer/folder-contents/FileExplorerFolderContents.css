@@ -1,9 +1,14 @@
 .fx-folder-contents {
-  flex-grow: 1;
-  align-self: stretch;
   box-sizing: border-box;
   border-left: 1px solid #2e2e2e;
-  height: 70%;
+  outline: 1px solid #131313;
+  position: relative;
+  overflow-x: auto;
+  z-index: 2;
+  height: 100%;
+  background-color: #202020;
+  position: absolute;
+  right: 0;
 }
 
 .column-headings {
@@ -11,4 +16,13 @@
   height: 1.5em;
   display: flex;
   margin-bottom: 0.5rem;
+}
+
+.folder-contents-resize {
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: -2.5px;
+  cursor: w-resize;
 }

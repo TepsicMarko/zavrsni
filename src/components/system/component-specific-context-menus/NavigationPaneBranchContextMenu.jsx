@@ -10,6 +10,7 @@ const NavigationPaneBranchContextMenu = ({
   isOpen,
   toggleOpen,
   closeMenu,
+  focusInput,
 }) => {
   const [openSubmenu, setOpenSubmenu] = useState("");
   const handleClick = (name) => setOpenSubmenu(name);
@@ -30,6 +31,16 @@ const NavigationPaneBranchContextMenu = ({
         closeMenu={closeMenu}
       />
       <ContextMenuItem
+        name='Delete'
+        onClick={deleteFolder}
+        closeMenu={closeMenu}
+      />
+      <ContextMenuItem
+        name='Rename'
+        onClick={focusInput}
+        closeMenu={closeMenu}
+      />
+      <ContextMenuItem
         name='New'
         openSubmenu={openSubmenu === "New"}
         onClick={handleClick}
@@ -40,11 +51,6 @@ const NavigationPaneBranchContextMenu = ({
           closeMenu={closeMenu}
         />
       </ContextMenuItem>
-      <ContextMenuItem
-        name='Delete'
-        onClick={deleteFolder}
-        closeMenu={closeMenu}
-      />
     </>
   );
 };

@@ -1,4 +1,6 @@
 .folder-navigation-branch {
+  width: 100%;
+  box-sizing: border-box;
   height: 1.25rem;
   color: white;
   font-size: 0.75rem;
@@ -19,4 +21,22 @@
 
 .branch-name svg {
   margin-right: 0.25rem;
+}
+
+.branch-name-input {
+  outline: none;
+  border: none;
+  background-color: transparent;
+  color: white;
+  font: inherit;
+  max-height: 75%;
+  padding-right: 0.5rem;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.branch-name-input:focus {
+  background-color: white;
+  color: black;
 }

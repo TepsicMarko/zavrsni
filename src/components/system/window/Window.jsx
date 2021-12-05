@@ -204,6 +204,10 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
               name: app,
               icon,
             })
+          : i === 1
+          ? React.cloneElement(child, {
+              width,
+            })
           : child
       )}
     </div>

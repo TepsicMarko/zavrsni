@@ -8,6 +8,7 @@ import { path as Path } from "filer";
 import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuContext";
 import NavigationPaneBranchContextMenu from "../../../../system/component-specific-context-menus/NavigationPaneBranchContextMenu";
 import { FileSystemContext } from "../../../../../contexts/FileSystemContext";
+import useInput from "../../../../../hooks/useInput";
 
 const FolderNavigationBranch = ({
   branchName,
@@ -16,6 +17,7 @@ const FolderNavigationBranch = ({
   open,
   changePath,
   path,
+  width,
 }) => {
   const { watch, getFolder, createFSO, deleteFSO } =
     useContext(FileSystemContext);
@@ -26,6 +28,7 @@ const FolderNavigationBranch = ({
     getFolder
   );
   const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
+  const [inputValue, handleInputChange] = useInput(branchName);
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -70,8 +73,18 @@ const FolderNavigationBranch = ({
           ) : (
             <IoIosArrowForward onClick={toggleChildBranches} />
           )}
-          {icon ? icon() : <FcFolder />}
-          {branchName}
+          {icon ? icon() : <FcFolder size='0.9rem' />}
+          <div
+            contentEditable
+            className='branch-name-input'
+            onClick={(e) => e.preventDefault()}
+            style={{
+              width: "fit-content",
+              maxWidth: `calc(${width}px - ${depth * 0.5}rem - 28px - 0.65rem)`,
+            }}
+          >
+            {inputValue}
+          </div>
         </div>
       </div>
       {isOpen &&
@@ -85,6 +98,7 @@ const FolderNavigationBranch = ({
               path={
                 branchName === "This PC" ? path : Path.join(path, branchName)
               }
+              width={width}
             />
           ))}
     </>
