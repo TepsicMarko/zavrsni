@@ -1,7 +1,7 @@
 .fx-folder-contents {
   box-sizing: border-box;
-  border-left: 1px solid #2e2e2e;
-  outline: 1px solid #131313;
+  border-left: 2px solid #2e2e2e;
+  box-shadow: -1.5px 0px 0px 0px#131313;
   position: relative;
   overflow-x: auto;
   z-index: 2;
@@ -16,6 +16,7 @@
   height: 1.5em;
   display: flex;
   margin-bottom: 0.5rem;
+  min-width: fit-content;
 }
 
 .folder-contents-resize {

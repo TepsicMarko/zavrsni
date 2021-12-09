@@ -1,5 +1,5 @@
 import "./ColumnHeading.css";
-import { useState } from "react";
+import { useState, memo } from "react";
 import remToPx from "../../../../../helpers/remToPx";
 
 const ColumnHeading = ({ name, width, setColumnHeadingWidth }) => {
@@ -33,4 +33,4 @@ const ColumnHeading = ({ name, width, setColumnHeadingWidth }) => {
   );
 };
 
-export default ColumnHeading;
+export default memo(ColumnHeading);

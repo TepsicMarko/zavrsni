@@ -2,6 +2,7 @@ import "./FileExplorerRibbon.css";
 import HomeRibbon from "./HomeRibbon";
 import ShareRibbon from "./ShareRibbon";
 import ViewRibbon from "./ViewRibbon";
+import { memo } from "react";
 
 const FileExplorerRibbon = ({ activeTab }) => {
   return (
@@ -13,7 +14,7 @@ const FileExplorerRibbon = ({ activeTab }) => {
   );
 };
 
-export default FileExplorerRibbon;
+export default memo(FileExplorerRibbon);
 
 export const GroupSetting = ({ icon, name }) => (
   <div className='flex-center group-setting'>

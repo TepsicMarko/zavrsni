@@ -1,4 +1,5 @@
 import "./FsoListItem.css";
+import { memo } from "react";
 
 const FsoListItem = ({
   name,
@@ -15,12 +16,14 @@ const FsoListItem = ({
   } = columnHeadingsWidth;
   return (
     <div className='fso-list-item'>
-      <div style={{ width: Name }}>{name}</div>
-      <div style={{ width: DateModified }}>{dateModified}</div>
-      <div style={{ width: Type }}>{type.toLowerCase()}</div>
-      <div style={{ width: Size }}>{size}</div>
+      <div style={{ minWidth: Name, maxWidth: Name }}>{name}</div>
+      <div style={{ minWidth: DateModified, maxWidth: DateModified }}>
+        {dateModified}
+      </div>
+      <div style={{ minWidth: Type, minWidth: Type }}>{type.toLowerCase()}</div>
+      <div style={{ minWidth: Size, minWidth: Size }}>{size}</div>
     </div>
   );
 };
 
-export default FsoListItem;
+export default memo(FsoListItem);

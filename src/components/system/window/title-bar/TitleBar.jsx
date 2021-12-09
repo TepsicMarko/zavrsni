@@ -5,6 +5,8 @@ import {
   VscChromeClose,
 } from "react-icons/vsc";
 
+import { memo } from "react";
+
 const TitleBar = ({
   icon,
   name,
@@ -43,4 +45,4 @@ const TitleBar = ({
   );
 };
 
-export default TitleBar;
+export default memo(TitleBar);

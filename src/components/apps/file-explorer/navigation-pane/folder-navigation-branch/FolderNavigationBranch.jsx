@@ -76,6 +76,7 @@ const FolderNavigationBranch = ({
           {icon ? icon() : <FcFolder size='0.9rem' />}
           <div
             contentEditable
+            suppressContentEditableWarning={true}
             className='branch-name-input'
             onClick={(e) => e.preventDefault()}
             style={{

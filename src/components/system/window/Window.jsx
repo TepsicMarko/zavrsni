@@ -1,7 +1,14 @@
 import "./Window.css";
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from "react";
 import remToPx from "../../../helpers/remToPx";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
+import { WindowWidthContext } from "../../../contexts/WindowWidthContext";
 
 const Window = ({ children, app, icon, minWidth, minHeight }) => {
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -12,7 +19,10 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
   const [height, setHeight] = useState(
     document.documentElement.clientHeight * 0.7
   );
+
   const { endProcess, minimiseToTaskbar } = useContext(ProcessesContext);
+  const { handleWindowWidthChange } = useContext(WindowWidthContext);
+
   const appDataRef = useRef({ width, height, position });
   const previousDimensionsAndPositionRef = useRef({});
 
@@ -21,14 +31,14 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
     setPosition({ top: clientY - offset.y, left: clientX - offset.x });
   };
 
-  const handleDragStart = (e) => {
+  const handleDragStart = useCallback((e) => {
     const { offsetX, offsetY } = e.nativeEvent;
     e.dataTransfer.setDragImage(new Image(), 0, 0);
     setOffset({ x: offsetX, y: offsetY });
-  };
-  const handleDrag = (e) => updateWindowPosition(e);
-  const handleDragEnd = (e) => updateWindowPosition(e);
+  }, []);
 
+  const handleDrag = useCallback((e) => updateWindowPosition(e), [offset]);
+  const handleDragEnd = useCallback((e) => updateWindowPosition(e), [offset]);
   const handleResizeStart = (e) => {
     e.stopPropagation();
     e.dataTransfer.setDragImage(new Image(), 0, 0);
@@ -114,12 +124,11 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
   };
   const handleResizeEnd = (e) => e.stopPropagation();
 
-  const closeWindow = () => endProcess(app);
-  const minimiseWindow = () => minimiseToTaskbar(app);
+  const closeWindow = useCallback(() => endProcess(app), [app]);
+  const minimiseWindow = useCallback(() => minimiseToTaskbar(app), [app]);
 
-  const maximiseWindow = () => {
+  const maximiseWindow = useCallback(() => {
     const { clientWidth, clientHeight } = document.documentElement;
-    console.log(width, clientWidth, height, clientHeight);
     if (height >= clientHeight && width >= clientWidth) {
       const { width, height, position } =
         previousDimensionsAndPositionRef.current;
@@ -132,7 +141,7 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
       setWidth(clientWidth);
       setPosition({ top: 0, left: 0 });
     }
-  };
+  }, [height, width, previousDimensionsAndPositionRef.current]);
 
   useEffect(() => {
     appDataRef.current = { width, height, position };
@@ -169,6 +178,10 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
     return saveAppData;
   }, []);
 
+  useEffect(() => {
+    handleWindowWidthChange(width);
+  }, [width]);
+
   return (
     <div
       className='window'
@@ -203,10 +216,6 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
               handleDragEnd,
               name: app,
               icon,
-            })
-          : i === 1
-          ? React.cloneElement(child, {
-              width,
             })
           : child
       )}

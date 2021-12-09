@@ -1,21 +1,16 @@
 import "./WindowContent.css";
-import { cloneElement } from "react";
+import { memo } from "react";
 
-const WindowContent = ({
-  children,
-  backgroundColor,
-  flex,
-  flexDirection,
-  width,
-}) => {
+const WindowContent = (props) => {
+  const { children, backgroundColor, flex, flexDirection } = props;
   return (
     <div
       style={{ backgroundColor, flexDirection, display: flex ? "flex" : "" }}
       className='window-content'
     >
-      {children.map((child) => cloneElement(child, { windowWidth: width }))}
+      {children}
     </div>
   );
 };
 
-export default WindowContent;
+export default memo(WindowContent);

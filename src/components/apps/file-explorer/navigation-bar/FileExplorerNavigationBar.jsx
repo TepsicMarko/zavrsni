@@ -6,9 +6,9 @@ import {
   IoReload,
 } from "react-icons/io5";
 import { VscSearch } from "react-icons/vsc";
-import { useState } from "react";
+import { useState, memo } from "react";
 
-const FileExplorerNavigationBar = ({}) => {
+const FileExplorerNavigationBar = () => {
   const [searchBoxWidth, setSearchBoxWidth] = useState("5rem");
   return (
     <div className='flex-center fx-navigation-bar'>
@@ -42,4 +42,4 @@ const FileExplorerNavigationBar = ({}) => {
   );
 };
 
-export default FileExplorerNavigationBar;
+export default memo(FileExplorerNavigationBar);

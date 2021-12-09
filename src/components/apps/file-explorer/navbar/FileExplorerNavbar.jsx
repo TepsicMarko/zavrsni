@@ -1,4 +1,5 @@
 import "./FileExplorerNavbar.css";
+import { memo } from "react";
 
 const FileExplorerNavbar = ({ activeTab, changeTab }) => (
   <div className='fx-navbar'>
@@ -14,4 +15,4 @@ const FileExplorerNavbar = ({ activeTab, changeTab }) => (
   </div>
 );
 
-export default FileExplorerNavbar;
+export default memo(FileExplorerNavbar);

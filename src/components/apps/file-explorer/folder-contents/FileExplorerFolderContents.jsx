@@ -1,14 +1,17 @@
 import "./FileExplorerFolderContents.css";
 import ColumnHeading from "./column-heading/ColumnHeading";
 import FsoListItem from "./fso-list-item/FsoListItem";
-import { useState, useEffect, useContext, useRef } from "react";
+import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import useWatchFolder from "../../../../hooks/useWatchFolder";
 import remToPx from "../../../../helpers/remToPx";
 import moment from "moment";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
+import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
 
 const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
   const { watch, getFolder } = useContext(FileSystemContext);
+  const { windowWidth } = useContext(WindowWidthContext);
+
   const [folderContent, setWatcherPath] = useWatchFolder(
     path,
     watch,
@@ -20,12 +23,17 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
     Type: "4.5rem",
     Size: "4.5rem",
   });
-  const [minWidth, setMinWidth] = useState(remToPx("1rem"));
-  const folderContentsRef = useRef(null);
+  const [minWidth, setMinWidth] = useState(remToPx("6rem"));
 
-  const setColumnHeadingWidth = (name, width) => {
-    setColumnHeadingsWidth({ ...columnHeadingsWidth, [name]: width });
-  };
+  const folderContentsRef = useRef(null);
+  const previousWindowWidthRef = useRef(windowWidth);
+
+  const setColumnHeadingWidth = useCallback(
+    (name, width) => {
+      setColumnHeadingsWidth({ ...columnHeadingsWidth, [name]: width });
+    },
+    [columnHeadingsWidth]
+  );
 
   const handleResizeStart = (e) => {
     e.dataTransfer.setDragImage(new Image(), 0, 0);
@@ -34,7 +42,15 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
   const handleResize = (e) => {
     const { offsetX } = e.nativeEvent;
     const newWidth = width - offsetX;
-    setWidth(newWidth >= minWidth ? newWidth : minWidth);
+    const maxWidth = windowWidth - remToPx("3.5rem");
+
+    setWidth(
+      newWidth >= maxWidth
+        ? maxWidth
+        : newWidth >= minWidth
+        ? newWidth
+        : minWidth
+    );
   };
 
   useEffect(() => {
@@ -45,11 +61,16 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
     setWidth(folderContentsRef.current.clientWidth);
   }, []);
 
+  useEffect(() => {
+    const maxWidth = windowWidth - remToPx("3.5rem");
+    width > maxWidth && setWidth(maxWidth);
+  }, [windowWidth]);
+
   return (
     <div
       ref={folderContentsRef}
       className='fx-folder-contents'
-      style={{ width }}
+      style={{ width: width }}
     >
       <div className='column-headings'>
         {Object.keys(columnHeadingsWidth).map((columnHeading) => (

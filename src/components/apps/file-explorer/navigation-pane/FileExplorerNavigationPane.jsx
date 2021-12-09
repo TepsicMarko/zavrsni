@@ -1,13 +1,15 @@
 import "./FileExplorerNavigationPane.css";
 import { RiComputerFill } from "react-icons/ri";
 import FolderNavigationBranch from "./folder-navigation-branch/FolderNavigationBranch";
+import { useContext } from "react";
+import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
 
 const FileExplorerNavigationPane = ({
   changePath,
   path,
   folderContentsWidth,
-  windowWidth,
 }) => {
+  const { windowWidth } = useContext(WindowWidthContext);
   return (
     <div
       className='fx-navigation-pane'
