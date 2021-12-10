@@ -1,5 +1,5 @@
 import "./FolderNavigationBranch.css";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import useToggle from "../../../../../hooks/useToggle";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FcFolder } from "react-icons/fc";
@@ -27,7 +27,7 @@ const FolderNavigationBranch = ({
     watch,
     getFolder
   );
-  const { renderOptions, closeMenu } = useContext(RightClickMenuContext);
+  const { renderOptions } = useContext(RightClickMenuContext);
   const [inputValue, handleInputChange] = useInput(branchName);
 
   const handleClick = (e) => {
@@ -68,12 +68,16 @@ const FolderNavigationBranch = ({
         onContextMenu={handleRightClick}
       >
         <div className='branch-name'>
-          {isOpen ? (
-            <IoIosArrowDown onClick={toggleChildBranches} />
-          ) : (
-            <IoIosArrowForward onClick={toggleChildBranches} />
+          {useMemo(
+            () =>
+              isOpen ? (
+                <IoIosArrowDown onClick={toggleChildBranches} />
+              ) : (
+                <IoIosArrowForward onClick={toggleChildBranches} />
+              ),
+            [isOpen]
           )}
-          {icon ? icon() : <FcFolder size='0.9rem' />}
+          {useMemo(() => (icon ? icon() : <FcFolder size='0.9rem' />), [])}
           <div
             contentEditable
             suppressContentEditableWarning={true}
@@ -88,20 +92,24 @@ const FolderNavigationBranch = ({
           </div>
         </div>
       </div>
-      {isOpen &&
-        folderContent
-          .filter((fso) => fso.type === "DIRECTORY")
-          .map((branch) => (
-            <FolderNavigationBranch
-              branchName={branch.name}
-              depth={depth + 1}
-              changePath={changePath}
-              path={
-                branchName === "This PC" ? path : Path.join(path, branchName)
-              }
-              width={width}
-            />
-          ))}
+      {useMemo(
+        () =>
+          isOpen &&
+          folderContent
+            .filter((fso) => fso.type === "DIRECTORY")
+            .map((branch) => (
+              <FolderNavigationBranch
+                branchName={branch.name}
+                depth={depth + 1}
+                changePath={changePath}
+                path={
+                  branchName === "This PC" ? path : Path.join(path, branchName)
+                }
+                width={width}
+              />
+            )),
+        [isOpen, folderContent]
+      )}
     </>
   );
 };
