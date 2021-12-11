@@ -1,4 +1,5 @@
 import "./StatusBar.css";
+import { memo } from "react";
 
 const StatusBar = ({ children, backgroundColor }) => {
   return (
@@ -8,4 +9,4 @@ const StatusBar = ({ children, backgroundColor }) => {
   );
 };
 
-export default StatusBar;
+export default memo(StatusBar);

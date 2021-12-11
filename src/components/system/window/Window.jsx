@@ -10,7 +10,8 @@ import remToPx from "../../../helpers/remToPx";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import { WindowWidthContext } from "../../../contexts/WindowWidthContext";
 
-const Window = ({ children, app, icon, minWidth, minHeight }) => {
+const Window = ({ children, app, icon, minWindowWidth, minWindowHeight }) => {
+  const [minWidth] = useState(remToPx(minWindowWidth));
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [width, setWidth] = useState(
@@ -50,12 +51,12 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
 
     if (newPosition / position.left > 0.5) {
       // checks if offsetX is valid because onDragEnd returns wrong value
-      if (newWidth > remToPx(minWidth)) {
+      if (newWidth > minWidth) {
         !returnPosition && setPosition({ ...position, left: newPosition });
         setWidth(newWidth);
 
         if (returnPosition) return newPosition;
-      } else setWidth(remToPx(minWidth));
+      } else setWidth(minWidth);
     }
   };
 
@@ -65,12 +66,12 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
 
     if (newPosition / position.top > 0.5) {
       // checks if offsetY is valid because onDragEnd returns wrong value
-      if (newHeight > remToPx(minHeight)) {
+      if (newHeight > remToPx(minWindowHeight)) {
         !returnPosition && setPosition({ ...position, top: newPosition });
         setHeight(newHeight);
 
         if (returnPosition) return newPosition;
-      } else setHeight(remToPx(minHeight));
+      } else setHeight(remToPx(minWindowHeight));
     }
   };
 
@@ -84,7 +85,7 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
       let newWidth = width + offsetX;
       if (handlePosition === "l") {
         handleLeftResizeHandle(offsetX);
-      } else setWidth(newWidth > 0 ? newWidth : width);
+      } else setWidth(newWidth > minWidth ? newWidth : width);
     }
 
     if (handlePosition === "t" || handlePosition === "b") {
@@ -112,13 +113,13 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
     if (handlePosition === "tr") {
       const newWidth = width + offsetX;
       handleTopResizeHandle(offsetY);
-      setWidth(newWidth > 0 ? newWidth : width);
+      setWidth(newWidth > minWidth ? newWidth : width);
     }
 
     if (handlePosition === "br") {
       const newWidth = width + offsetX;
       const newHeight = height + offsetY;
-      setWidth(newWidth > 0 ? newWidth : width);
+      setWidth(newWidth > minWidth ? newWidth : width);
       setHeight(newHeight > 0 ? newHeight : height);
     }
   };
@@ -185,7 +186,7 @@ const Window = ({ children, app, icon, minWidth, minHeight }) => {
   return (
     <div
       className='window'
-      style={{ width, height, ...position, minWidth, minHeight }}
+      style={{ width, height, ...position, minWidth, minWindowHeight }}
     >
       {[
         "resize-l",

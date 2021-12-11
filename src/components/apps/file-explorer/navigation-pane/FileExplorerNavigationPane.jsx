@@ -13,7 +13,7 @@ const FileExplorerNavigationPane = ({
   return (
     <div
       className='fx-navigation-pane'
-      style={{ width: `calc(100% - ${folderContentsWidth})` }}
+      style={{ width: windowWidth - folderContentsWidth }}
     >
       <div className='folder-navigation-tree'>
         <FolderNavigationBranch

@@ -30,8 +30,8 @@ const FileExplorer = () => {
       <Window
         app='File Explorer'
         icon={<FcFolder />}
-        minWidth='14rem'
-        minHeight='16rem'
+        minWindowWidth='14rem'
+        minWindowHeight='16rem'
       >
         <TitleBar backgroundColor='black' color='white' />
         <WindowContent backgroundColor='#202020' flex flexDirection='row'>

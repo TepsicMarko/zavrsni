@@ -63,14 +63,18 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
 
   useEffect(() => {
     const maxWidth = windowWidth - remToPx("3.5rem");
-    width > maxWidth && setWidth(maxWidth);
+    const windowWidthDiff = windowWidth - previousWindowWidthRef.current;
+    const newWidth = width + windowWidthDiff;
+    if (width + windowWidthDiff > minWidth && newWidth <= maxWidth)
+      setWidth(width + windowWidthDiff);
+    previousWindowWidthRef.current = windowWidth;
   }, [windowWidth]);
 
   return (
     <div
       ref={folderContentsRef}
       className='fx-folder-contents'
-      style={{ width: width }}
+      style={{ width }}
     >
       <div className='column-headings'>
         {Object.keys(columnHeadingsWidth).map((columnHeading) => (
