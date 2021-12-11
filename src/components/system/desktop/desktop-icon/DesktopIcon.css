@@ -41,7 +41,7 @@
 }
 
 .desktop-icon-name:focus {
-  display: block;
+  display: inline-block;
   background-color: white;
   outline: none;
   color: black;

@@ -8,6 +8,7 @@ const useWatchFolder = (initialPath, watch, handleChange) => {
     handleChange(path, setFolderContent);
 
     const watcher = watch(path, () => handleChange(path, setFolderContent));
+    watcher.on("rename", () => console.log("rename"));
 
     return watcher.close;
   }, [path]);

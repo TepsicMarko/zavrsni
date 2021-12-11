@@ -85,7 +85,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
       onDragOver={preventDefault}
       onDrop={handleDrop}
     >
-      {folderContent?.map(({ name, type }) => (
+      {folderContent.map(({ name, type }) => (
         <DesktopIcon
           name={name}
           path={origin}

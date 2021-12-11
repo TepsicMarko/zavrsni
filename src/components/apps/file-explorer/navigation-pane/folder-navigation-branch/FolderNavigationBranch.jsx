@@ -1,5 +1,5 @@
 import "./FolderNavigationBranch.css";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useRef, useEffect } from "react";
 import useToggle from "../../../../../hooks/useToggle";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FcFolder } from "react-icons/fc";
@@ -9,6 +9,7 @@ import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuCon
 import NavigationPaneBranchContextMenu from "../../../../system/component-specific-context-menus/NavigationPaneBranchContextMenu";
 import { FileSystemContext } from "../../../../../contexts/FileSystemContext";
 import useInput from "../../../../../hooks/useInput";
+import selectInputContent from "../../../../../utils/selectInputContent";
 
 const FolderNavigationBranch = ({
   branchName,
@@ -19,7 +20,7 @@ const FolderNavigationBranch = ({
   path,
   width,
 }) => {
-  const { watch, getFolder, createFSO, deleteFSO } =
+  const { watch, getFolder, createFSO, deleteFSO, updateFSO } =
     useContext(FileSystemContext);
   const [isOpen, toggleOpen] = useToggle(open);
   const [folderContent] = useWatchFolder(
@@ -29,6 +30,7 @@ const FolderNavigationBranch = ({
   );
   const { renderOptions } = useContext(RightClickMenuContext);
   const [inputValue, handleInputChange] = useInput(branchName);
+  const inputRef = useRef(null);
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -38,6 +40,13 @@ const FolderNavigationBranch = ({
   const toggleChildBranches = (e) => {
     e.stopPropagation();
     toggleOpen();
+  };
+
+  const focusInput = (e) => {
+    e.stopPropagation();
+    inputRef.current.setAttribute("contenteditable", "true");
+    inputRef.current.focus();
+    selectInputContent(inputRef.current);
   };
 
   const handleRightClick = (e) => {
@@ -55,9 +64,35 @@ const FolderNavigationBranch = ({
         toggleOpen={toggleOpen}
         deleteFSO={deleteFSO}
         createFSO={createFSO}
+        focusInput={focusInput}
       />
     );
   };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      inputRef.current.blur();
+    }
+  };
+
+  const handleBlur = (e) => {
+    inputRef.current.setAttribute("contenteditable", "false");
+
+    if (branchName !== inputValue && inputValue.length)
+      updateFSO({ old: branchName, new: inputValue }, path);
+  };
+
+  useEffect(() => {
+    const eventHandler = (e) => {
+      inputRef?.current?.setAttribute("contenteditable", "false");
+    };
+
+    document.addEventListener("click", eventHandler);
+    return () => {
+      document.removeEventListener("click", eventHandler);
+    };
+  }, []);
 
   return (
     <>
@@ -79,16 +114,18 @@ const FolderNavigationBranch = ({
           )}
           {useMemo(() => (icon ? icon() : <FcFolder size='0.9rem' />), [])}
           <div
-            contentEditable
+            ref={inputRef}
             suppressContentEditableWarning={true}
             className='branch-name-input'
-            onClick={(e) => e.preventDefault()}
+            onKeyPress={handleKeyPress}
+            onBlur={handleBlur}
+            onInput={handleInputChange}
             style={{
               width: "fit-content",
               maxWidth: `calc(${width}px - ${depth * 0.5}rem - 28px - 0.65rem)`,
             }}
           >
-            {inputValue}
+            {branchName}
           </div>
         </div>
       </div>

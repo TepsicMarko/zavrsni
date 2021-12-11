@@ -38,10 +38,6 @@ const DesktopIcon = ({
     //convert this to object when it becomes more complicated
   };
 
-  const handleDivChange = (e) => {
-    handleInputChange({ target: { value: e.target.textContent } });
-  };
-
   const handleClick = (e) => {
     e.stopPropagation();
     setIsSelected(true);
@@ -96,7 +92,7 @@ const DesktopIcon = ({
         contentEditable={isSelected}
         className='desktop-icon-name'
         onClick={handleClick}
-        onInput={handleDivChange}
+        onInput={handleInputChange}
         onBlur={handleBlur}
         onKeyPress={handleKeyPress}
       >
