@@ -7,9 +7,12 @@ import remToPx from "../../../../helpers/remToPx";
 import moment from "moment";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
+import { path as Path } from "filer";
+import uuid from "../../../../utils/uuid";
 
 const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
-  const { watch, getFolder } = useContext(FileSystemContext);
+  const { watch, getFolder, updateFSO, deleteFSO } =
+    useContext(FileSystemContext);
   const { windowWidth } = useContext(WindowWidthContext);
 
   const [folderContent, setWatcherPath] = useWatchFolder(
@@ -70,6 +73,18 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
     previousWindowWidthRef.current = windowWidth;
   }, [windowWidth]);
 
+  useEffect(() => {
+    const eventHandler = (e) => {
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        changePath(Path.join(path, ".."));
+      }
+    };
+    document.addEventListener("keydown", eventHandler);
+
+    return () => document.removeEventListener("keydown", eventHandler);
+  }, [path]);
+
   return (
     <div
       ref={folderContentsRef}
@@ -89,11 +104,17 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
         {folderContent.map((fso) => {
           return (
             <FsoListItem
+              key={uuid()}
               name={fso.name}
               dateModified={moment(fso.ctime).format("DD/MM/YYYY hh:mm a")}
               type={fso.type}
               size={fso.size}
               columnHeadingsWidth={columnHeadingsWidth}
+              path={path}
+              updateFSO={updateFSO}
+              deleteFSO={deleteFSO}
+              changePath={changePath}
+              maxWidth={width}
             />
           );
         })}

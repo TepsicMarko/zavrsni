@@ -1,5 +1,13 @@
 import "./FsoListItem.css";
-import { memo } from "react";
+import { memo, useRef, useContext } from "react";
+import remToPx from "../../../../../helpers/remToPx";
+import getFileTypeIcon from "../../../../../utils/getFileTypeIcon";
+import FsoListItemContextMenu from "../../../../system/component-specific-context-menus/FsoListItemContextMenu";
+// import useInput from "../../../../../hooks/useInput";
+import selectInputContent from "../../../../../utils/selectInputContent";
+import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuContext";
+import { path as Path } from "filer";
+import useInput from "../../../../../hooks/useInput";
 
 const FsoListItem = ({
   name,
@@ -7,6 +15,11 @@ const FsoListItem = ({
   type,
   size,
   columnHeadingsWidth,
+  path,
+  updateFSO,
+  deleteFSO,
+  changePath,
+  maxWidth,
 }) => {
   const {
     Name,
@@ -14,9 +27,95 @@ const FsoListItem = ({
     Size,
     Type,
   } = columnHeadingsWidth;
+
+  const inputRef = useRef(null);
+  const { renderOptions } = useContext(RightClickMenuContext);
+  const [inputValue, handleInputChange] = useInput(name);
+
+  const getMaxWidth = () =>
+    Object.keys(columnHeadingsWidth)
+      .map((key) => columnHeadingsWidth[key])
+      .reduce((prev, curr) => {
+        if (`${prev}`.includes("rem")) prev = remToPx(prev);
+        else prev = parseFloat(prev);
+
+        if (`${curr}`.includes("rem")) curr = remToPx(curr);
+        else curr = parseFloat(curr);
+
+        return prev + curr;
+      });
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.target.blur();
+    }
+    if (e.key === "Backspace") {
+      e.stopPropagation();
+    }
+  };
+
+  const focusInput = (e) => {
+    e.stopPropagation();
+    inputRef.current.setAttribute("contenteditable", "true");
+    inputRef.current.focus();
+    selectInputContent(inputRef.current);
+  };
+
+  const handleBlur = (e) => {
+    e.target.setAttribute("contenteditable", "false");
+
+    if (name !== inputValue && inputValue.length)
+      updateFSO({ old: name, new: inputValue }, path);
+  };
+
+  const handleRightClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const { clientX, clientY } = e;
+    const mousePosition = { x: clientX, y: clientY };
+    renderOptions(
+      mousePosition,
+      <FsoListItemContextMenu
+        name={name}
+        deletePath={path}
+        deleteFSO={deleteFSO}
+        focusInput={focusInput}
+        path={path}
+        changePath={changePath}
+        type={type.toLowerCase()}
+        Path={Path}
+      />
+    );
+  };
+
+  const handleDoubleClick = (e) => {
+    changePath(Path.join(path, name));
+  };
+
   return (
-    <div className='fso-list-item'>
-      <div style={{ minWidth: Name, maxWidth: Name }}>{name}</div>
+    <div
+      className='fso-list-item'
+      style={{
+        maxWidth: getMaxWidth(),
+      }}
+      onContextMenu={handleRightClick}
+      onDoubleClick={handleDoubleClick}
+    >
+      <div style={{ minWidth: Name, maxWidth: Name }}>
+        <span className='fso-list-item-icon'> {getFileTypeIcon(type)}</span>
+        <span
+          className='fso-list-item-name-input'
+          ref={inputRef}
+          suppressContentEditableWarning={true}
+          onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
+          style={{ maxWidth: maxWidth - remToPx("2rem") }}
+          onInput={handleInputChange}
+        >
+          {name}
+        </span>
+      </div>
       <div style={{ minWidth: DateModified, maxWidth: DateModified }}>
         {dateModified}
       </div>
