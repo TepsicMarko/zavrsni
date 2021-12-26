@@ -7,13 +7,16 @@ import remToPx from "../../../../helpers/remToPx";
 import moment from "moment";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
+import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
+import FolderContentsContextMenu from "../../../system/component-specific-context-menus/FolderContentsContextMenu";
 import { path as Path } from "filer";
 import uuid from "../../../../utils/uuid";
 
 const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
-  const { watch, getFolder, updateFSO, deleteFSO } =
+  const { watch, getFolder, updateFSO, deleteFSO, createFSO } =
     useContext(FileSystemContext);
   const { windowWidth } = useContext(WindowWidthContext);
+  const { renderOptions } = useContext(RightClickMenuContext);
 
   const [folderContent, setWatcherPath] = useWatchFolder(
     path,
@@ -56,6 +59,12 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
     );
   };
 
+  const handleRightClick = (e) =>
+    renderOptions(
+      e,
+      <FolderContentsContextMenu path={path} createFSO={createFSO} />
+    );
+
   useEffect(() => {
     setWatcherPath(path);
   }, [path]);
@@ -90,6 +99,7 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
       ref={folderContentsRef}
       className='fx-folder-contents'
       style={{ width }}
+      onContextMenu={handleRightClick}
     >
       <div className='column-headings'>
         {Object.keys(columnHeadingsWidth).map((columnHeading) => (

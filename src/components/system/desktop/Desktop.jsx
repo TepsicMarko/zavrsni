@@ -38,11 +38,10 @@ const Desktop = ({ width, height, taskbarHeight }) => {
   });
 
   const handleRightClick = (e) => {
-    e.preventDefault();
     const { clientX, clientY } = e;
     const mousePosition = { x: clientX, y: clientY };
     renderOptions(
-      mousePosition,
+      e,
       <DesktopContextMenu
         path={origin}
         createFSO={createFSO}

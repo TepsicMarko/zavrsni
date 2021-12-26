@@ -69,13 +69,9 @@ const FsoListItem = ({
       updateFSO({ old: name, new: inputValue }, path);
   };
 
-  const handleRightClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const { clientX, clientY } = e;
-    const mousePosition = { x: clientX, y: clientY };
+  const handleRightClick = (e) =>
     renderOptions(
-      mousePosition,
+      e,
       <FsoListItemContextMenu
         name={name}
         deletePath={path}
@@ -87,7 +83,6 @@ const FsoListItem = ({
         Path={Path}
       />
     );
-  };
 
   const handleDoubleClick = (e) => {
     changePath(Path.join(path, name));

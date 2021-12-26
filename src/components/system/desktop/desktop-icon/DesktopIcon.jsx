@@ -51,13 +51,9 @@ const DesktopIcon = ({
   };
 
   const handleDragStart = (e) => e.dataTransfer.setData("text", name);
-  const handleRightClick = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    const { clientX, clientY } = e;
-    const mousePosition = { x: clientX, y: clientY };
+  const handleRightClick = (e) =>
     renderOptions(
-      mousePosition,
+      e,
       <DesktopIconContextMenu
         name={name}
         path={path}
@@ -67,7 +63,6 @@ const DesktopIcon = ({
         inputRef={inputRef}
       />
     );
-  };
 
   useEffect(() => {
     const eventHandler = (e) => setIsSelected(false);

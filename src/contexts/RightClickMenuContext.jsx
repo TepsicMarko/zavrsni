@@ -7,9 +7,13 @@ export const RightClickMenuProvider = ({ children }) => {
   const [menuOptions, setMenuOptions] = useState();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const renderOptions = (position, options) => {
+  const renderOptions = (e, options) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const { clientX, clientY } = e;
+    const mousePosition = { x: clientX, y: clientY };
     setIsMenuOpen(true);
-    setMenuPosition(position);
+    setMenuPosition(mousePosition);
     setMenuOptions(options);
   };
 

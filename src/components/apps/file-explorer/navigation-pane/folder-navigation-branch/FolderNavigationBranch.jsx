@@ -49,13 +49,9 @@ const FolderNavigationBranch = ({
     selectInputContent(inputRef.current);
   };
 
-  const handleRightClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const { clientX, clientY } = e;
-    const mousePosition = { x: clientX, y: clientY };
+  const handleRightClick = (e) =>
     renderOptions(
-      mousePosition,
+      e,
       <NavigationPaneBranchContextMenu
         name={branchName}
         deletePath={path}
@@ -67,7 +63,6 @@ const FolderNavigationBranch = ({
         focusInput={focusInput}
       />
     );
-  };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
