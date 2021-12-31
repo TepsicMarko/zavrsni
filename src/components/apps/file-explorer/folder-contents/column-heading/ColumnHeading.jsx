@@ -2,7 +2,7 @@ import "./ColumnHeading.css";
 import { useState, memo } from "react";
 import remToPx from "../../../../../helpers/remToPx";
 
-const ColumnHeading = ({ name, width, setColumnHeadingWidth }) => {
+const ColumnHeading = ({ name, width, setColumnHeadingWidth, visible }) => {
   const [initialWidth, setInitialWidth] = useState(remToPx(width));
 
   const handleResizeStart = (e) => {
@@ -20,16 +20,20 @@ const ColumnHeading = ({ name, width, setColumnHeadingWidth }) => {
   };
 
   return (
-    <div style={{ width }} className='column-heading'>
-      {name}
-      <div
-        draggable
-        onDragStart={handleResizeStart}
-        onDrag={handleResize}
-        onDragEnd={handleResize}
-        className='column-heading-resize'
-      ></div>
-    </div>
+    <>
+      {visible && (
+        <div style={{ width }} className='column-heading'>
+          {name}
+          <div
+            draggable
+            onDragStart={handleResizeStart}
+            onDrag={handleResize}
+            onDragEnd={handleResize}
+            className='column-heading-resize'
+          ></div>
+        </div>
+      )}
+    </>
   );
 };
 

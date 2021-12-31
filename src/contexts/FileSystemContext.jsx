@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { path as Path, fs } from "filer";
+import { resolve } from "filer/src/path";
 
 export const FileSystemContext = createContext();
 
@@ -102,6 +103,40 @@ export const FileSystemProvider = ({ children }) => {
     return watcher;
   };
 
+  const findFSO = async (root, searchTerm, setSearchResults) => {
+    const found = [];
+    await findRecursive(root, searchTerm, found);
+    setSearchResults(found);
+  };
+
+  const findRecursive = (root, searchTerm, found) => {
+    let i = 0;
+    return new Promise((resolve, reject) => {
+      readdir(root).then(async (content) => {
+        if (content.length > 0) {
+          for (let fso of content) {
+            if (fso.name == searchTerm) {
+              console.log(`pushing found fso(${fso.name}) to found`);
+              found.push({
+                ...fso,
+                path: Path.join(root, fso.name),
+              });
+              console.log(found);
+            }
+            fso.type === "DIRECTORY" &&
+              (await findRecursive(
+                Path.join(root, fso.name),
+                searchTerm,
+                found
+              ));
+            i === content.length - 1 && resolve(true);
+            i += 1;
+          }
+        } else resolve(true);
+      });
+    });
+  };
+
   useEffect(() => {
     exists("/C/users/admin")
       .then((exists) => console.log("file system already initialized"))
@@ -110,7 +145,15 @@ export const FileSystemProvider = ({ children }) => {
 
   return (
     <FileSystemContext.Provider
-      value={{ createFSO, getFolder, updateFSO, deleteFSO, watch }}
+      value={{
+        createFSO,
+        getFolder,
+        updateFSO,
+        deleteFSO,
+        watch,
+        exists,
+        findFSO,
+      }}
     >
       {children}
     </FileSystemContext.Provider>

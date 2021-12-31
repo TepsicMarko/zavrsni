@@ -20,9 +20,11 @@ const FsoListItem = ({
   deleteFSO,
   changePath,
   maxWidth,
+  location,
 }) => {
   const {
     Name,
+    Location,
     ["Date Modified"]: DateModified,
     Size,
     Type,
@@ -107,10 +109,14 @@ const FsoListItem = ({
           onBlur={handleBlur}
           style={{ maxWidth: maxWidth - remToPx("2rem") }}
           onInput={handleInputChange}
+          onDoubleClick={(e) => e.stopPropagation()}
         >
           {name}
         </span>
       </div>
+      {location && (
+        <div style={{ minWidth: Location, maxWidth: Location }}>{location}</div>
+      )}
       <div style={{ minWidth: DateModified, maxWidth: DateModified }}>
         {dateModified}
       </div>

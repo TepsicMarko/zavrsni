@@ -6,7 +6,7 @@
 }
 
 .buttons-navigation {
-  width: 5.75rem;
+  min-width: 5.75rem;
 }
 
 .buttons-navigation > div {
@@ -22,6 +22,10 @@
   margin-left: 0.25rem;
 }
 
+.buttons-navigation > div:hover:not(:last-child) {
+  color: #3298fe;
+}
+
 .fx-navigation-bar input {
   box-sizing: border-box;
   border: none;
@@ -32,14 +36,27 @@
   height: 100%;
   margin: 0;
   padding: 0;
+  color: white;
+  font-weight: 100;
+  font-size: 0.75rem;
 }
 
 .address-bar {
+  outline: 1px solid #535353;
   justify-content: flex-start;
   height: 70%;
   min-width: 13rem;
   flex-grow: 1;
   position: relative;
+}
+
+.folder-icon {
+  padding-left: 0.25rem;
+}
+
+.address-bar input {
+  outline: none;
+  padding-left: 0.25rem;
 }
 
 .refresh-folder-view {
@@ -72,9 +89,27 @@
 
 .file-search-box > input {
   padding-left: 1.75rem;
+  padding-right: 1.75rem;
 }
 
 .file-search-box > svg {
   position: absolute;
   left: 0.5rem;
+}
+
+#remove {
+  position: absolute;
+  left: initial;
+  right: 0.05rem;
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+#remove:hover {
+  background-color: rgba(211, 211, 211, 0.35);
+}
+
+.disabled,
+.disabled:hover {
+  color: #8c8c8c !important;
 }

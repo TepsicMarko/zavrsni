@@ -6,17 +6,23 @@ import StatusBar from "../../system/window/status-bar/StatusBar";
 import FileExplorerNavbar from "./navbar/FileExplorerNavbar";
 import FileExplorerRibbon from "./ribbon/FileExplorerRibbon";
 import { FcFolder } from "react-icons/fc";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import FileExplorerNavigationBar from "./navigation-bar/FileExplorerNavigationBar";
 import FileExplorerNavigationPane from "./navigation-pane/FileExplorerNavigationPane";
 import FileExplorerFolderContents from "./folder-contents/FileExplorerFolderContents";
 import { WindowWidthProvider } from "../../../contexts/WindowWidthContext";
+import usePathHistory from "../../../hooks/usePathHistory";
 
 const FileExplorer = () => {
   const [activeTab, setActiveTab] = useState("Home");
   const [path, setPath] = useState("/C/users/admin");
   const changeTab = (e) => setActiveTab(e.target.textContent);
   const [width, setWidth] = useState();
+  const [searchResults, setSearchResults] = useState([]);
+  const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(
+    path,
+    setPath
+  );
 
   const changePath = useCallback(
     (path) => {
@@ -24,6 +30,15 @@ const FileExplorer = () => {
     },
     [path]
   );
+
+  useEffect(() => {
+    watchPath(path);
+    setSearchResults([]);
+  }, [path]);
+
+  useEffect(() => {
+    path !== current && setPath(current);
+  }, [current]);
 
   return (
     <WindowWidthProvider>
@@ -37,7 +52,15 @@ const FileExplorer = () => {
         <WindowContent backgroundColor='#202020' flex flexDirection='row'>
           <FileExplorerNavbar activeTab={activeTab} changeTab={changeTab} />
           <FileExplorerRibbon activeTab={activeTab} />
-          <FileExplorerNavigationBar />
+          <FileExplorerNavigationBar
+            previous={previous.length > 0}
+            goBack={goBack}
+            path={path}
+            goForth={goForth}
+            next={next.length > 0}
+            changePath={changePath}
+            setSearchResults={setSearchResults}
+          />
           <div className='navigation-pane-and-folder-contents-container'>
             <FileExplorerNavigationPane
               changePath={changePath}
@@ -49,6 +72,7 @@ const FileExplorer = () => {
               path={path}
               width={width}
               setWidth={setWidth}
+              searchResults={searchResults}
             />
           </div>
         </WindowContent>

@@ -9,14 +9,19 @@ import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import FolderContentsContextMenu from "../../../system/component-specific-context-menus/FolderContentsContextMenu";
-import { path as Path } from "filer";
-import uuid from "../../../../utils/uuid";
 
-const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
+const FileExplorerFolderContents = ({
+  changePath,
+  path,
+  width,
+  setWidth,
+  searchResults,
+}) => {
   const { watch, getFolder, updateFSO, deleteFSO, createFSO } =
     useContext(FileSystemContext);
   const { windowWidth } = useContext(WindowWidthContext);
   const { renderOptions } = useContext(RightClickMenuContext);
+  const windowWidthOnFirstRender = useRef(windowWidth);
 
   const [folderContent, setWatcherPath] = useWatchFolder(
     path,
@@ -25,6 +30,7 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
   );
   const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
     Name: "4.5rem",
+    Location: "4.5rem",
     "Date Modified": "4.5rem",
     Type: "4.5rem",
     Size: "4.5rem",
@@ -70,8 +76,11 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
   }, [path]);
 
   useEffect(() => {
-    setWidth(folderContentsRef.current.clientWidth);
-  }, []);
+    if (windowWidthOnFirstRender.current === undefined) {
+      setWidth(windowWidth - 150);
+      windowWidthOnFirstRender.current = windowWidth;
+    }
+  }, [windowWidth]);
 
   useEffect(() => {
     const maxWidth = windowWidth - remToPx("3.5rem");
@@ -81,18 +90,6 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
       setWidth(width + windowWidthDiff);
     previousWindowWidthRef.current = windowWidth;
   }, [windowWidth]);
-
-  useEffect(() => {
-    const eventHandler = (e) => {
-      if (e.key === "Backspace") {
-        e.preventDefault();
-        changePath(Path.join(path, ".."));
-      }
-    };
-    document.addEventListener("keydown", eventHandler);
-
-    return () => document.removeEventListener("keydown", eventHandler);
-  }, [path]);
 
   return (
     <div
@@ -107,27 +104,35 @@ const FileExplorerFolderContents = ({ changePath, path, width, setWidth }) => {
             name={columnHeading}
             width={columnHeadingsWidth[columnHeading]}
             setColumnHeadingWidth={setColumnHeadingWidth}
+            visible={
+              columnHeading === "Location"
+                ? searchResults.length > 0 && columnHeading === "Location"
+                : true
+            }
           />
         ))}
       </div>
       <div className='fso-list'>
-        {folderContent.map((fso) => {
-          return (
-            <FsoListItem
-              key={uuid()}
-              name={fso.name}
-              dateModified={moment(fso.ctime).format("DD/MM/YYYY hh:mm a")}
-              type={fso.type}
-              size={fso.size}
-              columnHeadingsWidth={columnHeadingsWidth}
-              path={path}
-              updateFSO={updateFSO}
-              deleteFSO={deleteFSO}
-              changePath={changePath}
-              maxWidth={width}
-            />
-          );
-        })}
+        {[searchResults.length ? searchResults : folderContent][0].map(
+          (fso, i) => {
+            return (
+              <FsoListItem
+                key={fso.node}
+                name={fso.name}
+                dateModified={moment(fso.ctime).format("DD/MM/YYYY hh:mm a")}
+                type={fso.type}
+                size={fso.size}
+                columnHeadingsWidth={columnHeadingsWidth}
+                path={path}
+                updateFSO={updateFSO}
+                deleteFSO={deleteFSO}
+                changePath={changePath}
+                maxWidth={width}
+                location={fso.path}
+              />
+            );
+          }
+        )}
       </div>
       <div
         draggable
