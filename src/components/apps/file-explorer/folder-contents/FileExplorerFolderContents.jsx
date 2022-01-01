@@ -18,6 +18,7 @@ const FileExplorerFolderContents = ({
   setWidth,
   searchResults,
   setItemCount,
+  setExpandBranches,
 }) => {
   const { watch, getFolder, updateFSO, deleteFSO, createFSO, moveFSO } =
     useContext(FileSystemContext);
@@ -149,6 +150,7 @@ const FileExplorerFolderContents = ({
                 maxWidth={width}
                 location={fso.path}
                 moveFSO={moveFSO}
+                setExpandBranches={setExpandBranches}
               />
             );
           }

@@ -20,6 +20,8 @@ const FolderNavigationBranch = ({
   basePath,
   currentPath,
   width,
+  expandBranches,
+  setExpandBranches,
 }) => {
   const { watch, getFolder, createFSO, deleteFSO, updateFSO, moveFSO } =
     useContext(FileSystemContext);
@@ -125,14 +127,16 @@ const FolderNavigationBranch = ({
   useEffect(() => {
     (currentPath === Path.join(basePath, branchName) ||
       currentPath.includes(Path.join(basePath, branchName))) &&
+      expandBranches &&
       setToggleState(true);
-    // currentPath !== Path.join(basePath, branchName) &&
-    //   !currentPath.includes(Path.join(basePath, branchName)) &&
-    //   branchName !== "This PC" &&
-    //   isOpen === true &&
-    //   setToggleState(false);
-    // => maybe enable this later
+    expandBranches && setExpandBranches(false);
   }, [currentPath]);
+
+  useEffect(() => {
+    (currentPath === Path.join(basePath, branchName) ||
+      currentPath.includes(Path.join(basePath, branchName))) &&
+      setToggleState(true);
+  }, []);
 
   return (
     <>
@@ -191,6 +195,8 @@ const FolderNavigationBranch = ({
                     : Path.join(basePath, branchName)
                 }
                 width={width}
+                expandBranches={expandBranches}
+                setExpandBranches={setExpandBranches}
               />
             )),
         [isOpen, folderContent, currentPath]

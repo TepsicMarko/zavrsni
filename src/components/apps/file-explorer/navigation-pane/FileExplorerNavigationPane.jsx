@@ -9,6 +9,8 @@ const FileExplorerNavigationPane = ({
   basePath,
   currentPath,
   folderContentsWidth,
+  expandBranches,
+  setExpandBranches,
 }) => {
   const { windowWidth } = useContext(WindowWidthContext);
   return (
@@ -25,6 +27,8 @@ const FileExplorerNavigationPane = ({
           currentPath={currentPath}
           width={windowWidth - folderContentsWidth}
           changePath={changePath}
+          expandBranches={expandBranches}
+          setExpandBranches={setExpandBranches}
           open
         />
       </div>

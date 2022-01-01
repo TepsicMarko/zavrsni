@@ -21,6 +21,7 @@ const FileExplorerNavigationBar = ({
   next,
   changePath,
   setSearchResults,
+  setExpandBranches,
 }) => {
   const [searchBoxWidth, setSearchBoxWidth] = useState("5rem");
   const [minWidth] = useState(remToPx("5rem"));
@@ -36,7 +37,10 @@ const FileExplorerNavigationBar = ({
     if (e.key === "Enter") {
       e.target.blur();
       exists(address)
-        .then(() => changePath(address))
+        .then(() => {
+          setExpandBranches(true);
+          changePath(address);
+        })
         .catch((e) => {
           alert(
             'Windows cant find "' +

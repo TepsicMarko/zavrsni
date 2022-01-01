@@ -22,6 +22,7 @@ const FsoListItem = ({
   maxWidth,
   location,
   moveFSO,
+  setExpandBranches,
 }) => {
   const {
     Name,
@@ -88,8 +89,8 @@ const FsoListItem = ({
     );
 
   const handleDoubleClick = (e) => {
-    type === "DIRECTORY" &&
-      changePath(location ? location : Path.join(path, name));
+    type === "DIRECTORY" && setExpandBranches(true);
+    changePath(location ? location : Path.join(path, name));
   };
 
   const handleDragStart = (e) => {

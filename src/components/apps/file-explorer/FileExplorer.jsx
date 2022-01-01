@@ -19,6 +19,7 @@ const FileExplorer = () => {
   const [width, setWidth] = useState();
   const [searchResults, setSearchResults] = useState([]);
   const [itemCount, setItemCount] = useState("");
+  const [expandBranches, setExpandBranches] = useState(false);
   const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(
     path,
     setPath
@@ -62,6 +63,7 @@ const FileExplorer = () => {
             next={next.length > 0}
             changePath={changePath}
             setSearchResults={setSearchResults}
+            setExpandBranches={setExpandBranches}
           />
           <div className='navigation-pane-and-folder-contents-container'>
             <FileExplorerNavigationPane
@@ -69,6 +71,8 @@ const FileExplorer = () => {
               basePath={"/C/users/admin"}
               currentPath={path}
               folderContentsWidth={width}
+              expandBranches={expandBranches}
+              setExpandBranches={setExpandBranches}
             />
             <FileExplorerFolderContents
               changePath={changePath}
@@ -77,6 +81,7 @@ const FileExplorer = () => {
               setWidth={setWidth}
               searchResults={searchResults}
               setItemCount={setItemCount}
+              setExpandBranches={setExpandBranches}
             />
           </div>
         </WindowContent>
