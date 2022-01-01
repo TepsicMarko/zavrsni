@@ -16,13 +16,14 @@ import usePathHistory from "../../../hooks/usePathHistory";
 const FileExplorer = () => {
   const [activeTab, setActiveTab] = useState("Home");
   const [path, setPath] = useState("/C/users/admin");
-  const changeTab = (e) => setActiveTab(e.target.textContent);
   const [width, setWidth] = useState();
   const [searchResults, setSearchResults] = useState([]);
   const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(
     path,
     setPath
   );
+
+  const changeTab = (e) => setActiveTab(e.target.textContent);
 
   const changePath = useCallback(
     (path) => {
