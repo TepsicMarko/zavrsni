@@ -7,10 +7,12 @@ import useDesktopGrid from "../../../hooks/useDesktopGrid";
 import DesktopIcon from "./desktop-icon/DesktopIcon";
 import DesktopContextMenu from "../component-specific-context-menus/DesktopContextMenu";
 import useWatchFolder from "../../../hooks/useWatchFolder";
+import { path as Path } from "filer";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
   const origin = "/C/users/admin/Desktop";
-  const { createFSO, watch, getFolder } = useContext(FileSystemContext);
+  const { createFSO, watch, getFolder, moveFSO } =
+    useContext(FileSystemContext);
   const [view, setView] = useState("Medium icons");
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
   const folderName = "Desktop";
@@ -56,12 +58,18 @@ const Desktop = ({ width, height, taskbarHeight }) => {
 
   const handleDrop = (e) => {
     e.preventDefault();
-    const name = e.dataTransfer.getData("text");
-    addToGrid(
-      name,
-      calculateGridPosition({ x: e.clientX, y: e.clientY }),
-      true
-    );
+    const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
+    console.log(dataTransfer);
+    const { name, type, path } = dataTransfer.dragObject;
+    if (dataTransfer.origin === "Desktop") {
+      addToGrid(
+        name,
+        calculateGridPosition({ x: e.clientX, y: e.clientY }),
+        true
+      );
+    } else {
+      moveFSO(Path.join(path, name), Path.join(origin, name));
+    }
   };
   const preventDefault = (e) => e.preventDefault();
 

@@ -3,11 +3,11 @@ import { memo, useRef, useContext } from "react";
 import remToPx from "../../../../../helpers/remToPx";
 import getFileTypeIcon from "../../../../../utils/getFileTypeIcon";
 import FsoListItemContextMenu from "../../../../system/component-specific-context-menus/FsoListItemContextMenu";
-// import useInput from "../../../../../hooks/useInput";
 import selectInputContent from "../../../../../utils/selectInputContent";
 import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuContext";
 import { path as Path } from "filer";
 import useInput from "../../../../../hooks/useInput";
+import { AiFillFileText } from "react-icons/ai";
 
 const FsoListItem = ({
   name,
@@ -21,6 +21,7 @@ const FsoListItem = ({
   changePath,
   maxWidth,
   location,
+  moveFSO,
 }) => {
   const {
     Name,
@@ -91,14 +92,47 @@ const FsoListItem = ({
       changePath(location ? location : Path.join(path, name));
   };
 
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData(
+      "json",
+      JSON.stringify({
+        origin: "File Explorer",
+        dragObject: {
+          name,
+          type,
+          path: location ? location : path,
+        },
+      })
+    );
+  };
+
+  const preventDefault = (e) => e.preventDefault();
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
+    const dragObject = dataTransfer.dragObject;
+    console.log(dragObject, path);
+    if (type === "DIRECTORY") {
+      moveFSO(
+        Path.join(dragObject.path, dragObject.name),
+        Path.join(path, name, dragObject.name)
+      );
+    }
+  };
+
   return (
     <div
+      draggable
+      onDragEnter={preventDefault}
+      onDragOver={preventDefault}
+      onDrop={handleDrop}
       className='fso-list-item'
       style={{
         maxWidth: getMaxWidth(),
       }}
       onContextMenu={handleRightClick}
       onDoubleClick={handleDoubleClick}
+      onDragStart={handleDragStart}
     >
       <div style={{ minWidth: Name, maxWidth: Name }}>
         <span className='fso-list-item-icon'> {getFileTypeIcon(type)}</span>

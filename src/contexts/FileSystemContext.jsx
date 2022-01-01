@@ -77,6 +77,11 @@ export const FileSystemProvider = ({ children }) => {
     );
   };
 
+  const moveFSO = (currentPath, newPath) => {
+    console.log(currentPath, newPath);
+    fs.rename(currentPath, newPath, (err) => console.log(err));
+  };
+
   const deleteFSO = (path, name, type) => {
     if (type === "directory") {
       rmdir(Path.join(path, name));
@@ -153,6 +158,7 @@ export const FileSystemProvider = ({ children }) => {
         watch,
         exists,
         findFSO,
+        moveFSO,
       }}
     >
       {children}

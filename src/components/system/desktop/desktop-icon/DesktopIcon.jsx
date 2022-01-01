@@ -50,7 +50,11 @@ const DesktopIcon = ({
     }
   };
 
-  const handleDragStart = (e) => e.dataTransfer.setData("text", name);
+  const handleDragStart = (e) =>
+    e.dataTransfer.setData(
+      "json",
+      JSON.stringify({ origin: "Desktop", dragObject: { name, path } })
+    );
   const handleRightClick = (e) =>
     renderOptions(
       e,

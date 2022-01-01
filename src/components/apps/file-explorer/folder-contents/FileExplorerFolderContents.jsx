@@ -9,6 +9,7 @@ import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import FolderContentsContextMenu from "../../../system/component-specific-context-menus/FolderContentsContextMenu";
+import { path as Path } from "filer";
 
 const FileExplorerFolderContents = ({
   changePath,
@@ -18,18 +19,18 @@ const FileExplorerFolderContents = ({
   searchResults,
   setItemCount,
 }) => {
-  const { watch, getFolder, updateFSO, deleteFSO, createFSO } =
+  const { watch, getFolder, updateFSO, deleteFSO, createFSO, moveFSO } =
     useContext(FileSystemContext);
   const { windowWidth } = useContext(WindowWidthContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const windowWidthOnFirstRender = useRef(windowWidth);
-
   const [folderContent, setWatcherPath] = useWatchFolder(
     path,
     watch,
     getFolder,
     setItemCount
   );
+
   const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
     Name: "4.5rem",
     Location: "4.5rem",
@@ -73,6 +74,19 @@ const FileExplorerFolderContents = ({
       <FolderContentsContextMenu path={path} createFSO={createFSO} />
     );
 
+  const preventDefault = (e) => e.preventDefault();
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
+    const dragObject = dataTransfer.dragObject;
+    if (dataTransfer.origin === "Desktop") {
+      moveFSO(
+        Path.join(dragObject.path, dragObject.name),
+        Path.join(path, dragObject.name)
+      );
+    }
+  };
+
   useEffect(() => {
     setWatcherPath(path);
   }, [path]);
@@ -99,6 +113,9 @@ const FileExplorerFolderContents = ({
       className='fx-folder-contents'
       style={{ width }}
       onContextMenu={handleRightClick}
+      onDragEnter={preventDefault}
+      onDragOver={preventDefault}
+      onDrop={handleDrop}
     >
       <div className='column-headings'>
         {Object.keys(columnHeadingsWidth).map((columnHeading) => (
@@ -131,6 +148,7 @@ const FileExplorerFolderContents = ({
                 changePath={changePath}
                 maxWidth={width}
                 location={fso.path}
+                moveFSO={moveFSO}
               />
             );
           }

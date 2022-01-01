@@ -21,7 +21,7 @@ const FolderNavigationBranch = ({
   currentPath,
   width,
 }) => {
-  const { watch, getFolder, createFSO, deleteFSO, updateFSO } =
+  const { watch, getFolder, createFSO, deleteFSO, updateFSO, moveFSO } =
     useContext(FileSystemContext);
   const [isOpen, toggleOpen, setToggleState] = useToggle(open);
   const [folderContent] = useWatchFolder(
@@ -82,6 +82,35 @@ const FolderNavigationBranch = ({
       updateFSO({ old: branchName, new: inputValue }, basePath);
   };
 
+  const handleDragStart = (e) => {
+    e.dataTransfer.setData(
+      "json",
+      JSON.stringify({
+        origin: "File Explorer",
+        dragObject: {
+          name: branchName === "This PC" ? "" : branchName,
+          path: basePath,
+        },
+      })
+    );
+  };
+
+  const preventDefault = (e) => e.preventDefault();
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
+    const dragObject = dataTransfer.dragObject;
+    console.log(dragObject, basePath);
+    moveFSO(
+      Path.join(dragObject.path, dragObject.name),
+      Path.join(
+        basePath,
+        branchName === "This PC" ? "" : branchName,
+        dragObject.name
+      )
+    );
+  };
+
   useEffect(() => {
     const eventHandler = (e) => {
       inputRef?.current?.setAttribute("contenteditable", "false");
@@ -108,6 +137,11 @@ const FolderNavigationBranch = ({
   return (
     <>
       <div
+        draggable
+        onDragStart={handleDragStart}
+        onDragEnter={preventDefault}
+        onDragOver={preventDefault}
+        onDrop={handleDrop}
         className='folder-navigation-branch'
         style={{ paddingLeft: depth * 0.5 * 16 }}
         onClick={handleClick}
