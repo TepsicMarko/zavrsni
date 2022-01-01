@@ -80,6 +80,10 @@ const FileExplorerNavigationBar = ({
     changePath(Path.join(path, ".."));
   };
 
+  const resetAddress = () => {
+    setAddress(path);
+  };
+
   useEffect(() => {
     address !== path && setAddress(path);
   }, [path]);
@@ -113,6 +117,7 @@ const FileExplorerNavigationBar = ({
           value={address}
           onChange={handleAddressChange}
           onKeyDown={handleKeyDown}
+          onBlur={resetAddress}
         />
         <div className='flex-center refresh-folder-view'>
           <IoReload size='0.75rem' color='gray' />

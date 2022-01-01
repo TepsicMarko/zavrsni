@@ -87,7 +87,8 @@ const FsoListItem = ({
     );
 
   const handleDoubleClick = (e) => {
-    changePath(Path.join(path, name));
+    type === "DIRECTORY" &&
+      changePath(location ? location : Path.join(path, name));
   };
 
   return (

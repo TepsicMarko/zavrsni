@@ -65,7 +65,8 @@ const FileExplorer = () => {
           <div className='navigation-pane-and-folder-contents-container'>
             <FileExplorerNavigationPane
               changePath={changePath}
-              path={"/C/users/admin"}
+              basePath={"/C/users/admin"}
+              currentPath={path}
               folderContentsWidth={width}
             />
             <FileExplorerFolderContents

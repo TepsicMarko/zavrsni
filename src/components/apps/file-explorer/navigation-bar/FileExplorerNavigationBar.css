@@ -57,6 +57,7 @@
 .address-bar input {
   outline: none;
   padding-left: 0.25rem;
+  padding-right: 1.75rem;
 }
 
 .refresh-folder-view {

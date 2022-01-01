@@ -17,14 +17,15 @@ const FolderNavigationBranch = ({
   depth,
   open,
   changePath,
-  path,
+  basePath,
+  currentPath,
   width,
 }) => {
   const { watch, getFolder, createFSO, deleteFSO, updateFSO } =
     useContext(FileSystemContext);
-  const [isOpen, toggleOpen] = useToggle(open);
+  const [isOpen, toggleOpen, setToggleState] = useToggle(open);
   const [folderContent] = useWatchFolder(
-    Path.join(path, branchName === "This PC" ? "" : branchName),
+    Path.join(basePath, branchName === "This PC" ? "" : branchName),
     watch,
     getFolder
   );
@@ -34,7 +35,7 @@ const FolderNavigationBranch = ({
 
   const handleClick = (e) => {
     e.stopPropagation();
-    changePath(Path.join(path, branchName === "This PC" ? "" : branchName));
+    changePath(Path.join(basePath, branchName === "This PC" ? "" : branchName));
   };
 
   const toggleChildBranches = (e) => {
@@ -54,8 +55,11 @@ const FolderNavigationBranch = ({
       e,
       <NavigationPaneBranchContextMenu
         name={branchName}
-        deletePath={path}
-        createPath={Path.join(path, branchName === "This PC" ? "" : branchName)}
+        deletePath={basePath}
+        createPath={Path.join(
+          basePath,
+          branchName === "This PC" ? "" : branchName
+        )}
         isOpen={isOpen}
         toggleOpen={toggleOpen}
         deleteFSO={deleteFSO}
@@ -75,7 +79,7 @@ const FolderNavigationBranch = ({
     inputRef.current.setAttribute("contenteditable", "false");
 
     if (branchName !== inputValue && inputValue.length)
-      updateFSO({ old: branchName, new: inputValue }, path);
+      updateFSO({ old: branchName, new: inputValue }, basePath);
   };
 
   useEffect(() => {
@@ -88,6 +92,18 @@ const FolderNavigationBranch = ({
       document.removeEventListener("click", eventHandler);
     };
   }, []);
+
+  useEffect(() => {
+    (currentPath === Path.join(basePath, branchName) ||
+      currentPath.includes(Path.join(basePath, branchName))) &&
+      setToggleState(true);
+    // currentPath !== Path.join(basePath, branchName) &&
+    //   !currentPath.includes(Path.join(basePath, branchName)) &&
+    //   branchName !== "This PC" &&
+    //   isOpen === true &&
+    //   setToggleState(false);
+    // => maybe enable this later
+  }, [currentPath]);
 
   return (
     <>
@@ -134,13 +150,16 @@ const FolderNavigationBranch = ({
                 branchName={branch.name}
                 depth={depth + 1}
                 changePath={changePath}
-                path={
-                  branchName === "This PC" ? path : Path.join(path, branchName)
+                currentPath={currentPath}
+                basePath={
+                  branchName === "This PC"
+                    ? basePath
+                    : Path.join(basePath, branchName)
                 }
                 width={width}
               />
             )),
-        [isOpen, folderContent]
+        [isOpen, folderContent, currentPath]
       )}
     </>
   );

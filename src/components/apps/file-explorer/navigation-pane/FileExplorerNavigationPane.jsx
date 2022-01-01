@@ -6,7 +6,8 @@ import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
 
 const FileExplorerNavigationPane = ({
   changePath,
-  path,
+  basePath,
+  currentPath,
   folderContentsWidth,
 }) => {
   const { windowWidth } = useContext(WindowWidthContext);
@@ -20,7 +21,8 @@ const FileExplorerNavigationPane = ({
           branchName='This PC'
           icon={RiComputerFill}
           depth={1}
-          path={path}
+          basePath={basePath}
+          currentPath={currentPath}
           width={windowWidth - folderContentsWidth}
           changePath={changePath}
           open
