@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const useWatchFolder = (initialPath, watch, handleChange) => {
+const useWatchFolder = (initialPath, watch, handleChange, setItemCount) => {
   const [path, setPath] = useState(initialPath);
   const [folderContent, setFolderContent] = useState([]);
 
@@ -12,6 +12,14 @@ const useWatchFolder = (initialPath, watch, handleChange) => {
 
     return watcher.close;
   }, [path]);
+
+  useEffect(() => {
+    const nItems = folderContent.length;
+    setItemCount &&
+      setItemCount(
+        nItems > 0 ? (nItems > 1 ? nItems + " items" : "1 item") : "0 items"
+      );
+  }, [folderContent.length]);
 
   return [folderContent, setPath];
 };

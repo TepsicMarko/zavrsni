@@ -4,3 +4,7 @@
   position: relative;
   display: flex;
 }
+
+.item-count {
+  padding-left: 0.5rem;
+}

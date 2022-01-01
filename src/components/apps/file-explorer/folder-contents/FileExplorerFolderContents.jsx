@@ -16,6 +16,7 @@ const FileExplorerFolderContents = ({
   width,
   setWidth,
   searchResults,
+  setItemCount,
 }) => {
   const { watch, getFolder, updateFSO, deleteFSO, createFSO } =
     useContext(FileSystemContext);
@@ -26,7 +27,8 @@ const FileExplorerFolderContents = ({
   const [folderContent, setWatcherPath] = useWatchFolder(
     path,
     watch,
-    getFolder
+    getFolder,
+    setItemCount
   );
   const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
     Name: "4.5rem",

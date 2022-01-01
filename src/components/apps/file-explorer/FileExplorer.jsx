@@ -18,6 +18,7 @@ const FileExplorer = () => {
   const [path, setPath] = useState("/C/users/admin");
   const [width, setWidth] = useState();
   const [searchResults, setSearchResults] = useState([]);
+  const [itemCount, setItemCount] = useState("");
   const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(
     path,
     setPath
@@ -75,10 +76,13 @@ const FileExplorer = () => {
               width={width}
               setWidth={setWidth}
               searchResults={searchResults}
+              setItemCount={setItemCount}
             />
           </div>
         </WindowContent>
-        <StatusBar backgroundColor='#2e2e2e'></StatusBar>
+        <StatusBar backgroundColor='#2e2e2e' color='#DEDEDE' flex>
+          <div className='item-count'>{itemCount}</div>
+        </StatusBar>
       </Window>
     </WindowWidthProvider>
   );
