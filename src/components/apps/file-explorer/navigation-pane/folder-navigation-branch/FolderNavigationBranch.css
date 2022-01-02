@@ -5,7 +5,6 @@
   color: white;
   font-size: 0.75rem;
   font-weight: 100;
-  padding-right: 0.5rem;
 }
 
 .folder-navigation-branch:hover {
@@ -21,6 +20,7 @@
 
 .branch-name svg {
   margin-right: 0.25rem;
+  min-width: 0.9rem;
 }
 
 .branch-name-input {

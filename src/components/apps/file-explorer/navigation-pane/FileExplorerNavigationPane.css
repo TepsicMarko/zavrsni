@@ -8,6 +8,6 @@
 }
 
 .folder-navigation-tree {
-  width: 100%;
+  width: inherit;
   padding-top: 0.5rem;
 }

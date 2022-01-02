@@ -1,8 +1,7 @@
 import "./WindowContent.css";
 import { memo } from "react";
 
-const WindowContent = (props) => {
-  const { children, backgroundColor, flex, flexDirection } = props;
+const WindowContent = ({ children, backgroundColor, flex, flexDirection }) => {
   return (
     <div
       style={{ backgroundColor, flexDirection, display: flex ? "flex" : "" }}

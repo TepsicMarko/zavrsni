@@ -12,13 +12,11 @@ import { VscClose } from "react-icons/vsc";
 import { path as Path } from "filer";
 import remToPx from "../../../../helpers/remToPx";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
+import usePathHistory from "../../../../hooks/usePathHistory";
 
 const FileExplorerNavigationBar = ({
-  previous,
-  goBack,
   path,
-  goForth,
-  next,
+  setPath,
   changePath,
   setSearchResults,
   setExpandBranches,
@@ -28,6 +26,8 @@ const FileExplorerNavigationBar = ({
   const [address, setAddress] = useState(path);
   const [search, setSearch] = useState("");
   const { exists, findFSO } = useContext(FileSystemContext);
+  const [previous, goBack, current, goForth, next, watchPath] =
+    usePathHistory(path);
 
   const handleAddressChange = (e) => {
     setAddress(e.target.value);
@@ -92,24 +92,34 @@ const FileExplorerNavigationBar = ({
     address !== path && setAddress(path);
   }, [path]);
 
+  useEffect(() => {
+    watchPath(path);
+    setSearchResults([]);
+  }, [path]);
+
+  useEffect(() => {
+    path !== current && setPath(current);
+  }, [current]);
+
   return (
     <div className='flex-center fx-navigation-bar'>
-      {/* {useMemo(
-        () => ( */}
       <div className='flex-center buttons-navigation'>
-        <div onClick={previous && goBack} className={!previous && "disabled"}>
+        <div
+          onClick={previous.length && goBack}
+          className={!previous.length && "disabled"}
+        >
           <IoArrowBack />
         </div>
-        <div onClick={next && goForth} className={!next && "disabled"}>
+        <div
+          onClick={next.length && goForth}
+          className={!next.length && "disabled"}
+        >
           <IoArrowForward />
         </div>
         <div onClick={goUp}>
           <IoArrowUp />
         </div>
       </div>
-      {/* ),
-        [path]
-      )} */}
 
       <div className='flex-center address-bar'>
         <div className='folder-icon'>

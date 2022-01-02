@@ -1,27 +1,29 @@
-import { useState, useEffect, useCallback } from "react";
-import { path as Path } from "filer";
+import { useState, useCallback } from "react";
 
-const usePathHistory = (initialPath, setPath) => {
+const usePathHistory = (initialPath) => {
   const [previous, setPrevious] = useState([]);
   const [current, setCurrent] = useState(initialPath);
   const [next, setNext] = useState([]);
 
-  const goBack = () => {
+  const goBack = useCallback(() => {
     setNext([...next, current]);
     setCurrent(previous[previous.length - 1]);
     setPrevious(previous.filter((el, i) => i !== previous.length - 1));
-  };
+  }, [previous, current, next]);
 
-  const goForth = () => {
+  const goForth = useCallback(() => {
     setPrevious([...previous, current]);
     setCurrent(next[next.length - 1]);
     setNext(next.filter((el, i) => i !== next.length - 1));
-  };
+  }, [previous, current, next]);
 
-  const watchPath = (path) => {
-    current !== path && setPrevious([...previous, current]);
-    current && setCurrent(path);
-  };
+  const watchPath = useCallback(
+    (path) => {
+      current !== path && setPrevious([...previous, current]);
+      current && setCurrent(path);
+    },
+    [previous, current]
+  );
 
   return [previous, goBack, current, goForth, next, watchPath];
 };

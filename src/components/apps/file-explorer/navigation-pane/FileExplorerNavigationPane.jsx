@@ -25,7 +25,6 @@ const FileExplorerNavigationPane = ({
           depth={1}
           basePath={basePath}
           currentPath={currentPath}
-          width={windowWidth - folderContentsWidth}
           changePath={changePath}
           expandBranches={expandBranches}
           setExpandBranches={setExpandBranches}

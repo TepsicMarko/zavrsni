@@ -1,6 +1,5 @@
 import "./FileExplorer.css";
 import Window from "../../system/window/Window";
-import TitleBar from "../../system/window/title-bar/TitleBar";
 import WindowContent from "../../system/window/window-content/WindowContent";
 import StatusBar from "../../system/window/status-bar/StatusBar";
 import FileExplorerNavbar from "./navbar/FileExplorerNavbar";
@@ -11,7 +10,6 @@ import FileExplorerNavigationBar from "./navigation-bar/FileExplorerNavigationBa
 import FileExplorerNavigationPane from "./navigation-pane/FileExplorerNavigationPane";
 import FileExplorerFolderContents from "./folder-contents/FileExplorerFolderContents";
 import { WindowWidthProvider } from "../../../contexts/WindowWidthContext";
-import usePathHistory from "../../../hooks/usePathHistory";
 
 const FileExplorer = () => {
   const [activeTab, setActiveTab] = useState("Home");
@@ -20,10 +18,6 @@ const FileExplorer = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [itemCount, setItemCount] = useState("");
   const [expandBranches, setExpandBranches] = useState(false);
-  const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(
-    path,
-    setPath
-  );
 
   const changeTab = (e) => setActiveTab(e.target.textContent);
 
@@ -33,15 +27,6 @@ const FileExplorer = () => {
     },
     [path]
   );
-
-  useEffect(() => {
-    watchPath(path);
-    setSearchResults([]);
-  }, [path]);
-
-  useEffect(() => {
-    path !== current && setPath(current);
-  }, [current]);
 
   return (
     <WindowWidthProvider>
@@ -56,11 +41,8 @@ const FileExplorer = () => {
           <FileExplorerNavbar activeTab={activeTab} changeTab={changeTab} />
           <FileExplorerRibbon activeTab={activeTab} />
           <FileExplorerNavigationBar
-            previous={previous.length > 0}
-            goBack={goBack}
             path={path}
-            goForth={goForth}
-            next={next.length > 0}
+            setPath={changePath}
             changePath={changePath}
             setSearchResults={setSearchResults}
             setExpandBranches={setExpandBranches}
@@ -68,7 +50,7 @@ const FileExplorer = () => {
           <div className='navigation-pane-and-folder-contents-container'>
             <FileExplorerNavigationPane
               changePath={changePath}
-              basePath={"/C/users/admin"}
+              basePath='/C/users/admin'
               currentPath={path}
               folderContentsWidth={width}
               expandBranches={expandBranches}

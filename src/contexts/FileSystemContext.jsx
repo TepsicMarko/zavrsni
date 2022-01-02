@@ -1,6 +1,5 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect } from "react";
 import { path as Path, fs } from "filer";
-import { resolve } from "filer/src/path";
 
 export const FileSystemContext = createContext();
 

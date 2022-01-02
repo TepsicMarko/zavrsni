@@ -1,5 +1,5 @@
 import "./FolderNavigationBranch.css";
-import { useContext, useMemo, useRef, useEffect } from "react";
+import { useContext, useMemo, useRef, useEffect, memo } from "react";
 import useToggle from "../../../../../hooks/useToggle";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { FcFolder } from "react-icons/fc";
@@ -19,7 +19,6 @@ const FolderNavigationBranch = ({
   changePath,
   basePath,
   currentPath,
-  width,
   expandBranches,
   setExpandBranches,
 }) => {
@@ -171,7 +170,7 @@ const FolderNavigationBranch = ({
             onInput={handleInputChange}
             style={{
               width: "fit-content",
-              maxWidth: `calc(${width}px - ${depth * 0.5}rem - 28px - 0.65rem)`,
+              maxWidth: `calc(100% - ${depth * 0.5}rem)`,
             }}
           >
             {branchName}
@@ -194,7 +193,6 @@ const FolderNavigationBranch = ({
                     ? basePath
                     : Path.join(basePath, branchName)
                 }
-                width={width}
                 expandBranches={expandBranches}
                 setExpandBranches={setExpandBranches}
               />
@@ -205,4 +203,4 @@ const FolderNavigationBranch = ({
   );
 };
 
-export default FolderNavigationBranch;
+export default memo(FolderNavigationBranch);

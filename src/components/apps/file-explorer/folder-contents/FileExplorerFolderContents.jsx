@@ -88,6 +88,15 @@ const FileExplorerFolderContents = ({
     }
   };
 
+  const calcWidth = () => {
+    let sum = 0;
+    for (let [key, value] of Object.entries(columnHeadingsWidth)) {
+      if (!searchResults.length && key === "Location");
+      else typeof value !== "number" ? (sum += remToPx(value)) : (sum += value);
+    }
+    return sum;
+  };
+
   useEffect(() => {
     setWatcherPath(path);
   }, [path]);
@@ -132,7 +141,12 @@ const FileExplorerFolderContents = ({
           />
         ))}
       </div>
-      <div className='fso-list'>
+      <div
+        className='fso-list'
+        style={{
+          width: calcWidth(),
+        }}
+      >
         {[searchResults.length ? searchResults : folderContent][0].map(
           (fso, i) => {
             return (
@@ -147,7 +161,6 @@ const FileExplorerFolderContents = ({
                 updateFSO={updateFSO}
                 deleteFSO={deleteFSO}
                 changePath={changePath}
-                maxWidth={width}
                 location={fso.path}
                 moveFSO={moveFSO}
                 setExpandBranches={setExpandBranches}

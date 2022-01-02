@@ -7,7 +7,6 @@ import selectInputContent from "../../../../../utils/selectInputContent";
 import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuContext";
 import { path as Path } from "filer";
 import useInput from "../../../../../hooks/useInput";
-import { AiFillFileText } from "react-icons/ai";
 
 const FsoListItem = ({
   name,
@@ -19,7 +18,6 @@ const FsoListItem = ({
   updateFSO,
   deleteFSO,
   changePath,
-  maxWidth,
   location,
   moveFSO,
   setExpandBranches,
@@ -35,19 +33,6 @@ const FsoListItem = ({
   const inputRef = useRef(null);
   const { renderOptions } = useContext(RightClickMenuContext);
   const [inputValue, handleInputChange] = useInput(name);
-
-  const getMaxWidth = () =>
-    Object.keys(columnHeadingsWidth)
-      .map((key) => columnHeadingsWidth[key])
-      .reduce((prev, curr) => {
-        if (`${prev}`.includes("rem")) prev = remToPx(prev);
-        else prev = parseFloat(prev);
-
-        if (`${curr}`.includes("rem")) curr = remToPx(curr);
-        else curr = parseFloat(curr);
-
-        return prev + curr;
-      });
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -129,7 +114,7 @@ const FsoListItem = ({
       onDrop={handleDrop}
       className='fso-list-item'
       style={{
-        maxWidth: getMaxWidth(),
+        maxWidth: "inherit",
       }}
       onContextMenu={handleRightClick}
       onDoubleClick={handleDoubleClick}
@@ -143,7 +128,7 @@ const FsoListItem = ({
           suppressContentEditableWarning={true}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          style={{ maxWidth: maxWidth - remToPx("2rem") }}
+          style={{ maxWidth: "calc(inherit - 2rem)" }}
           onInput={handleInputChange}
           onDoubleClick={(e) => e.stopPropagation()}
         >
