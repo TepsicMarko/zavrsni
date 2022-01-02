@@ -50,8 +50,8 @@ const FileExplorer = () => {
         icon={<FcFolder />}
         minWindowWidth='14rem'
         minWindowHeight='16rem'
+        titleBar={{ color: "white", backgroundColor: "black" }}
       >
-        <TitleBar backgroundColor='black' color='white' />
         <WindowContent backgroundColor='#202020' flex flexDirection='row'>
           <FileExplorerNavbar activeTab={activeTab} changeTab={changeTab} />
           <FileExplorerRibbon activeTab={activeTab} />

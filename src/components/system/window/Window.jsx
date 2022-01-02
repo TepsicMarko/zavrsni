@@ -9,8 +9,16 @@ import React, {
 import remToPx from "../../../helpers/remToPx";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import { WindowWidthContext } from "../../../contexts/WindowWidthContext";
+import TitleBar from "./title-bar/TitleBar";
 
-const Window = ({ children, app, icon, minWindowWidth, minWindowHeight }) => {
+const Window = ({
+  children,
+  app,
+  icon,
+  minWindowWidth,
+  minWindowHeight,
+  titleBar,
+}) => {
   const [minWidth] = useState(remToPx(minWindowWidth));
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -206,20 +214,19 @@ const Window = ({ children, app, icon, minWindowWidth, minWindowHeight }) => {
           onDragEnd={handleResizeEnd}
         ></div>
       ))}
-      {children.map((child, i) =>
-        i === 0
-          ? React.cloneElement(child, {
-              maximiseWindow,
-              closeWindow,
-              minimiseWindow,
-              handleDragStart,
-              handleDrag,
-              handleDragEnd,
-              name: app,
-              icon,
-            })
-          : child
-      )}
+      <TitleBar
+        backgroundColor={titleBar.backgroundColor}
+        color={titleBar.color}
+        maximiseWindow={maximiseWindow}
+        closeWindow={closeWindow}
+        minimiseWindow={minimiseWindow}
+        handleDragStart={handleDragStart}
+        handleDrag={handleDrag}
+        handleDragEnd={handleDragEnd}
+        name={app}
+        icon={icon}
+      />
+      {children}
     </div>
   );
 };
