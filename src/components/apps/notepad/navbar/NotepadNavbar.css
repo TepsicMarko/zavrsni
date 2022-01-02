@@ -1,0 +1,39 @@
+.notepad-navbar {
+  flex-basis: 100%;
+  border-bottom: 2px solid #f0f0f0;
+  display: flex;
+  font-size: 0.8rem;
+  height: 1.25rem;
+  align-items: flex-end;
+}
+
+.notepad-nav-tab {
+  height: calc(1.15rem);
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  padding: 0.15rem 0.4rem;
+  padding-top: 0;
+  font-weight: 400;
+  position: relative;
+}
+
+.notepad-nav-tab:hover {
+  background-color: rgba(204, 232, 255, 0.795);
+  border: 1px solid hsla(211, 62%, 49%, 0.596);
+}
+
+.nav-dropdown-menu {
+  width: 14.5rem;
+  height: fit-content;
+  position: absolute;
+  left: 0;
+  top: 1.2rem;
+  background-color: #f2f2f2;
+  -webkit-box-shadow: 3px 3px 3px -1px #595959;
+  box-shadow: 3px 3px 3px -1px #595959;
+  border: 1px solid #d5d5d5;
+}
+
+.nav-dropdown-menu > div {
+  font-size: 0.75rem !important;
+}

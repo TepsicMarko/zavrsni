@@ -1,19 +1,25 @@
 import { useState, createContext } from "react";
-import FileExplorer from "../components/apps/file-explorer/FileExplorer";
 import { FcFolder } from "react-icons/fc";
-
-const availableProcesses = {
-  "File Explorer": <FileExplorer />,
-};
+import FileExplorer from "../components/apps/file-explorer/FileExplorer";
+import Notepad from "../components/apps/notepad/Notepad";
+import notepad from "../assets/notepad.png";
 
 export const ProcessesContext = createContext();
 
 export const ProcessesProvider = ({ children }) => {
   const [processes, setProcesses] = useState({
     "File Explorer": {
+      source: <FileExplorer icon={<FcFolder />} />,
       running: false,
       minimised: false,
       icon: <FcFolder />,
+      pinnedToTaskbar: true,
+    },
+    Notepad: {
+      source: <Notepad icon={<img src={notepad} width='20rem' />} />,
+      running: false,
+      minimised: false,
+      icon: <img src={notepad} width='30rem' />,
       pinnedToTaskbar: true,
     },
   });
@@ -45,7 +51,7 @@ export const ProcessesProvider = ({ children }) => {
     for (let Process in processes) {
       const app = processes[Process];
       if (!app.minimised && app.running) {
-        openProcesses.push(availableProcesses[Process]);
+        openProcesses.push(app.source);
       }
     }
 

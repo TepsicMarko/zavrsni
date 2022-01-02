@@ -4,14 +4,13 @@ import WindowContent from "../../system/window/window-content/WindowContent";
 import StatusBar from "../../system/window/status-bar/StatusBar";
 import FileExplorerNavbar from "./navbar/FileExplorerNavbar";
 import FileExplorerRibbon from "./ribbon/FileExplorerRibbon";
-import { FcFolder } from "react-icons/fc";
 import { useState, useCallback, useEffect } from "react";
 import FileExplorerNavigationBar from "./navigation-bar/FileExplorerNavigationBar";
 import FileExplorerNavigationPane from "./navigation-pane/FileExplorerNavigationPane";
 import FileExplorerFolderContents from "./folder-contents/FileExplorerFolderContents";
 import { WindowWidthProvider } from "../../../contexts/WindowWidthContext";
 
-const FileExplorer = () => {
+const FileExplorer = ({ icon }) => {
   const [activeTab, setActiveTab] = useState("Home");
   const [path, setPath] = useState("/C/users/admin");
   const [width, setWidth] = useState();
@@ -32,7 +31,7 @@ const FileExplorer = () => {
     <WindowWidthProvider>
       <Window
         app='File Explorer'
-        icon={<FcFolder />}
+        icon={icon}
         minWindowWidth='14rem'
         minWindowHeight='16rem'
         titleBar={{ color: "white", backgroundColor: "black" }}

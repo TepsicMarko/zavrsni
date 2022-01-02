@@ -194,7 +194,14 @@ const Window = ({
   return (
     <div
       className='window'
-      style={{ width, height, ...position, minWidth, minWindowHeight }}
+      style={{
+        width,
+        height,
+        ...position,
+        minWidth,
+        minWindowHeight,
+        zIndex: 100,
+      }}
     >
       {[
         "resize-l",

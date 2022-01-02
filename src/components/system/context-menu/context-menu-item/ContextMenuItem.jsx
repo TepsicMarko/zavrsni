@@ -10,6 +10,7 @@ const ContextMenuItem = ({
   radio,
   active,
   closeMenu,
+  fontWeight,
 }) => {
   const handleClick = (e) => {
     onClick(e);
@@ -24,7 +25,9 @@ const ContextMenuItem = ({
       <div className='cm-item-icon'>
         {radio && active && <VscCircleFilled />}
       </div>
-      <div className='cm-item-name'>{name}</div>
+      <div className='cm-item-name' style={{ fontWeight }}>
+        {name}
+      </div>
       {children && (
         <div className='flex-center cm-item-expand'>
           <MdArrowForwardIos />
