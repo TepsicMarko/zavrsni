@@ -20,6 +20,7 @@ const Window = ({
   titleBar,
 }) => {
   const [minWidth] = useState(remToPx(minWindowWidth));
+  const [minHeight] = useState(remToPx(minWindowHeight));
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [width, setWidth] = useState(
@@ -74,12 +75,12 @@ const Window = ({
 
     if (newPosition / position.top > 0.5) {
       // checks if offsetY is valid because onDragEnd returns wrong value
-      if (newHeight > remToPx(minWindowHeight)) {
+      if (newHeight > minHeight) {
         !returnPosition && setPosition({ ...position, top: newPosition });
         setHeight(newHeight);
 
         if (returnPosition) return newPosition;
-      } else setHeight(remToPx(minWindowHeight));
+      } else setHeight(minHeight);
     }
   };
 
@@ -100,13 +101,13 @@ const Window = ({
       let newHeight = height + offsetY;
       if (handlePosition === "t") {
         handleTopResizeHandle(offsetY);
-      } else setHeight(newHeight > 0 ? newHeight : height);
+      } else setHeight(newHeight > minHeight ? newHeight : height);
     }
 
     if (handlePosition === "bl") {
       let newHeight = height + offsetY;
       handleLeftResizeHandle(offsetX);
-      setHeight(newHeight > 0 ? newHeight : height);
+      setHeight(newHeight > minHeight ? newHeight : height);
     }
 
     if (handlePosition === "tl") {
@@ -128,7 +129,7 @@ const Window = ({
       const newWidth = width + offsetX;
       const newHeight = height + offsetY;
       setWidth(newWidth > minWidth ? newWidth : width);
-      setHeight(newHeight > 0 ? newHeight : height);
+      setHeight(newHeight > minHeight ? newHeight : height);
     }
   };
   const handleResizeEnd = (e) => e.stopPropagation();

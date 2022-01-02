@@ -23,14 +23,15 @@ const NotepadNavbar = () => {
         { name: "File", size: "14.5rem" },
         { name: "Edit", size: "12.5rem" },
         { name: "Format", size: "7.5rem" },
-        { name: "View", size: "14.5rem" },
-        { name: "Help", size: "14.5rem" },
+        { name: "View", size: "7.5rem" },
       ].map(({ name, size }) => (
         <div className='flex-center notepad-nav-tab' onClick={chnageActiveTab}>
           {name}
-          <div className='nav-dropdown-menu' style={{ width: size }}>
-            {activeTab === name ? dropdownMenus[name] : null}
-          </div>
+          {activeTab === name && (
+            <div className='nav-dropdown-menu' style={{ width: size }}>
+              {dropdownMenus[name]}
+            </div>
+          )}
         </div>
       ))}
     </div>

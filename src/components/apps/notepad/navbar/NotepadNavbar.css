@@ -3,8 +3,9 @@
   border-bottom: 2px solid #f0f0f0;
   display: flex;
   font-size: 0.8rem;
-  height: 1.25rem;
+  height: fit-content;
   align-items: flex-end;
+  flex-wrap: wrap;
 }
 
 .notepad-nav-tab {
@@ -23,11 +24,12 @@
 }
 
 .nav-dropdown-menu {
+  z-index: 2;
   width: 14.5rem;
   height: fit-content;
   position: absolute;
-  left: 0;
-  top: 1.2rem;
+  left: -1px;
+  top: 1.175rem;
   background-color: #f2f2f2;
   -webkit-box-shadow: 3px 3px 3px -1px #595959;
   box-shadow: 3px 3px 3px -1px #595959;

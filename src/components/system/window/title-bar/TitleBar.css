@@ -13,10 +13,13 @@
   font-size: 0.75rem;
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .window-controls {
-  width: 7.75rem;
+  min-width: 7.75rem;
   display: flex;
 }
 
