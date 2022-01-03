@@ -1,0 +1,131 @@
+.new-file-form {
+  padding-top: 0.75rem;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.new-file-form > * {
+  flex-basis: 100%;
+  padding-right: 0.5rem;
+}
+
+.new-file-form > label,
+.open-file-form > .file-name-and-encoding > label,
+.open-file-form > .file-type-and-save-or-cancel > label {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-bottom: 0.15rem;
+}
+
+.new-file-form > label > span,
+.open-file-form > .file-name-and-encoding > label > span,
+.open-file-form > .file-type-and-save-or-cancel > label > span {
+  color: white;
+  font-weight: 100;
+  font-size: 0.7rem;
+  flex-basis: 7rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.new-file-form > label > input,
+.new-file-form > label > select,
+.new-file-form > .encoding > label > select,
+.open-file-form > .file-name-and-encoding > label > input,
+.open-file-form > .file-name-and-encoding > label > select,
+.open-file-form > .file-type-and-save-or-cancel > label > input,
+.open-file-form > .file-type-and-save-or-cancel > label > select {
+  box-sizing: border-box;
+  background-color: transparent;
+  border: 1px solid #a0a0a0;
+  color: white;
+  font-weight: 100;
+  font-size: 0.7rem;
+  flex-grow: 1;
+  margin-left: 0.25rem;
+  margin-right: 0.5rem;
+  outline: none;
+  height: 1.25rem;
+}
+
+.encoding {
+  flex-grow: 1;
+  flex-basis: unset !important;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0.75rem 0;
+}
+
+.encoding > label,
+.encoding > label > select {
+  font-weight: 100;
+  font-size: 0.7rem;
+  color: white;
+}
+
+.encoding > label > select {
+  margin-right: 0.15rem !important;
+}
+
+.save-or-cancel,
+.open-or-cancel {
+  flex-basis: fit-content !important;
+}
+
+.save-or-cancel > button,
+.open-or-cancel > button {
+  background-color: transparent;
+  border: 2px solid #d9d9d9;
+  width: 4.5rem;
+  color: white;
+  font-weight: 100;
+  font-size: 0.65rem;
+}
+
+.save-or-cancel > button:first-child {
+  margin: 0.75rem 0;
+  margin-right: 0.5rem;
+}
+
+.open-file-form {
+  padding-top: 0.75rem;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding-bottom: 0.5rem;
+  padding-right: 0.25rem;
+}
+
+.open-file-form > .file-name-and-encoding {
+  flex-grow: 1;
+}
+
+.file-name-and-encoding {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.file-name-and-encoding > label:first-child {
+  flex-basis: 100%;
+}
+
+.file-name-and-encoding > label:last-child {
+  font-size: 0.7rem;
+  flex-basis: 16rem !important;
+}
+
+.file-type-and-save-or-cancel {
+  flex-basis: 10rem;
+}
+
+.file-type-and-save-or-cancel > label > select {
+  margin-left: 0 !important;
+}
+
+.open-or-cancel > button:first-child {
+  margin: 0.25rem 0;
+  margin-right: 0.5rem;
+}

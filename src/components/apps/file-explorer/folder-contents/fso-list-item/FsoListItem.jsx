@@ -21,6 +21,8 @@ const FsoListItem = ({
   location,
   moveFSO,
   setExpandBranches,
+  openFile,
+  endProcess,
 }) => {
   const {
     Name,
@@ -76,11 +78,17 @@ const FsoListItem = ({
     );
 
   const handleDoubleClick = (e) => {
+    if (openFile) {
+      openFile(path, name);
+      return endProcess("File Explorer", "Notepad");
+    }
     if (type === "DIRECTORY") {
       setExpandBranches(true);
       changePath(location ? location : Path.join(path, name));
     }
   };
+
+  const handleClick = (e) => {};
 
   const handleDragStart = (e) => {
     e.dataTransfer.setData(
@@ -122,6 +130,7 @@ const FsoListItem = ({
       }}
       onContextMenu={handleRightClick}
       onDoubleClick={handleDoubleClick}
+      onClick={handleClick}
       onDragStart={handleDragStart}
     >
       <div style={{ minWidth: Name, maxWidth: Name }}>

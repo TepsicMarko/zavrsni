@@ -19,6 +19,8 @@ const FileExplorerFolderContents = ({
   searchResults,
   setItemCount,
   setExpandBranches,
+  openFile,
+  endProcess,
 }) => {
   const { watch, getFolder, updateFSO, deleteFSO, createFSO, moveFSO } =
     useContext(FileSystemContext);
@@ -164,6 +166,8 @@ const FileExplorerFolderContents = ({
                 location={fso.path}
                 moveFSO={moveFSO}
                 setExpandBranches={setExpandBranches}
+                openFile={openFile}
+                endProcess={endProcess}
               />
             );
           }

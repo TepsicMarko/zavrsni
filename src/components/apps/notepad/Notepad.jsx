@@ -7,7 +7,8 @@ import NotepadNavbar from "./navbar/NotepadNavbar";
 import { useState, memo, useEffect, useContext, useRef } from "react";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
 
-const Notepad = ({ icon, filePath }) => {
+const Notepad = ({ icon, path = "" }) => {
+  const [filePath, setFilePath] = useState(path);
   const [text, setText] = useState({ content: "", lines: 1 });
   const { readFileContent } = useContext(FileSystemContext);
   const divRef = useRef(null);
@@ -33,7 +34,8 @@ const Notepad = ({ icon, filePath }) => {
   };
 
   useEffect(() => {
-    filePath && readFileContent(filePath, setTextContent);
+    console.log("reading file", filePath);
+    filePath.length && readFileContent(filePath, setTextContent);
   }, [filePath]);
 
   return (
@@ -51,7 +53,11 @@ const Notepad = ({ icon, filePath }) => {
           flexDirection='column'
           flexWrap='wrap'
         >
-          <NotepadNavbar textContent={text.content} filePath={filePath} />
+          <NotepadNavbar
+            textContent={text.content}
+            filePath={filePath}
+            setFilePath={setFilePath}
+          />
           <div
             className='notepad-text-content-container'
             onClick={focusTextContent}

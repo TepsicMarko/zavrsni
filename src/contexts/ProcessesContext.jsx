@@ -20,6 +20,7 @@ const initialState = {
     minimised: false,
     icon: <img src={notepad} width='30rem' />,
     pinnedToTaskbar: true,
+    childProcess: {},
   },
 };
 
@@ -60,16 +61,17 @@ export const ProcessesProvider = ({ children }) => {
   };
 
   const endProcess = (name, parentProcess) => {
-    const { childProcess: remove, ...rest } =
-      processes[parentProcess ? parentProcess : name];
+    // const { childProcess: remove, ...rest } =
+    //   processes[parentProcess ? parentProcess : name];
     setProcesses({
       ...processes,
       [parentProcess ? parentProcess : name]: {
-        ...rest,
+        ...processes[parentProcess ? parentProcess : name],
         running: parentProcess ? true : false,
         source: parentProcess
           ? processes[parentProcess].source
           : initialState[name].source,
+        childProcess: {},
       },
     });
   };
@@ -98,9 +100,11 @@ export const ProcessesProvider = ({ children }) => {
           !app.minimised && app.running ? (
             <>
               {cloneElement(app.source, { key: process })}
-              {cloneElement(app.childProcess.source, {
-                key: process + "-" + processes[process].childProcess.name,
-              })}
+              {Object.keys(app.childProcess).length
+                ? cloneElement(app.childProcess.source, {
+                    key: process + "-" + processes[process].childProcess.name,
+                  })
+                : null}
             </>
           ) : null
         ) : !app.minimised && app.running ? (

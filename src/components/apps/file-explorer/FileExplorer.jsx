@@ -18,6 +18,9 @@ const FileExplorer = ({
   endProcess,
   createFile,
   parentProcess,
+  minWidth,
+  minHeight,
+  openFile,
 }) => {
   const [activeTab, setActiveTab] = useState("Home");
   const [path, setPath] = useState(customPath || "/C/users/admin");
@@ -40,8 +43,8 @@ const FileExplorer = ({
       <Window
         app='File Explorer'
         icon={icon}
-        minWindowWidth='14rem'
-        minWindowHeight='16rem'
+        minWindowWidth={minWidth || "14rem"}
+        minWindowHeight={minHeight || "16rem"}
         titleBar={{ color: "white", backgroundColor: "black" }}
         parentProcess={parentProcess}
       >
@@ -63,7 +66,7 @@ const FileExplorer = ({
             className='navigation-pane-and-folder-contents-container'
             style={{
               height: `calc(100%${
-                mode === "w" ? "" : " - 1.25rem - 5.25rem"
+                mode === "w" || mode === "r" ? "" : " - 1.25rem - 5.25rem"
               } - 2.25rem)`,
             }}
           >
@@ -83,6 +86,8 @@ const FileExplorer = ({
               searchResults={searchResults}
               setItemCount={setItemCount}
               setExpandBranches={setExpandBranches}
+              openFile={openFile}
+              endProcess={endProcess}
             />
           </div>
         </WindowContent>
@@ -99,6 +104,7 @@ const FileExplorer = ({
             createFile={createFile}
             endProcess={endProcess}
             parentProcess={parentProcess}
+            openFile={openFile}
           />
         </StatusBar>
       </Window>
