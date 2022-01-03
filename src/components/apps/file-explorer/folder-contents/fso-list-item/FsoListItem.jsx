@@ -1,10 +1,10 @@
 import "./FsoListItem.css";
 import { memo, useRef, useContext } from "react";
-import remToPx from "../../../../../helpers/remToPx";
 import getFileTypeIcon from "../../../../../utils/getFileTypeIcon";
 import FsoListItemContextMenu from "../../../../system/component-specific-context-menus/FsoListItemContextMenu";
 import selectInputContent from "../../../../../utils/selectInputContent";
 import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuContext";
+import { ProcessesContext } from "../../../../../contexts/ProcessesContext";
 import { path as Path } from "filer";
 import useInput from "../../../../../hooks/useInput";
 
@@ -32,6 +32,7 @@ const FsoListItem = ({
 
   const inputRef = useRef(null);
   const { renderOptions } = useContext(RightClickMenuContext);
+  const { startProcess } = useContext(ProcessesContext);
   const [inputValue, handleInputChange] = useInput(name);
 
   const handleKeyDown = (e) => {
@@ -68,14 +69,17 @@ const FsoListItem = ({
         focusInput={focusInput}
         path={path}
         changePath={changePath}
-        type={type.toLowerCase()}
+        type={type}
         Path={Path}
+        startProcess={startProcess}
       />
     );
 
   const handleDoubleClick = (e) => {
-    type === "DIRECTORY" && setExpandBranches(true);
-    changePath(location ? location : Path.join(path, name));
+    if (type === "DIRECTORY") {
+      setExpandBranches(true);
+      changePath(location ? location : Path.join(path, name));
+    }
   };
 
   const handleDragStart = (e) => {

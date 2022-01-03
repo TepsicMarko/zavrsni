@@ -4,15 +4,18 @@ import WindowContent from "../../system/window/window-content/WindowContent";
 import StatusBar from "../../system/window/status-bar/StatusBar";
 import { WindowWidthProvider } from "../../../contexts/WindowWidthContext";
 import NotepadNavbar from "./navbar/NotepadNavbar";
-import { useState, memo } from "react";
+import { useState, memo, useEffect, useContext, useRef } from "react";
+import { FileSystemContext } from "../../../contexts/FileSystemContext";
 
-const Notepad = ({ icon }) => {
+const Notepad = ({ icon, filePath }) => {
   const [text, setText] = useState({ content: "", lines: 1 });
+  const { readFileContent } = useContext(FileSystemContext);
+  const divRef = useRef(null);
 
   const handleChange = (e) => {
     setText({
       content: e.target.textContent,
-      lines: (e.target.innerHTML.match(/<div>/g) || "1").length,
+      lines: (e.target.innerHTML.match(/<div>/g) || "").length + 1,
     });
   };
 
@@ -21,6 +24,17 @@ const Notepad = ({ icon }) => {
   };
 
   const stopPropagation = (e) => e.stopPropagation();
+  const setTextContent = (content) => {
+    setText({
+      content,
+      lines: (`${content}`.match(/<div>/g) || "").length + 1,
+    });
+    divRef.current.innerHTML = content;
+  };
+
+  useEffect(() => {
+    filePath && readFileContent(filePath, setTextContent);
+  }, [filePath]);
 
   return (
     <WindowWidthProvider>
@@ -37,12 +51,13 @@ const Notepad = ({ icon }) => {
           flexDirection='column'
           flexWrap='wrap'
         >
-          <NotepadNavbar textContent={text.content} />
+          <NotepadNavbar textContent={text.content} filePath={filePath} />
           <div
             className='notepad-text-content-container'
             onClick={focusTextContent}
           >
             <div
+              ref={divRef}
               className='notepad-text-content'
               contentEditable
               suppressContentEditableWarning

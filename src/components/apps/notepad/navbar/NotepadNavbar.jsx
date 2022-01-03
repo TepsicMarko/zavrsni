@@ -12,7 +12,7 @@ const dropdownMenus = {
   View: <ViewDropdownMenu />,
 };
 
-const NotepadNavbar = ({ textContent }) => {
+const NotepadNavbar = ({ textContent, filePath }) => {
   const [activeTab, setActiveTab] = useState("");
   const navRef = useRef(null);
 
@@ -46,7 +46,7 @@ const NotepadNavbar = ({ textContent }) => {
           {activeTab === name && (
             <div className='nav-dropdown-menu' style={{ width: size }}>
               {name === "File"
-                ? cloneElement(dropdownMenus[name], { textContent })
+                ? cloneElement(dropdownMenus[name], { textContent, filePath })
                 : dropdownMenus[name]}
             </div>
           )}

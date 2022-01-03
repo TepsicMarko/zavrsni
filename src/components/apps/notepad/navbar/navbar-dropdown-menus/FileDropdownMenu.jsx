@@ -3,13 +3,15 @@ import { useState, useContext } from "react";
 import { ProcessesContext } from "../../../../../contexts/ProcessesContext";
 import { FileSystemContext } from "../../../../../contexts/FileSystemContext";
 
-const FileDropdownMenu = ({ textContent }) => {
+const FileDropdownMenu = ({ textContent, filePath }) => {
   const { startChildProcess, endProcess } = useContext(ProcessesContext);
-  const { createFSO } = useContext(FileSystemContext);
+  const { createFSO, saveFile } = useContext(FileSystemContext);
 
   const createFile = (path, name) => {
     createFSO(path, name, "file", textContent);
   };
+
+  const saveChanges = () => saveFile(filePath, "", textContent);
 
   const openFileExplorer = (e) => {
     console.log("opening file explorer");
@@ -27,7 +29,7 @@ const FileDropdownMenu = ({ textContent }) => {
       <ContextMenuItem fontWeight='400' name='New' />
       <ContextMenuItem fontWeight='400' name='New Window' />
       <ContextMenuItem fontWeight='400' name='Open...' />
-      <ContextMenuItem fontWeight='400' name='Save' />
+      <ContextMenuItem fontWeight='400' name='Save' onClick={saveChanges} />
       <ContextMenuItem
         fontWeight='400'
         name='Save As...'

@@ -6,6 +6,7 @@ const FileExplorerStatusBar = ({
   mode,
   createFile,
   endProcess,
+  parentProcess,
 }) => {
   const [fileName, setFileName] = useState("");
   const [fileType, setFileType] = useState("Text Document (*.txt)");
@@ -14,10 +15,10 @@ const FileExplorerStatusBar = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     createFile(path, fileName);
-    endProcess("File Explorer");
+    endProcess("File Explorer", parentProcess);
   };
 
-  const closeWindow = () => endProcess("File Explorer");
+  const closeWindow = () => endProcess("File Explorer", parentProcess);
 
   const handleChange = (e) => {
     if (e.target.name === "name") {

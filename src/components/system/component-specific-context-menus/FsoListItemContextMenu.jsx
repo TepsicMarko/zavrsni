@@ -1,5 +1,5 @@
 import ContextMenuItem from "../context-menu/context-menu-item/ContextMenuItem";
-import { useState } from "react";
+import { path as Path } from "filer";
 
 const FsoListItemContextMenu = ({
   name,
@@ -11,6 +11,7 @@ const FsoListItemContextMenu = ({
   changePath,
   type,
   Path,
+  startProcess,
 }) => {
   // const [openSubmenu, setOpenSubmenu] = useState("");
   // const handleClick = (name) => setOpenSubmenu(name);
@@ -20,8 +21,11 @@ const FsoListItemContextMenu = ({
   };
 
   const openFSO = () => {
-    if (type === "directory") {
+    if (type === "DIRECTORY") {
       changePath(Path.join(path, name));
+    }
+    if (type === "FILE") {
+      startProcess("Notepad", { filePath: Path.join(path, name) });
     }
   };
 

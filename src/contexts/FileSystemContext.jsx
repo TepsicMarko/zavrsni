@@ -20,17 +20,20 @@ export const FileSystemProvider = ({ children }) => {
       }
     });
 
-  const writeFile = (path, content = "", i = 1) => {
-    exists(path)
-      .then((exists) =>
-        writeFile(
-          (i > 1 ? path.slice(0, path.indexOf("(") - 1) : path) + ` (${i + 1})`,
-          i + 1
+  const writeFile = (path, isNewFile, content = "", i = 1) => {
+    if (isNewFile) {
+      exists(path)
+        .then((exists) =>
+          writeFile(
+            (i > 1 ? path.slice(0, path.indexOf("(") - 1) : path) +
+              ` (${i + 1})`,
+            i + 1
+          )
         )
-      )
-      .catch((doesntExist) =>
-        fs.writeFile(path, content, (err) => console.log(err))
-      );
+        .catch((doesntExist) =>
+          fs.writeFile(path, content, (err) => console.log(err))
+        );
+    } else fs.writeFile(path, content, (err) => console.log(err));
   };
   const link = (
     filePath,
@@ -41,6 +44,13 @@ export const FileSystemProvider = ({ children }) => {
     new Promise((resolve, reject) => {
       fs.readdir(path, { withFileTypes: true }, (err, files) =>
         err ? reject(err) : resolve(files)
+      );
+    });
+
+  const readFile = (path) =>
+    new Promise((resolve, reject) => {
+      fs.readFile(path, "utf8", (err, content) =>
+        err ? reject(err) : resolve(content)
       );
     });
 
@@ -55,13 +65,12 @@ export const FileSystemProvider = ({ children }) => {
     fs.unlink(Path.join(path, name), (err) => console.log(err));
 
   const createFSO = (path, name, type, content) => {
-    console.log(Path.join(path, name));
     if (type === "directory") {
       mkdir(path, name);
     } else if (type === "lnk") {
       link(Path.join(path, name));
     } else {
-      writeFile(Path.join(path, name), content);
+      writeFile(Path.join(path, name), true, content);
     }
   };
 
@@ -69,11 +78,19 @@ export const FileSystemProvider = ({ children }) => {
     readdir(path).then((dirContent) => callback(dirContent));
   };
 
+  const readFileContent = (path, callback) => {
+    readFile(path).then((content) => callback(content));
+  };
+
   const updateFSO = (name, path) => {
     console.log(name, path);
     fs.rename(Path.join(path, name.old), Path.join(path, name.new), (err) =>
       console.log(err)
     );
+  };
+
+  const saveFile = (path, name, content) => {
+    writeFile(path, false, content);
   };
 
   const moveFSO = (currentPath, newPath) => {
@@ -153,7 +170,9 @@ export const FileSystemProvider = ({ children }) => {
         createFSO,
         getFolder,
         updateFSO,
+        saveFile,
         deleteFSO,
+        readFileContent,
         watch,
         exists,
         findFSO,

@@ -98,6 +98,7 @@ const FileExplorer = ({
             mode={mode}
             createFile={createFile}
             endProcess={endProcess}
+            parentProcess={parentProcess}
           />
         </StatusBar>
       </Window>
