@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, createContext, cloneElement } from "react";
 import { FcFolder } from "react-icons/fc";
 import FileExplorer from "../components/apps/file-explorer/FileExplorer";
 import Notepad from "../components/apps/notepad/Notepad";
@@ -6,35 +6,71 @@ import notepad from "../assets/notepad.png";
 
 export const ProcessesContext = createContext();
 
-export const ProcessesProvider = ({ children }) => {
-  const [processes, setProcesses] = useState({
-    "File Explorer": {
-      source: <FileExplorer icon={<FcFolder />} />,
-      running: false,
-      minimised: false,
-      icon: <FcFolder />,
-      pinnedToTaskbar: true,
-    },
-    Notepad: {
-      source: <Notepad icon={<img src={notepad} width='20rem' />} />,
-      running: false,
-      minimised: false,
-      icon: <img src={notepad} width='30rem' />,
-      pinnedToTaskbar: true,
-    },
-  });
+const initialState = {
+  "File Explorer": {
+    source: <FileExplorer icon={<FcFolder />} />,
+    running: false,
+    minimised: false,
+    icon: <FcFolder />,
+    pinnedToTaskbar: true,
+  },
+  Notepad: {
+    source: <Notepad icon={<img src={notepad} width='20rem' />} />,
+    running: false,
+    minimised: false,
+    icon: <img src={notepad} width='30rem' />,
+    pinnedToTaskbar: true,
+  },
+};
 
-  const startProcess = (name) => {
+export const ProcessesProvider = ({ children }) => {
+  const [processes, setProcesses] = useState({ ...initialState });
+
+  const startProcess = (name, props = {}) => {
+    const hasProps = Object.keys(props).length;
     setProcesses({
       ...processes,
-      [name]: { ...processes[name], running: true, minimised: false },
+      [name]: {
+        ...processes[name],
+        running: true,
+        minimised: false,
+        source: hasProps
+          ? cloneElement(processes[name].source, { ...props })
+          : processes[name].source,
+      },
     });
   };
 
-  const endProcess = (name) => {
+  const startChildProcess = (parent, child, props) => {
+    const hasProps = Object.keys(props).length;
     setProcesses({
       ...processes,
-      [name]: { ...processes[name], running: false },
+      [parent]: {
+        ...processes[parent],
+        childProcess: {
+          ...processes[child],
+          name: child,
+          running: true,
+          source: hasProps
+            ? cloneElement(processes[child].source, { ...props })
+            : processes[child].source,
+        },
+      },
+    });
+  };
+
+  const endProcess = (name, parentProcess) => {
+    const { childProcess: remove, ...rest } =
+      processes[parentProcess ? parentProcess : name];
+    setProcesses({
+      ...processes,
+      [parentProcess ? parentProcess : name]: {
+        ...rest,
+        running: parentProcess ? true : false,
+        source: parentProcess
+          ? processes[parentProcess].source
+          : initialState[name].source,
+      },
     });
   };
 
@@ -45,25 +81,32 @@ export const ProcessesProvider = ({ children }) => {
     });
   };
 
-  const renderProcesses = () => {
-    let openProcesses = [];
-
-    for (let Process in processes) {
-      const app = processes[Process];
-      if (!app.minimised && app.running) {
-        openProcesses.push(app.source);
-      }
-    }
-
-    return openProcesses;
-  };
-
   return (
     <ProcessesContext.Provider
-      value={{ processes, startProcess, endProcess, minimiseToTaskbar }}
+      value={{
+        processes,
+        startProcess,
+        startChildProcess,
+        endProcess,
+        minimiseToTaskbar,
+      }}
     >
       {children}
-      {renderProcesses()}
+      {Object.keys(processes).map((process) => {
+        const app = processes[process];
+        return app.childProcess ? (
+          !app.minimised && app.running ? (
+            <>
+              {cloneElement(app.source, { key: process })}
+              {cloneElement(app.childProcess.source, {
+                key: process + "-" + processes[process].childProcess.name,
+              })}
+            </>
+          ) : null
+        ) : !app.minimised && app.running ? (
+          cloneElement(app.source, { key: process })
+        ) : null;
+      })}
     </ProcessesContext.Provider>
   );
 };

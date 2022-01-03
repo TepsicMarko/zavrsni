@@ -9,10 +9,18 @@ import FileExplorerNavigationBar from "./navigation-bar/FileExplorerNavigationBa
 import FileExplorerNavigationPane from "./navigation-pane/FileExplorerNavigationPane";
 import FileExplorerFolderContents from "./folder-contents/FileExplorerFolderContents";
 import { WindowWidthProvider } from "../../../contexts/WindowWidthContext";
+import FileExplorerStatusBar from "./status-bar/FileExplorerStatusBar";
 
-const FileExplorer = ({ icon }) => {
+const FileExplorer = ({
+  icon,
+  customPath,
+  mode = "v",
+  endProcess,
+  createFile,
+  parentProcess,
+}) => {
   const [activeTab, setActiveTab] = useState("Home");
-  const [path, setPath] = useState("/C/users/admin");
+  const [path, setPath] = useState(customPath || "/C/users/admin");
   const [width, setWidth] = useState();
   const [searchResults, setSearchResults] = useState([]);
   const [itemCount, setItemCount] = useState("");
@@ -35,10 +43,15 @@ const FileExplorer = ({ icon }) => {
         minWindowWidth='14rem'
         minWindowHeight='16rem'
         titleBar={{ color: "white", backgroundColor: "black" }}
+        parentProcess={parentProcess}
       >
         <WindowContent backgroundColor='#202020' flex flexDirection='row'>
-          <FileExplorerNavbar activeTab={activeTab} changeTab={changeTab} />
-          <FileExplorerRibbon activeTab={activeTab} />
+          {mode === "v" && (
+            <>
+              <FileExplorerNavbar activeTab={activeTab} changeTab={changeTab} />
+              <FileExplorerRibbon activeTab={activeTab} />
+            </>
+          )}
           <FileExplorerNavigationBar
             path={path}
             setPath={changePath}
@@ -46,7 +59,14 @@ const FileExplorer = ({ icon }) => {
             setSearchResults={setSearchResults}
             setExpandBranches={setExpandBranches}
           />
-          <div className='navigation-pane-and-folder-contents-container'>
+          <div
+            className='navigation-pane-and-folder-contents-container'
+            style={{
+              height: `calc(100%${
+                mode === "w" ? "" : " - 1.25rem - 5.25rem"
+              } - 2.25rem)`,
+            }}
+          >
             <FileExplorerNavigationPane
               changePath={changePath}
               basePath='/C/users/admin'
@@ -66,8 +86,19 @@ const FileExplorer = ({ icon }) => {
             />
           </div>
         </WindowContent>
-        <StatusBar backgroundColor='#2e2e2e' color='#DEDEDE' flex>
-          <div className='item-count'>{itemCount}</div>
+        <StatusBar
+          backgroundColor='#2e2e2e'
+          color='#DEDEDE'
+          flex
+          height='fit-content'
+        >
+          <FileExplorerStatusBar
+            path={path}
+            itemCount={itemCount}
+            mode={mode}
+            createFile={createFile}
+            endProcess={endProcess}
+          />
         </StatusBar>
       </Window>
     </WindowWidthProvider>

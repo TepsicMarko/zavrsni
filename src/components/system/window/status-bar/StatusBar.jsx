@@ -10,6 +10,7 @@ const StatusBar = ({
   borderStyle,
   borderWidth,
   fontWeight,
+  height,
 }) => {
   return (
     <div
@@ -22,6 +23,7 @@ const StatusBar = ({
         borderStyle,
         borderWidth,
         fontWeight,
+        height,
       }}
     >
       {children}

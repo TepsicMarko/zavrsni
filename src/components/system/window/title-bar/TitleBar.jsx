@@ -18,6 +18,7 @@ const TitleBar = ({
   handleDragStart,
   handleDrag,
   handleDragEnd,
+  parentProcess,
 }) => {
   return (
     <div
@@ -31,13 +32,23 @@ const TitleBar = ({
       <div className='flex-center aplication-icon'>{icon}</div>
       <div className='aplication-name'>{name}</div>
       <div className='window-controls'>
-        <div className='flex-center' onClick={minimiseWindow}>
-          <VscChromeMinimize color={color} size='0.85rem' />
-        </div>
-        <div className='flex-center' onClick={maximiseWindow}>
-          <VscChromeMaximize color={color} size='0.9rem' />
-        </div>
-        <div className='flex-center' onClick={closeWindow}>
+        {!parentProcess && (
+          <>
+            <div className='flex-center' onClick={minimiseWindow}>
+              <VscChromeMinimize color={color} size='0.85rem' />
+            </div>
+            <div className='flex-center' onClick={maximiseWindow}>
+              <VscChromeMaximize color={color} size='0.9rem' />
+            </div>
+          </>
+        )}
+        <div
+          className='flex-center'
+          style={{
+            maxWidth: parentProcess ? "41px" : "",
+          }}
+          onClick={closeWindow}
+        >
           <VscChromeClose color={color} size='0.85rem' />
         </div>
       </div>

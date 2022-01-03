@@ -21,6 +21,7 @@
 .window-controls {
   min-width: 7.75rem;
   display: flex;
+  justify-content: flex-end;
 }
 
 .window-controls > div {

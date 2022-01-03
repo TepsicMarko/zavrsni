@@ -4,7 +4,7 @@ import WindowContent from "../../system/window/window-content/WindowContent";
 import StatusBar from "../../system/window/status-bar/StatusBar";
 import { WindowWidthProvider } from "../../../contexts/WindowWidthContext";
 import NotepadNavbar from "./navbar/NotepadNavbar";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 const Notepad = ({ icon }) => {
   const [text, setText] = useState({ content: "", lines: 1 });
@@ -31,8 +31,13 @@ const Notepad = ({ icon }) => {
         minWindowHeight='8.2rem'
         titleBar={{ color: "black", backgroundColor: "white" }}
       >
-        <WindowContent backgroundColor='white' flex flexDirection='row'>
-          <NotepadNavbar />
+        <WindowContent
+          backgroundColor='white'
+          flex
+          flexDirection='column'
+          flexWrap='wrap'
+        >
+          <NotepadNavbar textContent={text.content} />
           <div
             className='notepad-text-content-container'
             onClick={focusTextContent}
@@ -67,4 +72,4 @@ const Notepad = ({ icon }) => {
   );
 };
 
-export default Notepad;
+export default memo(Notepad);

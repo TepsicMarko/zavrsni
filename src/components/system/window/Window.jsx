@@ -18,6 +18,7 @@ const Window = ({
   minWindowWidth,
   minWindowHeight,
   titleBar,
+  parentProcess,
 }) => {
   const [minWidth] = useState(remToPx(minWindowWidth));
   const [minHeight] = useState(remToPx(minWindowHeight));
@@ -134,8 +135,14 @@ const Window = ({
   };
   const handleResizeEnd = (e) => e.stopPropagation();
 
-  const closeWindow = useCallback(() => endProcess(app), [app]);
-  const minimiseWindow = useCallback(() => minimiseToTaskbar(app), [app]);
+  const closeWindow = useCallback(
+    () => endProcess(app, parentProcess),
+    [app, endProcess, parentProcess]
+  );
+  const minimiseWindow = useCallback(
+    () => minimiseToTaskbar(app),
+    [app, minimiseToTaskbar]
+  );
 
   const maximiseWindow = useCallback(() => {
     const { clientWidth, clientHeight } = document.documentElement;
@@ -159,7 +166,6 @@ const Window = ({
 
   useEffect(() => {
     const saveAppData = () => {
-      console.log("test");
       sessionStorage.setItem(
         app,
         JSON.stringify({
@@ -233,6 +239,7 @@ const Window = ({
         handleDragEnd={handleDragEnd}
         name={app}
         icon={icon}
+        parentProcess={parentProcess}
       />
       {children}
     </div>

@@ -1,5 +1,6 @@
 .notepad-navbar {
-  flex-basis: 100%;
+  flex-basis: 1.25rem;
+  width: 100%;
   border-bottom: 2px solid #f0f0f0;
   display: flex;
   font-size: 0.8rem;

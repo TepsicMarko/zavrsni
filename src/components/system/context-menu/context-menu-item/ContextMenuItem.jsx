@@ -14,7 +14,7 @@ const ContextMenuItem = ({
 }) => {
   const handleClick = (e) => {
     onClick(e);
-    closeMenu();
+    closeMenu && closeMenu();
   };
 
   return (

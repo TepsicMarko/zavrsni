@@ -1,10 +1,21 @@
 import "./WindowContent.css";
 import { memo } from "react";
 
-const WindowContent = ({ children, backgroundColor, flex, flexDirection }) => {
+const WindowContent = ({
+  children,
+  backgroundColor,
+  flex,
+  flexDirection,
+  flexWrap,
+}) => {
   return (
     <div
-      style={{ backgroundColor, flexDirection, display: flex ? "flex" : "" }}
+      style={{
+        backgroundColor,
+        flexDirection,
+        display: flex ? "flex" : "",
+        flexWrap,
+      }}
       className='window-content'
     >
       {children}

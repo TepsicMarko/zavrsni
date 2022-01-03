@@ -20,7 +20,7 @@ export const FileSystemProvider = ({ children }) => {
       }
     });
 
-  const writeFile = (path, i = 1) => {
+  const writeFile = (path, content = "", i = 1) => {
     exists(path)
       .then((exists) =>
         writeFile(
@@ -29,7 +29,7 @@ export const FileSystemProvider = ({ children }) => {
         )
       )
       .catch((doesntExist) =>
-        fs.writeFile(path, "", (err) => console.log(err))
+        fs.writeFile(path, content, (err) => console.log(err))
       );
   };
   const link = (
@@ -54,14 +54,14 @@ export const FileSystemProvider = ({ children }) => {
   const unlink = (path, name) =>
     fs.unlink(Path.join(path, name), (err) => console.log(err));
 
-  const createFSO = (path, name, type) => {
+  const createFSO = (path, name, type, content) => {
     console.log(Path.join(path, name));
     if (type === "directory") {
       mkdir(path, name);
     } else if (type === "lnk") {
       link(Path.join(path, name));
     } else {
-      writeFile(Path.join(path, name));
+      writeFile(Path.join(path, name), content);
     }
   };
 
