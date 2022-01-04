@@ -31,6 +31,7 @@ const FileDropdownMenu = ({ textContent, filePath, setFilePath }) => {
   };
 
   const openFileSelection = (e) => {
+    console.log("Opening file selection");
     startChildProcess("Notepad", "File Explorer", {
       customPath: "/C/users/admin/Documents",
       mode: "r",

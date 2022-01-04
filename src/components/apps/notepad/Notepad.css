@@ -1,7 +1,10 @@
 .notepad-text-content-container {
   flex-grow: 1;
+  min-height: 0px !important;
+  height: 0px;
   width: 100%;
-  overflow: scroll;
+  overflow-x: scroll;
+  overflow-y: scroll;
 }
 
 .notepad-text-content {

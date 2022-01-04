@@ -10,6 +10,7 @@ import { FileSystemContext } from "../../../contexts/FileSystemContext";
 const Notepad = ({ icon, path = "" }) => {
   const [filePath, setFilePath] = useState(path);
   const [text, setText] = useState({ content: "", lines: 1 });
+  const [wordWrap, setWordWrap] = useState(false);
   const { readFileContent } = useContext(FileSystemContext);
   const divRef = useRef(null);
 
@@ -62,10 +63,16 @@ const Notepad = ({ icon, path = "" }) => {
             filePath={filePath}
             setFilePath={setFilePath}
             divRef={divRef}
+            setWordWrap={setWordWrap}
+            wordWrap={wordWrap}
           />
           <div
             className='notepad-text-content-container'
             onClick={focusTextContent}
+            style={{
+              overflowX: wordWrap ? "initial" : "",
+              paddingBottom: wordWrap ? "1rem" : "",
+            }}
           >
             <div
               ref={divRef}
@@ -74,6 +81,7 @@ const Notepad = ({ icon, path = "" }) => {
               suppressContentEditableWarning
               onInput={handleChange}
               onClick={stopPropagation}
+              style={{ maxWidth: wordWrap ? "calc(100% - 4px)" : "" }}
             ></div>
           </div>
         </WindowContent>

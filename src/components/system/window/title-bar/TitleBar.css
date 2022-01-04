@@ -1,5 +1,5 @@
 .title-bar {
-  height: 1.75rem;
+  min-height: 1.75rem;
   display: flex;
 }
 

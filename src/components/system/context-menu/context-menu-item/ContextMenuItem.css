@@ -1,15 +1,18 @@
 .context-menu-item {
   position: relative;
-  padding: 0.2rem 0;
+  padding: 0.1rem 0.1rem 0.1rem 0.05rem;
   cursor: pointer;
   display: flex;
+  height: 1.25rem;
 }
 
 .cm-item-icon {
   flex-basis: 1.5rem;
   position: relative;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  height: 100%;
+  margin-right: 0.25rem;
 }
 
 .cm-item-icon > svg {
@@ -19,8 +22,19 @@
 
 .cm-item-name {
   flex-grow: 1;
+  display: flex;
+  align-items: center;
 }
 
 .cm-item-expand {
   flex-basis: 0.5rem;
+}
+
+.cm-checkbox-name:hover,
+.cm-checkbox:hover {
+  background-color: #91c9f7;
+}
+
+.cm-checkbox-checked {
+  background-color: #56b0fa;
 }

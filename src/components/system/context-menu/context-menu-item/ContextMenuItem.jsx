@@ -1,6 +1,8 @@
 import "./ContextMenuItem.css";
 import { VscCircleFilled } from "react-icons/vsc";
 import { MdArrowForwardIos } from "react-icons/md";
+import { FiCheck } from "react-icons/fi";
+
 const ContextMenuItem = ({
   name,
   openSubmenu,
@@ -12,6 +14,7 @@ const ContextMenuItem = ({
   closeMenu,
   fontWeight,
   returnName,
+  checkBox,
 }) => {
   const handleClick = (e) => {
     onClick(returnName ? name : e);
@@ -23,10 +26,22 @@ const ContextMenuItem = ({
       className='context-menu-item'
       onClick={children ? () => onClick(name) : handleClick}
     >
-      <div className='cm-item-icon'>
-        {radio && active && <VscCircleFilled />}
-      </div>
-      <div className='cm-item-name' style={{ fontWeight }}>
+      <div
+        className={"cm-item-name" + (checkBox ? " cm-checkbox-name" : "")}
+        style={{ fontWeight }}
+      >
+        {" "}
+        <div
+          className={
+            "cm-item-icon" +
+            (checkBox
+              ? ` flex-center cm-checkbox${active ? "-checked " : ""}`
+              : "")
+          }
+        >
+          {checkBox && <FiCheck />}
+          {radio && active && <VscCircleFilled />}
+        </div>
         {name}
       </div>
       {children && (

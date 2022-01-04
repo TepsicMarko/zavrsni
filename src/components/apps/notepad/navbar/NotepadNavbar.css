@@ -26,15 +26,15 @@
 
 .nav-dropdown-menu {
   z-index: 2;
-  width: 14.5rem;
-  height: fit-content;
   position: absolute;
-  left: -1px;
-  top: 1.175rem;
-  background-color: #f2f2f2;
+  left: -1px !important;
+  top: 1.175rem !important;
+  background-color: #f2f2f2 !important;
   -webkit-box-shadow: 3px 3px 3px -1px #595959;
   box-shadow: 3px 3px 3px -1px #595959;
   border: 1px solid #d5d5d5;
+  color: black !important;
+  padding: 0.1rem 0.05rem !important;
 }
 
 .nav-dropdown-menu > div {
