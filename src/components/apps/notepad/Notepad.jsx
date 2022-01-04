@@ -27,15 +27,15 @@ const Notepad = ({ icon, path = "" }) => {
 
   const stopPropagation = (e) => e.stopPropagation();
   const setTextContent = (content) => {
-    const divForLength = document.createElement("div");
-    divForLength.innerHTML = content;
+    const textInfo = document.createElement("div");
+    textInfo.innerHTML = content;
     setText({
       content,
       lines: (`${content}`.match(/<div>/g) || "").length + 1,
-      chars: divForLength.textContent.length,
+      chars: textInfo.textContent.length,
     });
     divRef.current.innerHTML = content;
-    divForLength.remove();
+    textInfo.remove();
   };
 
   useEffect(() => {
@@ -61,6 +61,7 @@ const Notepad = ({ icon, path = "" }) => {
             textContent={text.content}
             filePath={filePath}
             setFilePath={setFilePath}
+            divRef={divRef}
           />
           <div
             className='notepad-text-content-container'

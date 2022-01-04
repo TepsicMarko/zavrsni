@@ -12,12 +12,15 @@ const dropdownMenus = {
   View: <ViewDropdownMenu />,
 };
 
-const NotepadNavbar = ({ textContent, filePath, setFilePath }) => {
+const NotepadNavbar = ({ textContent, filePath, setFilePath, divRef }) => {
   const [activeTab, setActiveTab] = useState("");
   const navRef = useRef(null);
 
   const chnageActiveTab = (e) => setActiveTab(e.target.textContent);
-  const stopPropagation = (e) => e.stopPropagation();
+  const handleMouseDown = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  };
 
   useEffect(() => {
     const eventHandler = (e) => {
@@ -40,16 +43,17 @@ const NotepadNavbar = ({ textContent, filePath, setFilePath }) => {
           ref={navRef}
           className='flex-center notepad-nav-tab'
           onClick={chnageActiveTab}
-          onMouseDown={stopPropagation}
+          onMouseDown={handleMouseDown}
         >
           {name}
           {activeTab === name && (
             <div className='nav-dropdown-menu' style={{ width: size }}>
-              {name === "File"
+              {name === "File" || name === "Edit"
                 ? cloneElement(dropdownMenus[name], {
                     setFilePath,
                     textContent,
                     filePath,
+                    divRef,
                   })
                 : dropdownMenus[name]}
             </div>

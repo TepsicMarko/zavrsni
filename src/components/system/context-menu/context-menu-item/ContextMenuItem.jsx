@@ -11,9 +11,10 @@ const ContextMenuItem = ({
   active,
   closeMenu,
   fontWeight,
+  returnName,
 }) => {
   const handleClick = (e) => {
-    onClick(e);
+    onClick(returnName ? name : e);
     closeMenu && closeMenu();
   };
 

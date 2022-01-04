@@ -42,6 +42,8 @@ const FileDropdownMenu = ({ textContent, filePath, setFilePath }) => {
     });
   };
 
+  const exit = () => endProcess("Notepad");
+
   return (
     <>
       <ContextMenuItem fontWeight='400' name='New' />
@@ -53,7 +55,7 @@ const FileDropdownMenu = ({ textContent, filePath, setFilePath }) => {
       />
       <ContextMenuItem fontWeight='400' name='Save' onClick={saveChanges} />
       <ContextMenuItem fontWeight='400' name='Save As...' onClick={SaveAs} />
-      <ContextMenuItem fontWeight='400' name='Exit' />
+      <ContextMenuItem fontWeight='400' name='Exit' onClick={exit} />
     </>
   );
 };
