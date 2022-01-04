@@ -15,8 +15,9 @@ const Notepad = ({ icon, path = "" }) => {
 
   const handleChange = (e) => {
     setText({
-      content: e.target.textContent,
+      content: e.target.innerHTML,
       lines: (e.target.innerHTML.match(/<div>/g) || "").length + 1,
+      chars: e.target.textContent.length,
     });
   };
 
@@ -26,15 +27,18 @@ const Notepad = ({ icon, path = "" }) => {
 
   const stopPropagation = (e) => e.stopPropagation();
   const setTextContent = (content) => {
+    const divForLength = document.createElement("div");
+    divForLength.innerHTML = content;
     setText({
       content,
       lines: (`${content}`.match(/<div>/g) || "").length + 1,
+      chars: divForLength.textContent.length,
     });
     divRef.current.innerHTML = content;
+    divForLength.remove();
   };
 
   useEffect(() => {
-    console.log("reading file", filePath);
     filePath.length && readFileContent(filePath, setTextContent);
   }, [filePath]);
 
@@ -83,7 +87,7 @@ const Notepad = ({ icon, path = "" }) => {
           position='relative'
         >
           <div className='line-count'>Ln {text.lines}, </div>
-          <div className='word-count'>Col {text.content.length}</div>
+          <div className='word-count'>Col {text.chars}</div>
           <div className='font-size'>100%</div>
           <div className='clrf'>Windows(CRLF)</div>
           <div className='file-format'>UTF-8</div>

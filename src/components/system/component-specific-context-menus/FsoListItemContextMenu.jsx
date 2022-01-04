@@ -25,7 +25,7 @@ const FsoListItemContextMenu = ({
       changePath(Path.join(path, name));
     }
     if (type === "FILE") {
-      startProcess("Notepad", { filePath: Path.join(path, name) });
+      startProcess("Notepad", { path: Path.join(path, name) });
     }
   };
 
