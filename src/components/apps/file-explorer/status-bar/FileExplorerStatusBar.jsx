@@ -9,6 +9,7 @@ const FileExplorerStatusBar = ({
   endProcess,
   parentProcess,
   openFile,
+  endParrentProcess,
 }) => {
   const [fileName, setFileName] = useState("");
   const [fileType, setFileType] = useState("Text Document (*.txt)");
@@ -18,6 +19,7 @@ const FileExplorerStatusBar = ({
     e.preventDefault();
     createFile(path, fileName);
     endProcess("File Explorer", parentProcess);
+    endParrentProcess && endProcess("Notepad");
   };
 
   const closeWindow = () => endProcess("File Explorer", parentProcess);

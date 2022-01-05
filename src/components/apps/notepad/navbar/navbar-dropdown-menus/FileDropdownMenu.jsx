@@ -10,13 +10,14 @@ const FileDropdownMenu = ({ textContent, filePath, setFilePath }) => {
 
   const createFile = (path, name) => {
     createFSO(path, name, "file", textContent);
+    setFilePath(Path.join(path, name));
   };
 
   const openFile = (path, name) => {
     setFilePath(Path.join(path, name));
   };
 
-  const saveChanges = () => saveFile(filePath, "", textContent);
+  const saveChanges = () => saveFile(filePath, textContent);
 
   const SaveAs = (e) => {
     startChildProcess("Notepad", "File Explorer", {

@@ -1,8 +1,15 @@
+import "./UnsavedChanges.css";
 import Window from "../../../system/window/Window";
 import WindowContent from "../../../system/window/window-content/WindowContent";
 import StatusBar from "../../../system/window/status-bar/StatusBar";
 
-const UnsavedChanges = ({ icon, handleSave, handleDontSave, handleCancel }) => {
+const UnsavedChanges = ({
+  icon,
+  handleSave,
+  handleDontSave,
+  handleCancel,
+  filePath,
+}) => {
   return (
     <Window
       app='Notepad-dialog'
@@ -16,13 +23,28 @@ const UnsavedChanges = ({ icon, handleSave, handleDontSave, handleCancel }) => {
       //in this case parent process isn't the right prop name for the job, but i think that it would be redundant to have two differently named props which do the same thing
       resizable={false}
     >
-      <WindowContent backgroundColor='white'>
-        <StatusBar>
-          <button onClick={handleSave}>save</button>
-          <button onClick={handleDontSave}>don't save</button>
-          <button onClick={handleCancel}>cancel</button>
-        </StatusBar>
+      <WindowContent backgroundColor='white' flex flexDirection='column'>
+        <div className='unsaved-changes-message'>{`Do you want to save chnages to ${
+          filePath || "Untilted"
+        }?`}</div>
       </WindowContent>
+      <StatusBar
+        backgroundColor='#f0f0f0'
+        color='black'
+        flex
+        borderColor='#E1E1E1'
+        borderStyle='solid'
+        borderWidth='1px 0 0 0'
+        fontWeight='400'
+        position='relative'
+        height='fit-content'
+      >
+        <div className='unsaved-changes-status-bar'>
+          <button onClick={handleSave}>Save</button>
+          <button onClick={handleDontSave}>Don't Save</button>
+          <button onClick={handleCancel}>Cancel</button>
+        </div>
+      </StatusBar>
     </Window>
   );
 };

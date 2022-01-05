@@ -89,7 +89,7 @@ export const FileSystemProvider = ({ children }) => {
     );
   };
 
-  const saveFile = (path, name, content) => {
+  const saveFile = (path, content) => {
     writeFile(path, false, content);
   };
 

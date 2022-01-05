@@ -19,7 +19,8 @@ const Notepad = ({ icon, path = "" }) => {
   const [zoom, setZoom] = useState(100);
   const [dialogID] = useState(nanoid());
   const [statusBarVisible, setStatusBarVisibility] = useState(true);
-  const { readFileContent, createFSO } = useContext(FileSystemContext);
+  const { readFileContent, createFSO, saveFile } =
+    useContext(FileSystemContext);
   const { openDialog, closeDialog } = useContext(DialogsContext);
   const { startChildProcess, endProcess } = useContext(ProcessesContext);
   const divRef = useRef(null);
@@ -51,18 +52,24 @@ const Notepad = ({ icon, path = "" }) => {
 
   const createFile = (createPath, name) => {
     createFSO(createPath, name, "file", text.content);
+    setFilePath(Path.join(createPath, name));
   };
 
   const handleSave = () => {
-    startChildProcess("Notepad", "File Explorer", {
-      customPath: "/C/users/admin/Documents",
-      mode: "w",
-      parentProcess: "Notepad",
-      endProcess,
-      createFile,
-      minWidth: "31rem",
-      minHeight: "17rem",
-    });
+    if (!filePath) {
+      startChildProcess("Notepad", "File Explorer", {
+        customPath: "/C/users/admin/Documents",
+        mode: "w",
+        parentProcess: "Notepad",
+        endProcess,
+        endParrentProcess: true,
+        createFile,
+        minWidth: "31rem",
+        minHeight: "17rem",
+      });
+    } else {
+      saveFile(filePath, text.content);
+    }
     closeDialog(dialogID);
   };
 
@@ -75,36 +82,29 @@ const Notepad = ({ icon, path = "" }) => {
     closeDialog(dialogID);
   };
 
+  const openUnsavedChangesDialog = () =>
+    openDialog(
+      dialogID,
+      <UnsavedChanges
+        icon={icon}
+        handleSave={handleSave}
+        handleDontSave={handleDontSave}
+        handleCancel={handleCancel}
+        filePath={filePath}
+      />
+    );
+
   const isContentSame = (fileContent) => {
     if (fileContent === text.content) {
       endProcess("Notepad");
     } else {
-      openDialog(
-        dialogID,
-        <UnsavedChanges
-          icon={icon}
-          handleSave={handleSave}
-          handleDontSave={handleDontSave}
-          handleCancel={handleCancel}
-        />
-      );
+      openUnsavedChangesDialog();
     }
   };
 
   const onClose = () => {
-    // cheks if notepad has any unsaved changes and
     if (!filePath) {
-      text.content.length
-        ? openDialog(
-            dialogID,
-            <UnsavedChanges
-              icon={icon}
-              handleSave={handleSave}
-              handleDontSave={handleDontSave}
-              handleCancel={handleCancel}
-            />
-          )
-        : endProcess("Notepad");
+      text.content.length ? openUnsavedChangesDialog() : endProcess("Notepad");
     } else {
       readFileContent(filePath, isContentSame);
     }

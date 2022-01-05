@@ -21,6 +21,7 @@ const FileExplorer = ({
   minWidth,
   minHeight,
   openFile,
+  endParrentProcess,
 }) => {
   const [activeTab, setActiveTab] = useState("Home");
   const [path, setPath] = useState(customPath || "/C/users/admin");
@@ -103,6 +104,7 @@ const FileExplorer = ({
             mode={mode}
             createFile={createFile}
             endProcess={endProcess}
+            endParrentProcess={endParrentProcess}
             parentProcess={parentProcess}
             openFile={openFile}
           />
