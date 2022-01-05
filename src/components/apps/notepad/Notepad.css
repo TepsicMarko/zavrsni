@@ -17,6 +17,11 @@
   padding-left: 0.25rem;
 }
 
+.notepad-text-content > * {
+  font-family: consolas;
+  font-size: inherit;
+}
+
 .line-count,
 .word-count,
 .font-size,

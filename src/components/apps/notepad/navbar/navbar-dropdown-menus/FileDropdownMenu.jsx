@@ -47,16 +47,36 @@ const FileDropdownMenu = ({ textContent, filePath, setFilePath }) => {
 
   return (
     <>
-      <ContextMenuItem fontWeight='400' name='New' />
-      <ContextMenuItem fontWeight='400' name='New Window' />
+      <ContextMenuItem fontWeight='400' name='New' hoverColor='#91c9f7' />
+      <ContextMenuItem
+        fontWeight='400'
+        name='New Window'
+        hoverColor='#91c9f7'
+      />
       <ContextMenuItem
         fontWeight='400'
         name='Open...'
         onClick={openFileSelection}
+        hoverColor='#91c9f7'
       />
-      <ContextMenuItem fontWeight='400' name='Save' onClick={saveChanges} />
-      <ContextMenuItem fontWeight='400' name='Save As...' onClick={SaveAs} />
-      <ContextMenuItem fontWeight='400' name='Exit' onClick={exit} />
+      <ContextMenuItem
+        fontWeight='400'
+        name='Save'
+        onClick={saveChanges}
+        hoverColor='#91c9f7'
+      />
+      <ContextMenuItem
+        fontWeight='400'
+        name='Save As...'
+        onClick={SaveAs}
+        hoverColor='#91c9f7'
+      />
+      <ContextMenuItem
+        fontWeight='400'
+        name='Exit'
+        onClick={exit}
+        hoverColor='#91c9f7'
+      />
     </>
   );
 };

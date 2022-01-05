@@ -2,6 +2,7 @@ import "./ContextMenuItem.css";
 import { VscCircleFilled } from "react-icons/vsc";
 import { MdArrowForwardIos } from "react-icons/md";
 import { FiCheck } from "react-icons/fi";
+import { useState, cloneElement } from "react";
 
 const ContextMenuItem = ({
   name,
@@ -15,7 +16,13 @@ const ContextMenuItem = ({
   fontWeight,
   returnName,
   checkBox,
+  hoverColor,
 }) => {
+  const [isMouseOver, setIsMouseOver] = useState(false);
+
+  const handleMouseEnter = () => setIsMouseOver(true);
+  const handleMouseLeve = () => setIsMouseOver(false);
+
   const handleClick = (e) => {
     onClick(returnName ? name : e);
     closeMenu && closeMenu();
@@ -24,13 +31,14 @@ const ContextMenuItem = ({
   return (
     <div
       className='context-menu-item'
-      onClick={children ? () => onClick(name) : handleClick}
+      onClick={children ? (e) => onClick(name, e) : handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeve}
     >
       <div
-        className={"cm-item-name" + (checkBox ? " cm-checkbox-name" : "")}
-        style={{ fontWeight }}
+        className={"cm-item-name"}
+        style={{ fontWeight, backgroundColor: isMouseOver ? hoverColor : "" }}
       >
-        {" "}
         <div
           className={
             "cm-item-icon" +
@@ -45,11 +53,18 @@ const ContextMenuItem = ({
         {name}
       </div>
       {children && (
-        <div className='flex-center cm-item-expand'>
+        <div
+          className='flex-center cm-item-expand'
+          style={{ backgroundColor: isMouseOver ? hoverColor : "" }}
+        >
           <MdArrowForwardIos />
         </div>
       )}
-      {children && openSubmenu && <div className='submenu'>{children}</div>}
+      {children && openSubmenu && (
+        <div className='submenu'>
+          {children.map((child) => cloneElement(child, { hoverColor }))}
+        </div>
+      )}
     </div>
   );
 };

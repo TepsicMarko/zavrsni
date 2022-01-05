@@ -19,12 +19,16 @@ const NotepadNavbar = ({
   divRef,
   setWordWrap,
   wordWrap,
+  statusBarVisible,
+  setStatusBarVisibility,
+  zoom,
+  setZoom,
 }) => {
   const [activeTab, setActiveTab] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navRef = useRef(null);
 
-  const chnageActiveTab = (e) => {
+  const changeActiveTab = (e) => {
     setActiveTab(e.target.textContent);
     setIsDropdownOpen(true);
   };
@@ -60,7 +64,7 @@ const NotepadNavbar = ({
         <div
           ref={navRef}
           className='flex-center notepad-nav-tab'
-          onClick={chnageActiveTab}
+          onClick={changeActiveTab}
           onMouseDown={handleMouseDown}
           onMouseOver={handleMouseOver}
         >
@@ -83,7 +87,12 @@ const NotepadNavbar = ({
                   })
                 : name === "Format"
                 ? cloneElement(dropdownMenus[name], { setWordWrap, wordWrap })
-                : dropdownMenus[name]}
+                : cloneElement(dropdownMenus[name], {
+                    statusBarVisible,
+                    setStatusBarVisibility,
+                    zoom,
+                    setZoom,
+                  })}
             </div>
           )}
         </div>

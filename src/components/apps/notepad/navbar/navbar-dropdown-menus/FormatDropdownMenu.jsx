@@ -13,6 +13,7 @@ const FormatDropdownMenu = ({ wordWrap, setWordWrap }) => {
         onClick={toggleWordWrap}
         checkBox
         active={wordWrap}
+        hoverColor='#91c9f7'
       />
       {/* <ContextMenuItem fontWeight='400' name='Font' /> */}
     </>

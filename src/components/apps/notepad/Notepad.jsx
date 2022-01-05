@@ -11,6 +11,8 @@ const Notepad = ({ icon, path = "" }) => {
   const [filePath, setFilePath] = useState(path);
   const [text, setText] = useState({ content: "", lines: 1 });
   const [wordWrap, setWordWrap] = useState(false);
+  const [zoom, setZoom] = useState(100);
+  const [statusBarVisible, setStatusBarVisibility] = useState(true);
   const { readFileContent } = useContext(FileSystemContext);
   const divRef = useRef(null);
 
@@ -65,6 +67,10 @@ const Notepad = ({ icon, path = "" }) => {
             divRef={divRef}
             setWordWrap={setWordWrap}
             wordWrap={wordWrap}
+            statusBarVisible={statusBarVisible}
+            setStatusBarVisibility={setStatusBarVisibility}
+            zoom={zoom}
+            setZoom={setZoom}
           />
           <div
             className='notepad-text-content-container'
@@ -81,26 +87,31 @@ const Notepad = ({ icon, path = "" }) => {
               suppressContentEditableWarning
               onInput={handleChange}
               onClick={stopPropagation}
-              style={{ maxWidth: wordWrap ? "calc(100% - 4px)" : "" }}
+              style={{
+                maxWidth: wordWrap ? "calc(100% - 4px)" : "",
+                fontSize: `${zoom}%`,
+              }}
             ></div>
           </div>
         </WindowContent>
-        <StatusBar
-          backgroundColor='#f1f1f1'
-          color='black'
-          flex
-          borderColor='#DBDBDB'
-          borderStyle='solid'
-          borderWidth='1px 0 0 0'
-          fontWeight='400'
-          position='relative'
-        >
-          <div className='line-count'>Ln {text.lines}, </div>
-          <div className='word-count'>Col {text.chars}</div>
-          <div className='font-size'>100%</div>
-          <div className='clrf'>Windows(CRLF)</div>
-          <div className='file-format'>UTF-8</div>
-        </StatusBar>
+        {statusBarVisible && (
+          <StatusBar
+            backgroundColor='#f1f1f1'
+            color='black'
+            flex
+            borderColor='#DBDBDB'
+            borderStyle='solid'
+            borderWidth='1px 0 0 0'
+            fontWeight='400'
+            position='relative'
+          >
+            <div className='line-count'>Ln {text.lines}, </div>
+            <div className='word-count'>Col {text.chars}</div>
+            <div className='font-size'>{zoom}%</div>
+            <div className='clrf'>Windows(CRLF)</div>
+            <div className='file-format'>UTF-8</div>
+          </StatusBar>
+        )}
       </Window>
     </WindowWidthProvider>
   );

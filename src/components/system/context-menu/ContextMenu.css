@@ -10,19 +10,7 @@
   font-weight: 100;
   border: 1px solid #919191;
   width: 13rem;
-  padding: 0.2rem 0.5rem;
+  padding: 0.1rem 0.075rem;
   box-sizing: border-box;
   font-size: 0.75rem;
-}
-
-.context-menu > .context-menu-item:first-child,
-.submenu > .context-menu-item:first-child,
-.nav-dropdown-menu > .context-menu-item:first-child {
-  padding-top: 0rem;
-}
-
-.context-menu > .context-menu-item:last-child,
-.submenu > .context-menu-item:last-child,
-.nav-dropdown-menu > .context-menu-item:last-child {
-  padding-bottom: 0rem;
 }

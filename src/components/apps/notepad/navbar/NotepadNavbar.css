@@ -35,6 +35,16 @@
   border: 1px solid #d5d5d5;
   color: black !important;
   padding: 0.1rem 0.05rem !important;
+  padding-top: 0.15rem !important;
+}
+
+.nav-dropdown-menu > .context-menu-item > .submenu {
+  background-color: #f2f2f2;
+  color: inherit;
+  top: -3px !important;
+  right: 0px !important;
+  -webkit-box-shadow: 3px 3px 3px -1px #595959;
+  box-shadow: 3px 3px 3px -1px #595959;
 }
 
 .nav-dropdown-menu > div {
