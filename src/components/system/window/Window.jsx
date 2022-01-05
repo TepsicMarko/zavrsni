@@ -19,20 +19,23 @@ const Window = ({
   minWindowHeight,
   titleBar,
   parentProcess,
+  onClose,
+  resizable = true,
+  fileName,
 }) => {
   const [minWidth] = useState(remToPx(minWindowWidth));
   const [minHeight] = useState(remToPx(minWindowHeight));
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [width, setWidth] = useState(
-    document.documentElement.clientWidth * 0.75
+    resizable ? document.documentElement.clientWidth * 0.75 : minWidth
   );
   const [height, setHeight] = useState(
-    document.documentElement.clientHeight * 0.7
+    resizable ? document.documentElement.clientHeight * 0.7 : minHeight
   );
 
   const { endProcess, minimiseToTaskbar } = useContext(ProcessesContext);
-  const { handleWindowWidthChange } = useContext(WindowWidthContext);
+  const optionalWindowWidthContext = useContext(WindowWidthContext);
 
   const appDataRef = useRef({ width, height, position });
   const previousDimensionsAndPositionRef = useRef({});
@@ -135,10 +138,12 @@ const Window = ({
   };
   const handleResizeEnd = (e) => e.stopPropagation();
 
-  const closeWindow = useCallback(
-    () => endProcess(app, parentProcess),
-    [app, endProcess, parentProcess]
-  );
+  const closeWindow = useCallback(() => {
+    if (onClose) {
+      onClose(endProcess);
+    } else endProcess(app, parentProcess);
+  }, [app, endProcess, parentProcess, onClose]);
+
   const minimiseWindow = useCallback(
     () => minimiseToTaskbar(app),
     [app, minimiseToTaskbar]
@@ -195,7 +200,8 @@ const Window = ({
   }, []);
 
   useEffect(() => {
-    handleWindowWidthChange(width);
+    optionalWindowWidthContext &&
+      optionalWindowWidthContext.handleWindowWidthChange(width);
   }, [width]);
 
   return (
@@ -210,24 +216,25 @@ const Window = ({
         zIndex: 100,
       }}
     >
-      {[
-        "resize-l",
-        "resize-t",
-        "resize-r",
-        "resize-b",
-        "resize-bl",
-        "resize-tl",
-        "resize-tr",
-        "resize-br",
-      ].map((el) => (
-        <div
-          draggable
-          className={el}
-          onDragStart={handleResizeStart}
-          onDrag={resize}
-          onDragEnd={handleResizeEnd}
-        ></div>
-      ))}
+      {resizable &&
+        [
+          "resize-l",
+          "resize-t",
+          "resize-r",
+          "resize-b",
+          "resize-bl",
+          "resize-tl",
+          "resize-tr",
+          "resize-br",
+        ].map((el) => (
+          <div
+            draggable
+            className={el}
+            onDragStart={handleResizeStart}
+            onDrag={resize}
+            onDragEnd={handleResizeEnd}
+          ></div>
+        ))}
       <TitleBar
         backgroundColor={titleBar.backgroundColor}
         color={titleBar.color}
@@ -237,7 +244,7 @@ const Window = ({
         handleDragStart={handleDragStart}
         handleDrag={handleDrag}
         handleDragEnd={handleDragEnd}
-        name={app}
+        name={fileName || app}
         icon={icon}
         parentProcess={parentProcess}
       />

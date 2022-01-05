@@ -6,14 +6,22 @@ import { WindowWidthProvider } from "../../../contexts/WindowWidthContext";
 import NotepadNavbar from "./navbar/NotepadNavbar";
 import { useState, memo, useEffect, useContext, useRef } from "react";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
+import { DialogsContext } from "../../../contexts/DialogsContext";
+import { ProcessesContext } from "../../../contexts/ProcessesContext";
+import { nanoid } from "nanoid";
+import UnsavedChanges from "./dialogs/UnsavedChanges";
+import { path as Path } from "filer";
 
 const Notepad = ({ icon, path = "" }) => {
   const [filePath, setFilePath] = useState(path);
   const [text, setText] = useState({ content: "", lines: 1 });
   const [wordWrap, setWordWrap] = useState(false);
   const [zoom, setZoom] = useState(100);
+  const [dialogID] = useState(nanoid());
   const [statusBarVisible, setStatusBarVisibility] = useState(true);
-  const { readFileContent } = useContext(FileSystemContext);
+  const { readFileContent, createFSO } = useContext(FileSystemContext);
+  const { openDialog, closeDialog } = useContext(DialogsContext);
+  const { startChildProcess, endProcess } = useContext(ProcessesContext);
   const divRef = useRef(null);
 
   const handleChange = (e) => {
@@ -41,6 +49,67 @@ const Notepad = ({ icon, path = "" }) => {
     textInfo.remove();
   };
 
+  const createFile = (createPath, name) => {
+    createFSO(createPath, name, "file", text.content);
+  };
+
+  const handleSave = () => {
+    startChildProcess("Notepad", "File Explorer", {
+      customPath: "/C/users/admin/Documents",
+      mode: "w",
+      parentProcess: "Notepad",
+      endProcess,
+      createFile,
+      minWidth: "31rem",
+      minHeight: "17rem",
+    });
+    closeDialog(dialogID);
+  };
+
+  const handleDontSave = () => {
+    closeDialog(dialogID);
+    endProcess("Notepad");
+  };
+
+  const handleCancel = () => {
+    closeDialog(dialogID);
+  };
+
+  const isContentSame = (fileContent) => {
+    if (fileContent === text.content) {
+      endProcess("Notepad");
+    } else {
+      openDialog(
+        dialogID,
+        <UnsavedChanges
+          icon={icon}
+          handleSave={handleSave}
+          handleDontSave={handleDontSave}
+          handleCancel={handleCancel}
+        />
+      );
+    }
+  };
+
+  const onClose = () => {
+    // cheks if notepad has any unsaved changes and
+    if (!filePath) {
+      text.content.length
+        ? openDialog(
+            dialogID,
+            <UnsavedChanges
+              icon={icon}
+              handleSave={handleSave}
+              handleDontSave={handleDontSave}
+              handleCancel={handleCancel}
+            />
+          )
+        : endProcess("Notepad");
+    } else {
+      readFileContent(filePath, isContentSame);
+    }
+  };
+
   useEffect(() => {
     filePath.length && readFileContent(filePath, setTextContent);
   }, [filePath]);
@@ -49,10 +118,16 @@ const Notepad = ({ icon, path = "" }) => {
     <WindowWidthProvider>
       <Window
         app='Notepad'
+        fileName={
+          filePath
+            ? Path.basename(filePath) + " - Notepad"
+            : "*Untilted - Notepad"
+        }
         icon={icon}
         minWindowWidth='9rem'
         minWindowHeight='8.2rem'
         titleBar={{ color: "black", backgroundColor: "white" }}
+        onClose={onClose}
       >
         <WindowContent
           backgroundColor='white'

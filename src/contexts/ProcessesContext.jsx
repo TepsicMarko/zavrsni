@@ -3,6 +3,7 @@ import { FcFolder } from "react-icons/fc";
 import FileExplorer from "../components/apps/file-explorer/FileExplorer";
 import Notepad from "../components/apps/notepad/Notepad";
 import notepad from "../assets/notepad.png";
+import { DialogsProvider } from "./DialogsContext";
 
 export const ProcessesContext = createContext();
 
@@ -93,24 +94,26 @@ export const ProcessesProvider = ({ children }) => {
         minimiseToTaskbar,
       }}
     >
-      {children}
-      {Object.keys(processes).map((process) => {
-        const app = processes[process];
-        return app.childProcess ? (
-          !app.minimised && app.running ? (
-            <>
-              {cloneElement(app.source, { key: process })}
-              {Object.keys(app.childProcess).length
-                ? cloneElement(app.childProcess.source, {
-                    key: process + "-" + processes[process].childProcess.name,
-                  })
-                : null}
-            </>
-          ) : null
-        ) : !app.minimised && app.running ? (
-          cloneElement(app.source, { key: process })
-        ) : null;
-      })}
+      <DialogsProvider>
+        {children}
+        {Object.keys(processes).map((process) => {
+          const app = processes[process];
+          return app.childProcess ? (
+            !app.minimised && app.running ? (
+              <>
+                {cloneElement(app.source, { key: process })}
+                {Object.keys(app.childProcess).length
+                  ? cloneElement(app.childProcess.source, {
+                      key: process + "-" + processes[process].childProcess.name,
+                    })
+                  : null}
+              </>
+            ) : null
+          ) : !app.minimised && app.running ? (
+            cloneElement(app.source, { key: process })
+          ) : null;
+        })}
+      </DialogsProvider>
     </ProcessesContext.Provider>
   );
 };
