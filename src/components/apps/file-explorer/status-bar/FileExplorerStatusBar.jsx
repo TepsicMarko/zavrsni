@@ -17,8 +17,8 @@ const FileExplorerStatusBar = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createFile(path, fileName);
     endProcess("File Explorer", parentProcess);
+    createFile(path, fileName);
     endParrentProcess && endProcess("Notepad");
   };
 

@@ -55,22 +55,30 @@ const Notepad = ({ icon, path = "" }) => {
     setFilePath(Path.join(createPath, name));
   };
 
-  const handleSave = () => {
+  const handleSave = (callback) => {
     if (!filePath) {
       startChildProcess("Notepad", "File Explorer", {
         customPath: "/C/users/admin/Documents",
         mode: "w",
         parentProcess: "Notepad",
         endProcess,
-        endParrentProcess: true,
-        createFile,
+        endParrentProcess: !callback ? true : false,
+        createFile: callback
+          ? (createPath, name) => {
+              createFile(createPath, name);
+              callback();
+            }
+          : createFile,
         minWidth: "31rem",
         minHeight: "17rem",
       });
+      closeDialog(dialogID);
     } else {
       saveFile(filePath, text.content);
+      closeDialog(dialogID);
+      callback && callback();
+      !callback && endProcess("Notepad");
     }
-    closeDialog(dialogID);
   };
 
   const handleDontSave = () => {
@@ -82,12 +90,12 @@ const Notepad = ({ icon, path = "" }) => {
     closeDialog(dialogID);
   };
 
-  const openUnsavedChangesDialog = () =>
+  const openUnsavedChangesDialog = (customHandleSave) =>
     openDialog(
       dialogID,
       <UnsavedChanges
         icon={icon}
-        handleSave={handleSave}
+        handleSave={() => handleSave(customHandleSave)}
         handleDontSave={handleDontSave}
         handleCancel={handleCancel}
         filePath={filePath}
@@ -108,6 +116,12 @@ const Notepad = ({ icon, path = "" }) => {
     } else {
       readFileContent(filePath, isContentSame);
     }
+  };
+
+  const resetNotepad = () => {
+    setFilePath("");
+    setText({ content: "", lines: 1, chars: 0 });
+    divRef.current.innerHTML = "";
   };
 
   useEffect(() => {
@@ -146,6 +160,8 @@ const Notepad = ({ icon, path = "" }) => {
             setStatusBarVisibility={setStatusBarVisibility}
             zoom={zoom}
             setZoom={setZoom}
+            openUnsavedChangesDialog={openUnsavedChangesDialog}
+            resetNotepad={resetNotepad}
           />
           <div
             className='notepad-text-content-container'

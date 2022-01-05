@@ -23,6 +23,8 @@ const NotepadNavbar = ({
   setStatusBarVisibility,
   zoom,
   setZoom,
+  openUnsavedChangesDialog,
+  resetNotepad,
 }) => {
   const [activeTab, setActiveTab] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -78,11 +80,16 @@ const NotepadNavbar = ({
                 e.stopPropagation();
               }}
             >
-              {name === "File" || name === "Edit"
+              {name === "File"
                 ? cloneElement(dropdownMenus[name], {
                     setFilePath,
                     textContent,
                     filePath,
+                    openUnsavedChangesDialog,
+                    resetNotepad,
+                  })
+                : name === "Edit"
+                ? cloneElement(dropdownMenus[name], {
                     divRef,
                   })
                 : name === "Format"

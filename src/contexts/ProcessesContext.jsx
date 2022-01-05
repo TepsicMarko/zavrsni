@@ -62,8 +62,6 @@ export const ProcessesProvider = ({ children }) => {
   };
 
   const endProcess = (name, parentProcess) => {
-    // const { childProcess: remove, ...rest } =
-    //   processes[parentProcess ? parentProcess : name];
     setProcesses({
       ...processes,
       [parentProcess ? parentProcess : name]: {
