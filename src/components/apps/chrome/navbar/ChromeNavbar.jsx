@@ -3,7 +3,15 @@ import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import { GrRefresh } from "react-icons/gr";
 import { useState, useEffect } from "react";
 
-const ChromeNavbar = ({ previous, goBack, url, setUrl, goForth, next }) => {
+const ChromeNavbar = ({
+  previous,
+  goBack,
+  url,
+  setUrl,
+  goForth,
+  next,
+  refreshPage,
+}) => {
   const [input, setInput] = useState(url);
   const handleInputChange = (e) => {
     setInput(e.target.value);
@@ -41,7 +49,7 @@ const ChromeNavbar = ({ previous, goBack, url, setUrl, goForth, next }) => {
           />
         </div>
         <div className='flex-center chrome-nav-hover-effect'>
-          <GrRefresh size='0.8rem' />
+          <GrRefresh size='0.8rem' onClick={refreshPage} />
         </div>
       </div>
       <input

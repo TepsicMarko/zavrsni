@@ -22,6 +22,8 @@ const Window = ({
   onClose,
   resizable = true,
   fileName,
+  enableIframe,
+  disableIframe,
 }) => {
   const [minWidth] = useState(remToPx(minWindowWidth));
   const [minHeight] = useState(remToPx(minWindowHeight));
@@ -54,6 +56,7 @@ const Window = ({
   const handleDrag = useCallback((e) => updateWindowPosition(e), [offset]);
   const handleDragEnd = useCallback((e) => updateWindowPosition(e), [offset]);
   const handleResizeStart = (e) => {
+    disableIframe && disableIframe();
     e.stopPropagation();
     e.dataTransfer.setDragImage(new Image(), 0, 0);
   };
@@ -136,7 +139,10 @@ const Window = ({
       setHeight(newHeight > minHeight ? newHeight : height);
     }
   };
-  const handleResizeEnd = (e) => e.stopPropagation();
+  const handleResizeEnd = (e) => {
+    enableIframe && enableIframe();
+    e.stopPropagation();
+  };
 
   const closeWindow = useCallback(() => {
     if (onClose) {
