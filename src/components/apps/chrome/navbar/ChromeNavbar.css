@@ -1,0 +1,48 @@
+.chrome-navbar {
+  flex-basis: 2rem;
+  background-color: #35363a;
+  display: flex;
+  padding-right: 0.25rem;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+.chrome-nav-buttons {
+  height: 1.5rem;
+  flex-basis: 6rem;
+  padding-right: 0.5rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.chrome-nav-buttons > div {
+  flex-basis: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+}
+
+.chrome-nav-buttons > div > svg:last-child > path {
+  stroke: white;
+}
+
+.chrome-address-bar {
+  flex-grow: 1;
+  border-radius: 2rem;
+  background-color: #202124;
+  height: 1.5rem;
+  border: 1px solid transparent;
+  color: #e3e3e8;
+  padding-left: 0.75rem;
+  box-sizing: border-box;
+}
+
+.chrome-address-bar:focus {
+  border: 1px solid #4285f4;
+  outline: none;
+}
+
+.chrome-nav-hover-effect:hover {
+  background-color: #434448;
+}

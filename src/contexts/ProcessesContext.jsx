@@ -3,6 +3,9 @@ import { FcFolder } from "react-icons/fc";
 import FileExplorer from "../components/apps/file-explorer/FileExplorer";
 import Notepad from "../components/apps/notepad/Notepad";
 import notepad from "../assets/notepad.png";
+import Chrome from "../components/apps/chrome/Chrome";
+import chrome from "../assets/chrome.png";
+import chromeSmall from "../assets/chrome-small.png";
 import { DialogsProvider } from "./DialogsContext";
 
 export const ProcessesContext = createContext();
@@ -20,6 +23,14 @@ const initialState = {
     running: false,
     minimised: false,
     icon: <img src={notepad} width='30rem' />,
+    pinnedToTaskbar: true,
+    childProcess: {},
+  },
+  Chrome: {
+    source: <Chrome icon={<img src={chromeSmall} />} />,
+    running: false,
+    minimised: false,
+    icon: <img src={chrome} />,
     pinnedToTaskbar: true,
     childProcess: {},
   },

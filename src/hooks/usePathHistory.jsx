@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-const usePathHistory = (initialPath) => {
+const usePathHistory = (initialPath, allowEmptyString) => {
   const [previous, setPrevious] = useState([]);
   const [current, setCurrent] = useState(initialPath);
   const [next, setNext] = useState([]);
@@ -21,6 +21,7 @@ const usePathHistory = (initialPath) => {
     (path) => {
       current !== path && setPrevious([...previous, current]);
       current && setCurrent(path);
+      allowEmptyString && setCurrent(path);
     },
     [previous, current]
   );
