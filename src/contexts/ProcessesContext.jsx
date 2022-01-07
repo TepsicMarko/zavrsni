@@ -107,19 +107,23 @@ export const ProcessesProvider = ({ children }) => {
         {children}
         {Object.keys(processes).map((process) => {
           const app = processes[process];
-          return app.childProcess ? (
-            !app.minimised && app.running ? (
+          return app.running ? (
+            app.childProcess ? (
               <>
-                {cloneElement(app.source, { key: process })}
+                {cloneElement(app.source, {
+                  key: process,
+                })}
                 {Object.keys(app.childProcess).length
                   ? cloneElement(app.childProcess.source, {
                       key: process + "-" + processes[process].childProcess.name,
                     })
                   : null}
               </>
-            ) : null
-          ) : !app.minimised && app.running ? (
-            cloneElement(app.source, { key: process })
+            ) : (
+              cloneElement(app.source, {
+                key: process,
+              })
+            )
           ) : null;
         })}
       </DialogsProvider>

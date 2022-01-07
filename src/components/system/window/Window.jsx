@@ -36,7 +36,8 @@ const Window = ({
     resizable ? document.documentElement.clientHeight * 0.7 : minHeight
   );
 
-  const { endProcess, minimiseToTaskbar } = useContext(ProcessesContext);
+  const { endProcess, minimiseToTaskbar, processes } =
+    useContext(ProcessesContext);
   const optionalWindowWidthContext = useContext(WindowWidthContext);
 
   const appDataRef = useRef({ width, height, position });
@@ -220,6 +221,11 @@ const Window = ({
         minWidth,
         minWindowHeight,
         zIndex: 100,
+        visibility: processes[app]
+          ? !processes[app].minimised
+            ? "visible"
+            : "hidden"
+          : "",
       }}
     >
       {resizable &&
