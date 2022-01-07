@@ -7,6 +7,8 @@ import Chrome from "../components/apps/chrome/Chrome";
 import chrome from "../assets/chrome.png";
 import chromeSmall from "../assets/chrome-small.png";
 import { DialogsProvider } from "./DialogsContext";
+import TaskManager from "../components/apps/task-manager/TaskManager";
+import taskManager from "../assets/task-manager.png";
 
 export const ProcessesContext = createContext();
 
@@ -36,6 +38,14 @@ const initialState = {
     pinnedToTaskbar: true,
     isFocused: false,
     childProcess: {},
+  },
+  TaskManager: {
+    source: <TaskManager icon={<img src={taskManager} height='20px' />} />,
+    running: false,
+    minimised: false,
+    icon: <img src={taskManager} height='30px' />,
+    pinnedToTaskbar: true,
+    isFocused: false,
   },
 };
 

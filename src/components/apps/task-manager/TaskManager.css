@@ -1,0 +1,43 @@
+.overflow-container {
+  flex-grow: 1;
+  min-height: 0px !important;
+  height: 0px;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.open-processes {
+  width: 100%;
+}
+
+.open-process {
+  box-sizing: border-box;
+  flex-basis: 100%;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.open-process:hover {
+  background-color: #e5f3ff;
+}
+
+.open-process > img,
+.open-process > svg {
+  padding: 0 0.5rem;
+  width: 15px;
+  height: 15px;
+}
+
+.end-task {
+  margin: 0.75rem;
+  border: 1px solid #bababa;
+  width: 5rem;
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.end-task:disabled {
+  background-color: #cccccc;
+}
