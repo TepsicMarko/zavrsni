@@ -35,7 +35,7 @@ const FolderNavigationBranch = ({
   const inputRef = useRef(null);
 
   const handleClick = (e) => {
-    e.stopPropagation();
+    // e.stopPropagation();
     changePath(Path.join(basePath, branchName === "This PC" ? "" : branchName));
   };
 

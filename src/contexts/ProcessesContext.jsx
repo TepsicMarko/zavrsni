@@ -17,6 +17,7 @@ const initialState = {
     minimised: false,
     icon: <FcFolder />,
     pinnedToTaskbar: true,
+    isFocused: false,
   },
   Notepad: {
     source: <Notepad icon={<img src={notepad} width='20rem' />} />,
@@ -24,6 +25,7 @@ const initialState = {
     minimised: false,
     icon: <img src={notepad} width='30rem' />,
     pinnedToTaskbar: true,
+    isFocused: false,
     childProcess: {},
   },
   Chrome: {
@@ -32,6 +34,7 @@ const initialState = {
     minimised: false,
     icon: <img src={chrome} />,
     pinnedToTaskbar: true,
+    isFocused: false,
     childProcess: {},
   },
 };
@@ -39,14 +42,23 @@ const initialState = {
 export const ProcessesProvider = ({ children }) => {
   const [processes, setProcesses] = useState({ ...initialState });
 
+  const unfocuseProcesses = () => {
+    const unfocusedProcesses = { ...processes };
+    for (let process in unfocusedProcesses) {
+      unfocusedProcesses[process].isFocused = false;
+    }
+    return unfocusedProcesses;
+  };
+
   const startProcess = (name, props = {}) => {
     const hasProps = Object.keys(props).length;
     setProcesses({
-      ...processes,
+      ...unfocuseProcesses(),
       [name]: {
         ...processes[name],
         running: true,
         minimised: false,
+        isFocused: true,
         source: hasProps
           ? cloneElement(processes[name].source, { ...props })
           : processes[name].source,
@@ -93,6 +105,18 @@ export const ProcessesProvider = ({ children }) => {
     });
   };
 
+  const focusProcess = (name, parentProcess) => {
+    if (!processes[parentProcess || name].isFocused) {
+      const newState = { ...processes };
+      for (let process in newState) {
+        if (process === (parentProcess || name))
+          newState[process].isFocused = true;
+        else newState[process].isFocused = false;
+      }
+      setProcesses(newState);
+    }
+  };
+
   return (
     <ProcessesContext.Provider
       value={{
@@ -101,6 +125,7 @@ export const ProcessesProvider = ({ children }) => {
         startChildProcess,
         endProcess,
         minimiseToTaskbar,
+        focusProcess,
       }}
     >
       <DialogsProvider>

@@ -36,7 +36,7 @@ const Window = ({
     resizable ? document.documentElement.clientHeight * 0.7 : minHeight
   );
 
-  const { endProcess, minimiseToTaskbar, processes } =
+  const { endProcess, minimiseToTaskbar, processes, focusProcess } =
     useContext(ProcessesContext);
   const optionalWindowWidthContext = useContext(WindowWidthContext);
 
@@ -48,15 +48,20 @@ const Window = ({
     setPosition({ top: clientY - offset.y, left: clientX - offset.x });
   };
 
-  const handleDragStart = useCallback((e) => {
-    const { offsetX, offsetY } = e.nativeEvent;
-    e.dataTransfer.setDragImage(new Image(), 0, 0);
-    setOffset({ x: offsetX, y: offsetY });
-  }, []);
+  const handleDragStart = useCallback(
+    (e) => {
+      setFocus();
+      const { offsetX, offsetY } = e.nativeEvent;
+      e.dataTransfer.setDragImage(new Image(), 0, 0);
+      setOffset({ x: offsetX, y: offsetY });
+    },
+    [processes]
+  );
 
   const handleDrag = useCallback((e) => updateWindowPosition(e), [offset]);
   const handleDragEnd = useCallback((e) => updateWindowPosition(e), [offset]);
   const handleResizeStart = (e) => {
+    setFocus();
     disableIframe && disableIframe();
     e.stopPropagation();
     e.dataTransfer.setDragImage(new Image(), 0, 0);
@@ -172,6 +177,8 @@ const Window = ({
     }
   }, [height, width, previousDimensionsAndPositionRef.current]);
 
+  const setFocus = () => focusProcess(app, parentProcess);
+
   useEffect(() => {
     appDataRef.current = { width, height, position };
   }, [width, height, position]);
@@ -220,13 +227,18 @@ const Window = ({
         ...position,
         minWidth,
         minWindowHeight,
-        zIndex: 100,
+        zIndex: processes[parentProcess || app]
+          ? processes[parentProcess || app].isFocused
+            ? 200 + (parentProcess ? 1 : 0)
+            : 100 + (parentProcess ? 1 : 0)
+          : 300,
         visibility: processes[app]
           ? !processes[app].minimised
             ? "visible"
             : "hidden"
           : "",
       }}
+      onClick={setFocus}
     >
       {resizable &&
         [
