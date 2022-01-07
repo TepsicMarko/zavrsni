@@ -10,6 +10,7 @@ import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import FolderContentsContextMenu from "../../../system/component-specific-context-menus/FolderContentsContextMenu";
 import { path as Path } from "filer";
+import useExternalFileDrop from "../../../../hooks/useExternalFileDrop";
 
 const FileExplorerFolderContents = ({
   changePath,
@@ -26,6 +27,7 @@ const FileExplorerFolderContents = ({
     useContext(FileSystemContext);
   const { windowWidth } = useContext(WindowWidthContext);
   const { renderOptions } = useContext(RightClickMenuContext);
+
   const windowWidthOnFirstRender = useRef(windowWidth);
   const [folderContent, setWatcherPath] = useWatchFolder(
     path,
@@ -33,6 +35,7 @@ const FileExplorerFolderContents = ({
     getFolder,
     setItemCount
   );
+  const [handleExternalFileDrop] = useExternalFileDrop(createFSO);
 
   const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
     Name: "4.5rem",
@@ -79,15 +82,17 @@ const FileExplorerFolderContents = ({
 
   const preventDefault = (e) => e.preventDefault();
   const handleDrop = (e) => {
-    e.preventDefault();
-    const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
-    const dragObject = dataTransfer.dragObject;
-    if (dataTransfer.origin === "Desktop") {
-      moveFSO(
-        Path.join(dragObject.path, dragObject.name),
-        Path.join(path, dragObject.name)
-      );
-    }
+    if (!e.dataTransfer.files.length) {
+      e.preventDefault();
+      const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
+      const dragObject = dataTransfer.dragObject;
+      if (dataTransfer.origin === "Desktop") {
+        moveFSO(
+          Path.join(dragObject.path, dragObject.name),
+          Path.join(path, dragObject.name)
+        );
+      }
+    } else handleExternalFileDrop(e, path);
   };
 
   const calcWidth = () => {

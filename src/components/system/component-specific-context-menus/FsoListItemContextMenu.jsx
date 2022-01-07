@@ -1,5 +1,6 @@
 import ContextMenuItem from "../context-menu/context-menu-item/ContextMenuItem";
 import { path as Path } from "filer";
+import openWithDefaultApp from "../../../helpers/openWithDefaultApp";
 
 const FsoListItemContextMenu = ({
   name,
@@ -23,10 +24,7 @@ const FsoListItemContextMenu = ({
   const openFSO = () => {
     if (type === "DIRECTORY") {
       changePath(Path.join(path, name));
-    }
-    if (type === "FILE") {
-      startProcess("Notepad", { path: Path.join(path, name) });
-    }
+    } else openWithDefaultApp(type, path, name, startProcess);
   };
 
   return (

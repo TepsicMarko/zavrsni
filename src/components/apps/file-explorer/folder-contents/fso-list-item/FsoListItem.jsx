@@ -7,6 +7,7 @@ import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuCon
 import { ProcessesContext } from "../../../../../contexts/ProcessesContext";
 import { path as Path } from "filer";
 import useInput from "../../../../../hooks/useInput";
+import openWithDefaultApp from "../../../../../helpers/openWithDefaultApp";
 
 const FsoListItem = ({
   name,
@@ -85,7 +86,7 @@ const FsoListItem = ({
     if (type === "DIRECTORY") {
       setExpandBranches(true);
       changePath(location ? location : Path.join(path, name));
-    }
+    } else openWithDefaultApp(type, path, name, startProcess);
   };
 
   const handleClick = (e) => {};
