@@ -8,6 +8,8 @@ const DesktopIconContextMenu = ({
   deleteFSO,
   deleteFromGrid,
   inputRef,
+  openWithDefaultApp,
+  startProcess,
 }) => {
   const handleClick = () => {
     alert("not yet implemented");
@@ -18,17 +20,15 @@ const DesktopIconContextMenu = ({
     deleteFromGrid(name);
   };
 
+  const handleOpen = () => openWithDefaultApp(type, path, name, startProcess);
+
   const focusInput = () => {
     inputRef.current.focus();
   };
 
   return (
     <>
-      <ContextMenuItem
-        name='Open'
-        onClick={handleClick}
-        closeMenu={closeMenu}
-      />
+      <ContextMenuItem name='Open' onClick={handleOpen} closeMenu={closeMenu} />
       <ContextMenuItem name='Cut' onClick={handleClick} closeMenu={closeMenu} />
       <ContextMenuItem
         name='Copy'

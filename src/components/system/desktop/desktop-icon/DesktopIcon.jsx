@@ -3,11 +3,11 @@ import { FcFolder } from "react-icons/fc";
 import { AiFillFileText } from "react-icons/ai";
 import { GoFileSymlinkFile } from "react-icons/go";
 import { useContext, useState, useEffect, useRef } from "react";
-
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import useInput from "../../../../hooks/useInput";
 import DesktopIconContextMenu from "../../component-specific-context-menus/DesktopIconContextMenu";
+import openWithDefaultApp from "../../../../helpers/openWithDefaultApp";
 
 const DesktopIcon = ({
   name,
@@ -16,6 +16,7 @@ const DesktopIcon = ({
   gridPosition,
   updateGridItemName,
   deleteFromGrid,
+  startProcess,
 }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
@@ -65,8 +66,13 @@ const DesktopIcon = ({
         deleteFSO={deleteFSO}
         deleteFromGrid={deleteFromGrid}
         inputRef={inputRef}
+        openWithDefaultApp={openWithDefaultApp}
+        startProcess={startProcess}
       />
     );
+
+  const handleDoubleClick = (e) =>
+    openWithDefaultApp(type, path, name, startProcess);
 
   useEffect(() => {
     const eventHandler = (e) => setIsSelected(false);
@@ -80,6 +86,7 @@ const DesktopIcon = ({
     <div
       className={`desktop-icon${isSelected ? "-selected" : ""}`}
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}
       style={{ gridArea: gridPosition }}
       draggable

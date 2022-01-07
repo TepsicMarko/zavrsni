@@ -3,11 +3,13 @@ import { useContext, useState } from "react";
 import windows from "../../../assets/windows.jpg";
 import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
+import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import useDesktopGrid from "../../../hooks/useDesktopGrid";
 import DesktopIcon from "./desktop-icon/DesktopIcon";
 import DesktopContextMenu from "../component-specific-context-menus/DesktopContextMenu";
 import useWatchFolder from "../../../hooks/useWatchFolder";
 import { path as Path } from "filer";
+import useExternalFileDrop from "../../../hooks/useExternalFileDrop";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
   const origin = "/C/users/admin/Desktop";
@@ -15,9 +17,11 @@ const Desktop = ({ width, height, taskbarHeight }) => {
     useContext(FileSystemContext);
   const [view, setView] = useState("Medium icons");
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
+  const [handleExternalFileDrop] = useExternalFileDrop(createFSO);
   const folderName = "Desktop";
   const wallpaper = windows;
   const { renderOptions } = useContext(RightClickMenuContext);
+  const { startProcess } = useContext(ProcessesContext);
 
   const evalTaskbarHeight = () =>
     typeof taskbarHeight !== "number"
@@ -57,19 +61,21 @@ const Desktop = ({ width, height, taskbarHeight }) => {
   };
 
   const handleDrop = (e) => {
-    e.preventDefault();
-    const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
-    console.log(dataTransfer);
-    const { name, type, path } = dataTransfer.dragObject;
-    if (dataTransfer.origin === "Desktop") {
-      addToGrid(
-        name,
-        calculateGridPosition({ x: e.clientX, y: e.clientY }),
-        true
-      );
-    } else {
-      moveFSO(Path.join(path, name), Path.join(origin, name));
-    }
+    if (!e.dataTransfer.files.length) {
+      e.preventDefault();
+      const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
+      console.log(dataTransfer);
+      const { name, type, path } = dataTransfer.dragObject;
+      if (dataTransfer.origin === "Desktop") {
+        addToGrid(
+          name,
+          calculateGridPosition({ x: e.clientX, y: e.clientY }),
+          true
+        );
+      } else {
+        moveFSO(Path.join(path, name), Path.join(origin, name));
+      }
+    } else handleExternalFileDrop(e, origin);
   };
   const preventDefault = (e) => e.preventDefault();
 
@@ -100,6 +106,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
           gridPosition={grid[name]}
           updateGridItemName={updateGridItemName}
           deleteFromGrid={deleteFromGrid}
+          startProcess={startProcess}
         />
       ))}
     </div>
