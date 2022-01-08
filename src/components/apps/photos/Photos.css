@@ -1,0 +1,28 @@
+.photos-toolbar {
+  flex-basis: 3.25rem;
+  width: 100%;
+}
+
+.photos-toolbar > svg {
+  width: 3rem;
+  color: white;
+  height: 1.25rem;
+}
+
+.image-container {
+  flex-grow: 1;
+  height: inherit;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 100% !important;
+}
+
+.image-container > img {
+  padding: 0 2rem;
+  padding-bottom: 2.25rem;
+  box-sizing: border-box;
+  max-width: 100%;
+  max-height: 100%;
+}
