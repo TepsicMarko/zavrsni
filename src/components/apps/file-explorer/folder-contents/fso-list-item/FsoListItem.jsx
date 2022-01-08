@@ -8,6 +8,7 @@ import { ProcessesContext } from "../../../../../contexts/ProcessesContext";
 import { path as Path } from "filer";
 import useInput from "../../../../../hooks/useInput";
 import openWithDefaultApp from "../../../../../helpers/openWithDefaultApp";
+import getFileType from "../../../../../helpers/getFileType";
 
 const FsoListItem = ({
   name,
@@ -135,7 +136,12 @@ const FsoListItem = ({
       onDragStart={handleDragStart}
     >
       <div style={{ minWidth: Name, maxWidth: Name }}>
-        <span className='fso-list-item-icon'> {getFileTypeIcon(type)}</span>
+        <span className='fso-list-item-icon'>
+          {" "}
+          {getFileTypeIcon(
+            type === "FILE" ? getFileType(Path.extname(name)) : type
+          )}
+        </span>
         <span
           className='fso-list-item-name-input'
           ref={inputRef}

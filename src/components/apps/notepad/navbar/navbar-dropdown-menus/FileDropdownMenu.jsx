@@ -16,7 +16,7 @@ const FileDropdownMenu = ({
     useContext(FileSystemContext);
 
   const createFile = (path, name) => {
-    createFSO(path, name, "file", textContent);
+    createFSO(path, name, "txt", textContent);
     setFilePath(Path.join(path, name));
   };
 

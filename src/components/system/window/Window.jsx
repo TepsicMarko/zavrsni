@@ -50,7 +50,7 @@ const Window = ({
 
   const handleDragStart = useCallback(
     (e) => {
-      setFocus();
+      resizable && setFocus();
       const { offsetX, offsetY } = e.nativeEvent;
       e.dataTransfer.setDragImage(new Image(), 0, 0);
       setOffset({ x: offsetX, y: offsetY });
@@ -238,7 +238,7 @@ const Window = ({
             : "hidden"
           : "",
       }}
-      onClick={setFocus}
+      onClick={resizable && setFocus}
     >
       {resizable &&
         [

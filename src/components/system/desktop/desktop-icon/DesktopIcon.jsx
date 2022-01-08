@@ -2,12 +2,15 @@ import "./DesktopIcon.css";
 import { FcFolder } from "react-icons/fc";
 import { AiFillFileText } from "react-icons/ai";
 import { GoFileSymlinkFile } from "react-icons/go";
+import { BsFileEarmarkFill } from "react-icons/bs";
 import { useContext, useState, useEffect, useRef } from "react";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import useInput from "../../../../hooks/useInput";
 import DesktopIconContextMenu from "../../component-specific-context-menus/DesktopIconContextMenu";
 import openWithDefaultApp from "../../../../helpers/openWithDefaultApp";
+import { path as Path } from "filer";
+import getFileType from "../../../../helpers/getFileType";
 
 const DesktopIcon = ({
   name,
@@ -20,7 +23,9 @@ const DesktopIcon = ({
 }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
-  const { updateFSO, deleteFSO } = useContext(FileSystemContext);
+  const [imgSrc, setImgSrc] = useState("");
+  const { updateFSO, deleteFSO, readFileContent } =
+    useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
 
@@ -31,12 +36,25 @@ const DesktopIcon = ({
     }
   };
 
+  const setImageSource = (src) => setImgSrc(src);
+
   const renderIcon = () => {
-    if (type === "file") return <AiFillFileText size='2.5rem' color='white' />;
-    else if (type === "link")
+    if (type === "file") {
+      const fileType = getFileType(Path.extname(name));
+
+      if (fileType === "text")
+        return <AiFillFileText size='2.5rem' color='white' />;
+
+      if (fileType === "image") {
+        readFileContent(Path.join(path, name), setImageSource);
+        return <img src={imgSrc} width='70%' height='100%' draggable={false} />;
+      }
+
+      if (fileType === undefined)
+        return <BsFileEarmarkFill size='2.5rem' color='white' />;
+    } else if (type === "link")
       return <GoFileSymlinkFile size='2.5rem' color='white' />;
     else return <FcFolder size='2.5rem' />;
-    //convert this to object when it becomes more complicated
   };
 
   const handleClick = (e) => {
@@ -84,7 +102,7 @@ const DesktopIcon = ({
 
   return (
     <div
-      className={`desktop-icon${isSelected ? "-selected" : ""}`}
+      className={`flex-center desktop-icon${isSelected ? "-selected" : ""}`}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}

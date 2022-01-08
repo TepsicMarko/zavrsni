@@ -51,7 +51,7 @@ const Notepad = ({ icon, path = "" }) => {
   };
 
   const createFile = (createPath, name) => {
-    createFSO(createPath, name, "file", text.content);
+    createFSO(createPath, name, "txt", text.content);
     setFilePath(Path.join(createPath, name));
   };
 

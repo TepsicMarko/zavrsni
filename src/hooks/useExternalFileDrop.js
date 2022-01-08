@@ -1,3 +1,5 @@
+import { path as Path } from "filer";
+
 const useExternalFileDrop = (addToFileSystem) => {
   const handleExternalFileDrop = (e, dropzone) => {
     e.preventDefault();
@@ -15,6 +17,22 @@ const useExternalFileDrop = (addToFileSystem) => {
         };
 
         reader.readAsText(file);
+      }
+
+      if (file.type.startsWith("image")) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          const content = e.target.result;
+          addToFileSystem(
+            dropzone,
+            Path.basename(file.name, Path.extname(file.name)),
+            Path.extname(file.name).substring(1),
+            content
+          );
+        };
+
+        reader.readAsDataURL(file);
       }
     }
   };

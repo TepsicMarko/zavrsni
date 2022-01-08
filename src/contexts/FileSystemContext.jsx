@@ -20,18 +20,21 @@ export const FileSystemProvider = ({ children }) => {
       }
     });
 
-  const writeFile = (path, isNewFile, content = "", i = 1) => {
+  const writeFile = (path, type, isNewFile, content = "", i = 1) => {
     if (isNewFile) {
-      exists(path)
+      exists(`${path}.${type}`)
         .then((exists) =>
           writeFile(
             (i > 1 ? path.slice(0, path.indexOf("(") - 1) : path) +
               ` (${i + 1})`,
+            type,
+            isNewFile,
+            content || "",
             i + 1
           )
         )
         .catch((doesntExist) =>
-          fs.writeFile(path, content, (err) => console.log(err))
+          fs.writeFile(`${path}.${type}`, content, (err) => console.log(err))
         );
     } else fs.writeFile(path, content, (err) => console.log(err));
   };
@@ -70,7 +73,7 @@ export const FileSystemProvider = ({ children }) => {
     } else if (type === "lnk") {
       link(Path.join(path, name));
     } else {
-      writeFile(Path.join(path, name), true, content);
+      writeFile(Path.join(path, name), type, true, content);
     }
   };
 
@@ -90,7 +93,7 @@ export const FileSystemProvider = ({ children }) => {
   };
 
   const saveFile = (path, content) => {
-    writeFile(path, false, content);
+    writeFile(path, "", false, content);
   };
 
   const moveFSO = (currentPath, newPath) => {

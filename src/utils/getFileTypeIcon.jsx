@@ -1,9 +1,11 @@
 import { FcFolder } from "react-icons/fc";
 import { AiFillFileText } from "react-icons/ai";
+import { BsFillFileEarmarkImageFill } from "react-icons/bs";
 
 const fileTypeIcons = {
-  file: <AiFillFileText size='0.9rem' />,
+  text: <AiFillFileText size='0.9rem' />,
   directory: <FcFolder size='0.9rem' />,
+  image: <BsFillFileEarmarkImageFill size='0.9rem' />,
 };
 
 const getFileTypeIcon = (fileType) => {
