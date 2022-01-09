@@ -25,8 +25,8 @@ const Window = ({
   enableIframe,
   disableIframe,
 }) => {
-  const [minWidth, setMinWidth] = useState(remToPx(minWindowWidth));
-  const [minHeight, setMinHeight] = useState(remToPx(minWindowHeight));
+  const [minWidth] = useState(remToPx(minWindowWidth));
+  const [minHeight] = useState(remToPx(minWindowHeight));
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [width, setWidth] = useState(
@@ -217,11 +217,6 @@ const Window = ({
     optionalWindowWidthContext &&
       optionalWindowWidthContext.handleWindowWidthChange(width);
   }, [width]);
-
-  useEffect(() => {
-    setMinWidth(remToPx(minWindowWidth));
-    setMinHeight(remToPx(minWindowHeight));
-  }, [minWindowWidth, minWindowHeight]);
 
   return (
     <div
