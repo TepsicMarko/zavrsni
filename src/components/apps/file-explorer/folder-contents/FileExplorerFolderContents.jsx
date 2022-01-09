@@ -23,8 +23,15 @@ const FileExplorerFolderContents = ({
   openFile,
   endProcess,
 }) => {
-  const { watch, getFolder, updateFSO, deleteFSO, createFSO, moveFSO } =
-    useContext(FileSystemContext);
+  const {
+    watch,
+    getFolder,
+    updateFSO,
+    deleteFSO,
+    createFSO,
+    moveFSO,
+    createBlob,
+  } = useContext(FileSystemContext);
   const { windowWidth } = useContext(WindowWidthContext);
   const { renderOptions } = useContext(RightClickMenuContext);
 
@@ -35,7 +42,7 @@ const FileExplorerFolderContents = ({
     getFolder,
     setItemCount
   );
-  const [handleExternalFileDrop] = useExternalFileDrop(createFSO);
+  const [handleExternalFileDrop] = useExternalFileDrop(createFSO, createBlob);
 
   const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
     Name: "4.5rem",

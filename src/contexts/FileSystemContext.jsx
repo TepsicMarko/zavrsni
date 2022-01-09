@@ -1,5 +1,5 @@
 import { createContext, useEffect } from "react";
-import { path as Path, fs } from "filer";
+import { path as Path, fs, Buffer } from "filer";
 
 export const FileSystemContext = createContext();
 
@@ -57,6 +57,13 @@ export const FileSystemProvider = ({ children }) => {
       );
     });
 
+  const readBinaryFile = (path) =>
+    new Promise((resolve, reject) => {
+      fs.readFile(path, (err, content) =>
+        err ? reject(err) : resolve(content)
+      );
+    });
+
   const exists = (path) =>
     new Promise((resolve, reject) => {
       fs.exists(path, (exists) => (exists ? resolve(true) : reject()));
@@ -77,12 +84,28 @@ export const FileSystemProvider = ({ children }) => {
     }
   };
 
+  const createBlob = (path, name, buffer) => {
+    const FilerBuffer = Buffer.from(buffer);
+    fs.writeFile(Path.join(path, name), FilerBuffer, (err) => {
+      err && console.log(err);
+    });
+  };
+
   const getFolder = (path, callback) => {
     readdir(path).then((dirContent) => callback(dirContent));
   };
 
   const readFileContent = (path, callback) => {
     readFile(path).then((content) => callback(content));
+  };
+
+  const readBlob = (path, callback) => {
+    readBinaryFile(path).then((buffer) => {
+      const blob = new Blob([buffer], {
+        type: "video/mp4",
+      });
+      callback(window.URL.createObjectURL(blob));
+    });
   };
 
   const updateFSO = (name, path) => {
@@ -171,11 +194,13 @@ export const FileSystemProvider = ({ children }) => {
     <FileSystemContext.Provider
       value={{
         createFSO,
+        createBlob,
         getFolder,
         updateFSO,
         saveFile,
         deleteFSO,
         readFileContent,
+        readBlob,
         watch,
         exists,
         findFSO,

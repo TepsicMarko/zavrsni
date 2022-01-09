@@ -1,6 +1,6 @@
 import { path as Path } from "filer";
 
-const useExternalFileDrop = (addToFileSystem) => {
+const useExternalFileDrop = (createFSO, createBlob) => {
   const handleExternalFileDrop = (e, dropzone) => {
     e.preventDefault();
     console.log(e.dataTransfer.files);
@@ -13,7 +13,7 @@ const useExternalFileDrop = (addToFileSystem) => {
 
         reader.onload = (e) => {
           const content = e.target.result;
-          addToFileSystem(dropzone, file.name, file.type, content);
+          createFSO(dropzone, file.name, file.type, content);
         };
 
         reader.readAsText(file);
@@ -24,7 +24,7 @@ const useExternalFileDrop = (addToFileSystem) => {
 
         reader.onload = (e) => {
           const content = e.target.result;
-          addToFileSystem(
+          createFSO(
             dropzone,
             Path.basename(file.name, Path.extname(file.name)),
             Path.extname(file.name).substring(1),
@@ -33,6 +33,18 @@ const useExternalFileDrop = (addToFileSystem) => {
         };
 
         reader.readAsDataURL(file);
+      }
+
+      if (file.type.startsWith("video")) {
+        console.log("reading video");
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          const buffer = e.target.result;
+          createBlob(dropzone, file.name, buffer);
+        };
+
+        reader.readAsArrayBuffer(file);
       }
     }
   };

@@ -13,11 +13,11 @@ import useExternalFileDrop from "../../../hooks/useExternalFileDrop";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
   const origin = "/C/users/admin/Desktop";
-  const { createFSO, watch, getFolder, moveFSO } =
+  const { createFSO, watch, getFolder, moveFSO, createBlob } =
     useContext(FileSystemContext);
   const [view, setView] = useState("Medium icons");
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
-  const [handleExternalFileDrop] = useExternalFileDrop(createFSO);
+  const [handleExternalFileDrop] = useExternalFileDrop(createFSO, createBlob);
   const folderName = "Desktop";
   const wallpaper = windows;
   const { renderOptions } = useContext(RightClickMenuContext);

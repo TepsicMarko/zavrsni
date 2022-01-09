@@ -3,7 +3,7 @@ import { FcFolder } from "react-icons/fc";
 import { AiFillFileText } from "react-icons/ai";
 import { GoFileSymlinkFile } from "react-icons/go";
 import { BsFileEarmarkFill } from "react-icons/bs";
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useState, useEffect, useRef, useMemo } from "react";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import useInput from "../../../../hooks/useInput";
@@ -24,7 +24,7 @@ const DesktopIcon = ({
   const [isSelected, setIsSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
   const [imgSrc, setImgSrc] = useState("");
-  const { updateFSO, deleteFSO, readFileContent } =
+  const { updateFSO, deleteFSO, readFileContent, readBlob } =
     useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
@@ -36,9 +36,11 @@ const DesktopIcon = ({
     }
   };
 
-  const setImageSource = (src) => setImgSrc(src);
+  const setImageSource = (src) => {
+    imgSrc.length === 0 && setImgSrc(src);
+  };
 
-  const renderIcon = () => {
+  const renderIcon = useMemo(() => {
     if (type === "file") {
       const fileType = getFileType(Path.extname(name));
 
@@ -50,12 +52,19 @@ const DesktopIcon = ({
         return <img src={imgSrc} width='70%' height='100%' draggable={false} />;
       }
 
+      if (fileType === "video") {
+        readBlob(Path.join(path, name), setImageSource);
+        return (
+          <video src={imgSrc} width='70%' height='100%' draggable={false} />
+        );
+      }
+
       if (fileType === undefined)
         return <BsFileEarmarkFill size='2.5rem' color='white' />;
     } else if (type === "link")
       return <GoFileSymlinkFile size='2.5rem' color='white' />;
     else return <FcFolder size='2.5rem' />;
-  };
+  }, [imgSrc]);
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -110,7 +119,7 @@ const DesktopIcon = ({
       draggable
       onDragStart={handleDragStart}
     >
-      {renderIcon()}
+      {renderIcon}
       <div
         ref={inputRef}
         contentEditable={isSelected}
