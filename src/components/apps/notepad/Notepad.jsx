@@ -81,9 +81,9 @@ const Notepad = ({ icon, path = "" }) => {
     }
   };
 
-  const handleDontSave = () => {
+  const handleDontSave = (callback) => {
     closeDialog(dialogID);
-    endProcess("Notepad");
+    callback ? callback() : endProcess("Notepad");
   };
 
   const handleCancel = () => {
@@ -96,7 +96,7 @@ const Notepad = ({ icon, path = "" }) => {
       <UnsavedChanges
         icon={icon}
         handleSave={() => handleSave(customHandleSave)}
-        handleDontSave={handleDontSave}
+        handleDontSave={() => handleDontSave(customHandleSave)}
         handleCancel={handleCancel}
         filePath={filePath}
       />
