@@ -13,7 +13,12 @@ const useExternalFileDrop = (createFSO, createBlob) => {
 
         reader.onload = (e) => {
           const content = e.target.result;
-          createFSO(dropzone, file.name, file.type, content);
+          createFSO(
+            dropzone,
+            Path.basename(file.name, Path.extname(file.name)),
+            Path.extname(file.name).substring(1),
+            content
+          );
         };
 
         reader.readAsText(file);
