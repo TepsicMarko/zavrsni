@@ -60,11 +60,13 @@ const ContextMenuItem = ({
           <MdArrowForwardIos />
         </div>
       )}
-      {children && openSubmenu && (
+      {children && openSubmenu ? (
         <div className='submenu'>
-          {children.map((child) => cloneElement(child, { hoverColor }))}
+          {children.length
+            ? children.map((child) => cloneElement(child, { hoverColor }))
+            : cloneElement(children, { hoverColor })}
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
