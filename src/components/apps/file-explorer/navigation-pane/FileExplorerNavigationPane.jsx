@@ -2,7 +2,7 @@ import "./FileExplorerNavigationPane.css";
 import { RiComputerFill } from "react-icons/ri";
 import FolderNavigationBranch from "./folder-navigation-branch/FolderNavigationBranch";
 import { useContext } from "react";
-import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
+import { WindowDimensionsContext } from "../../../../contexts/WindowDimensionsContext";
 
 const FileExplorerNavigationPane = ({
   changePath,
@@ -12,11 +12,11 @@ const FileExplorerNavigationPane = ({
   expandBranches,
   setExpandBranches,
 }) => {
-  const { windowWidth } = useContext(WindowWidthContext);
+  const { windowDimensions } = useContext(WindowDimensionsContext);
   return (
     <div
       className='fx-navigation-pane'
-      style={{ width: windowWidth - folderContentsWidth }}
+      style={{ width: windowDimensions.width - folderContentsWidth }}
     >
       <div className='folder-navigation-tree'>
         <FolderNavigationBranch

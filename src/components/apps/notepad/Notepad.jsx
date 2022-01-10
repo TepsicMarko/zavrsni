@@ -2,7 +2,6 @@ import "./Notepad.css";
 import Window from "../../system/window/Window";
 import WindowContent from "../../system/window/window-content/WindowContent";
 import StatusBar from "../../system/window/status-bar/StatusBar";
-import { WindowWidthProvider } from "../../../contexts/WindowWidthContext";
 import NotepadNavbar from "./navbar/NotepadNavbar";
 import { useState, memo, useEffect, useContext, useRef } from "react";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
@@ -129,82 +128,80 @@ const Notepad = ({ icon, path = "" }) => {
   }, [filePath]);
 
   return (
-    <WindowWidthProvider>
-      <Window
-        app='Notepad'
-        fileName={
-          filePath
-            ? Path.basename(filePath) + " - Notepad"
-            : "*Untilted - Notepad"
-        }
-        icon={icon}
-        minWindowWidth='9rem'
-        minWindowHeight='8.2rem'
-        titleBar={{ color: "black", backgroundColor: "white" }}
-        onClose={onClose}
+    <Window
+      app='Notepad'
+      fileName={
+        filePath
+          ? Path.basename(filePath) + " - Notepad"
+          : "*Untilted - Notepad"
+      }
+      icon={icon}
+      minWindowWidth='9rem'
+      minWindowHeight='8.2rem'
+      titleBar={{ color: "black", backgroundColor: "white" }}
+      onClose={onClose}
+    >
+      <WindowContent
+        backgroundColor='white'
+        flex
+        flexDirection='column'
+        flexWrap='wrap'
       >
-        <WindowContent
-          backgroundColor='white'
-          flex
-          flexDirection='column'
-          flexWrap='wrap'
+        <NotepadNavbar
+          textContent={text.content}
+          filePath={filePath}
+          setFilePath={setFilePath}
+          divRef={divRef}
+          setWordWrap={setWordWrap}
+          wordWrap={wordWrap}
+          statusBarVisible={statusBarVisible}
+          setStatusBarVisibility={setStatusBarVisibility}
+          zoom={zoom}
+          setZoom={setZoom}
+          openUnsavedChangesDialog={openUnsavedChangesDialog}
+          resetNotepad={resetNotepad}
+        />
+        <div
+          className='notepad-text-content-container'
+          onClick={focusTextContent}
+          style={{
+            overflowX: wordWrap ? "initial" : "",
+            paddingBottom: wordWrap ? "1rem" : "",
+          }}
         >
-          <NotepadNavbar
-            textContent={text.content}
-            filePath={filePath}
-            setFilePath={setFilePath}
-            divRef={divRef}
-            setWordWrap={setWordWrap}
-            wordWrap={wordWrap}
-            statusBarVisible={statusBarVisible}
-            setStatusBarVisibility={setStatusBarVisibility}
-            zoom={zoom}
-            setZoom={setZoom}
-            openUnsavedChangesDialog={openUnsavedChangesDialog}
-            resetNotepad={resetNotepad}
-          />
           <div
-            className='notepad-text-content-container'
-            onClick={focusTextContent}
+            ref={divRef}
+            className='notepad-text-content'
+            contentEditable
+            suppressContentEditableWarning
+            onInput={handleChange}
+            onClick={stopPropagation}
             style={{
-              overflowX: wordWrap ? "initial" : "",
-              paddingBottom: wordWrap ? "1rem" : "",
+              maxWidth: wordWrap ? "calc(100% - 4px)" : "",
+              fontSize: `${zoom}%`,
             }}
-          >
-            <div
-              ref={divRef}
-              className='notepad-text-content'
-              contentEditable
-              suppressContentEditableWarning
-              onInput={handleChange}
-              onClick={stopPropagation}
-              style={{
-                maxWidth: wordWrap ? "calc(100% - 4px)" : "",
-                fontSize: `${zoom}%`,
-              }}
-            ></div>
-          </div>
-        </WindowContent>
-        {statusBarVisible && (
-          <StatusBar
-            backgroundColor='#f1f1f1'
-            color='black'
-            flex
-            borderColor='#DBDBDB'
-            borderStyle='solid'
-            borderWidth='1px 0 0 0'
-            fontWeight='400'
-            position='relative'
-          >
-            <div className='line-count'>Ln {text.lines}, </div>
-            <div className='word-count'>Col {text.chars}</div>
-            <div className='font-size'>{zoom}%</div>
-            <div className='clrf'>Windows(CRLF)</div>
-            <div className='file-format'>UTF-8</div>
-          </StatusBar>
-        )}
-      </Window>
-    </WindowWidthProvider>
+          ></div>
+        </div>
+      </WindowContent>
+      {statusBarVisible && (
+        <StatusBar
+          backgroundColor='#f1f1f1'
+          color='black'
+          flex
+          borderColor='#DBDBDB'
+          borderStyle='solid'
+          borderWidth='1px 0 0 0'
+          fontWeight='400'
+          position='relative'
+        >
+          <div className='line-count'>Ln {text.lines}, </div>
+          <div className='word-count'>Col {text.chars}</div>
+          <div className='font-size'>{zoom}%</div>
+          <div className='clrf'>Windows(CRLF)</div>
+          <div className='file-format'>UTF-8</div>
+        </StatusBar>
+      )}
+    </Window>
   );
 };
 

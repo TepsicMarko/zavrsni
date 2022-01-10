@@ -6,7 +6,7 @@ import useWatchFolder from "../../../../hooks/useWatchFolder";
 import remToPx from "../../../../helpers/remToPx";
 import moment from "moment";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
-import { WindowWidthContext } from "../../../../contexts/WindowWidthContext";
+import { WindowDimensionsContext } from "../../../../contexts/WindowDimensionsContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import FolderContentsContextMenu from "../../../system/component-specific-context-menus/FolderContentsContextMenu";
 import { path as Path } from "filer";
@@ -32,10 +32,10 @@ const FileExplorerFolderContents = ({
     moveFSO,
     createBlob,
   } = useContext(FileSystemContext);
-  const { windowWidth } = useContext(WindowWidthContext);
+  const { windowDimensions } = useContext(WindowDimensionsContext);
   const { renderOptions } = useContext(RightClickMenuContext);
 
-  const windowWidthOnFirstRender = useRef(windowWidth);
+  const windowWidthOnFirstRender = useRef(windowDimensions.width);
   const [folderContent, setWatcherPath] = useWatchFolder(
     path,
     watch,
@@ -54,7 +54,7 @@ const FileExplorerFolderContents = ({
   const [minWidth, setMinWidth] = useState(remToPx("6rem"));
 
   const folderContentsRef = useRef(null);
-  const previousWindowWidthRef = useRef(windowWidth);
+  const previousWindowWidthRef = useRef(windowDimensions.width);
 
   const setColumnHeadingWidth = useCallback(
     (name, width) => {
@@ -70,7 +70,7 @@ const FileExplorerFolderContents = ({
   const handleResize = (e) => {
     const { offsetX } = e.nativeEvent;
     const newWidth = width - offsetX;
-    const maxWidth = windowWidth - remToPx("3.5rem");
+    const maxWidth = windowDimensions.width - remToPx("3.5rem");
 
     setWidth(
       newWidth >= maxWidth
@@ -116,20 +116,21 @@ const FileExplorerFolderContents = ({
   }, [path]);
 
   useEffect(() => {
-    if (windowWidthOnFirstRender.current === undefined) {
-      setWidth(windowWidth - 150);
-      windowWidthOnFirstRender.current = windowWidth;
+    if (windowWidthOnFirstRender.current === 0) {
+      setWidth(windowDimensions.width - 150);
+      windowWidthOnFirstRender.current = windowDimensions.width;
     }
-  }, [windowWidth]);
+  }, [windowDimensions.width]);
 
   useEffect(() => {
-    const maxWidth = windowWidth - remToPx("3.5rem");
-    const windowWidthDiff = windowWidth - previousWindowWidthRef.current;
+    const maxWidth = windowDimensions.width - remToPx("3.5rem");
+    const windowWidthDiff =
+      windowDimensions.width - previousWindowWidthRef.current;
     const newWidth = width + windowWidthDiff;
     if (width + windowWidthDiff > minWidth && newWidth <= maxWidth)
       setWidth(width + windowWidthDiff);
-    previousWindowWidthRef.current = windowWidth;
-  }, [windowWidth]);
+    previousWindowWidthRef.current = windowDimensions.width;
+  }, [windowDimensions.width]);
 
   return (
     <div

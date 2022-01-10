@@ -8,7 +8,7 @@ import { useState, useCallback, useEffect } from "react";
 import FileExplorerNavigationBar from "./navigation-bar/FileExplorerNavigationBar";
 import FileExplorerNavigationPane from "./navigation-pane/FileExplorerNavigationPane";
 import FileExplorerFolderContents from "./folder-contents/FileExplorerFolderContents";
-import { WindowWidthProvider } from "../../../contexts/WindowWidthContext";
+import { WindowDimensionsProvider } from "../../../contexts/WindowDimensionsContext";
 import FileExplorerStatusBar from "./status-bar/FileExplorerStatusBar";
 
 const FileExplorer = ({
@@ -40,7 +40,7 @@ const FileExplorer = ({
   );
 
   return (
-    <WindowWidthProvider>
+    <WindowDimensionsProvider>
       <Window
         app='File Explorer'
         icon={icon}
@@ -110,7 +110,7 @@ const FileExplorer = ({
           />
         </StatusBar>
       </Window>
-    </WindowWidthProvider>
+    </WindowDimensionsProvider>
   );
 };
 

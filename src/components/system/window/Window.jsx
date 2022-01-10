@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import remToPx from "../../../helpers/remToPx";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
-import { WindowWidthContext } from "../../../contexts/WindowWidthContext";
+import { WindowDimensionsContext } from "../../../contexts/WindowDimensionsContext";
 import TitleBar from "./title-bar/TitleBar";
 
 const Window = ({
@@ -38,7 +38,7 @@ const Window = ({
 
   const { endProcess, minimiseToTaskbar, processes, focusProcess } =
     useContext(ProcessesContext);
-  const optionalWindowWidthContext = useContext(WindowWidthContext);
+  const optionalWindowDimensionsContext = useContext(WindowDimensionsContext);
 
   const appDataRef = useRef({ width, height, position });
   const previousDimensionsAndPositionRef = useRef({});
@@ -214,9 +214,12 @@ const Window = ({
   }, []);
 
   useEffect(() => {
-    optionalWindowWidthContext &&
-      optionalWindowWidthContext.handleWindowWidthChange(width);
-  }, [width]);
+    optionalWindowDimensionsContext &&
+      optionalWindowDimensionsContext.handleWindowDimensionsChange({
+        width,
+        height,
+      });
+  }, [width, height]);
 
   return (
     <div
