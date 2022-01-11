@@ -2,9 +2,9 @@
   flex-basis: 3.25rem;
   width: 100%;
 }
-
-.photos-toolbar > svg {
+.photos-toolbar > div {
   width: 3rem;
+  min-height: 3rem;
   color: white;
   height: 1.25rem;
 }
@@ -23,7 +23,26 @@
   margin-bottom: 2.25rem;
 }
 
+.performance-wrapper {
+  height: 100%;
+  display: flex;
+}
+
 .performance-wrapper > img {
+  object-fit: contain;
   max-width: 100%;
   max-height: 100%;
+}
+
+.maximise-photos {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0.5rem;
+  height: 2rem;
+}
+
+.maximise-photos:hover,
+.photos-toolbar > div:hover {
+  background-color: rgba(71, 71, 71, 0.507);
 }

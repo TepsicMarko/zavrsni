@@ -6,14 +6,16 @@ import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import { useState, useContext, useEffect, useRef } from "react";
 import { HiOutlineZoomIn, HiOutlineZoomOut } from "react-icons/hi";
 import { BsTrash } from "react-icons/bs";
-import { GrRotateRight } from "react-icons/gr";
+import { AiOutlineExpandAlt } from "react-icons/ai";
 import Panzoom from "@panzoom/panzoom";
+import useToggle from "../../../hooks/useToggle";
 
 const Photos = ({ path }) => {
   const imageContainerRef = useRef(null);
   const [src, setSrc] = useState("");
   const [zoom, setZoom] = useState(100);
   const [panzoom, setPanzoom] = useState();
+  const [fullScreen, toggleFullScreen] = useToggle(false);
   const { readFileContent, deleteFSO } = useContext(FileSystemContext);
   const { endProcess } = useContext(ProcessesContext);
 
@@ -49,6 +51,34 @@ const Photos = ({ path }) => {
   const handleMouseWhele = (e) => {
     panzoom.zoomWithWheel(e);
     setZoom(panzoom.getScale() * 100);
+  };
+
+  const togglePhotosFullSceen = () => {
+    const Photos =
+      document.getElementsByClassName("photos-toolbar")[0].parentElement
+        .parentElement;
+    fullScreen ? closeFullscreen() : openFullscreen(Photos);
+    toggleFullScreen();
+  };
+
+  const openFullscreen = (el) => {
+    if (el.requestFullscreen) {
+      el.requestFullscreen();
+    } else if (el.webkitRequestFullscreen) {
+      el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) {
+      el.msRequestFullscreen();
+    }
+  };
+
+  const closeFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
   };
 
   useEffect(() => {
@@ -90,14 +120,31 @@ const Photos = ({ path }) => {
     >
       <WindowContent backgroundColor='#222222' flex flexDirection='column'>
         <div className='flex-center photos-toolbar'>
-          <HiOutlineZoomIn onClick={zoomIn} />
-          <HiOutlineZoomOut onClick={zoomOut} />
-          <BsTrash onClick={deleteImage} />
+          <div className='flex-center'>
+            <HiOutlineZoomIn
+              onClick={zoomIn}
+              size='1.2rem'
+              color={zoom >= 5800 ? "gray" : ""}
+            />
+          </div>
+          <div className='flex-center'>
+            <HiOutlineZoomOut
+              onClick={zoomOut}
+              size='1.2rem'
+              color={zoom === 100 ? "gray" : ""}
+            />
+          </div>
+          <div className='flex-center'>
+            <BsTrash onClick={deleteImage} size='1.2rem' />
+          </div>
         </div>
         <div className='image-container' onWheel={handleMouseWhele}>
           <div ref={imageContainerRef} className='performance-wrapper'>
             <img id='test' src={src} />
           </div>
+        </div>
+        <div className='maximise-photos' onClick={togglePhotosFullSceen}>
+          <AiOutlineExpandAlt size='2rem' color='white' />
         </div>
       </WindowContent>
     </Window>
