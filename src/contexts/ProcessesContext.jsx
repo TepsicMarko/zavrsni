@@ -11,6 +11,8 @@ import TaskManager from "../components/apps/task-manager/TaskManager";
 import taskManager from "../assets/task-manager.png";
 import Photos from "../components/apps/photos/Photos";
 import photos from "../assets/photos.png";
+import MoviesAndTv from "../components/apps/movies-and-tv/MoviesAndTv";
+import moviesAndTv from "../assets/movies-and-tv.png";
 
 export const ProcessesContext = createContext();
 
@@ -54,6 +56,14 @@ const initialState = {
     running: false,
     minimised: false,
     icon: <img src={photos} height='30px' />,
+    pinnedToTaskbar: true,
+    isFocused: false,
+  },
+  "Movies And Tv": {
+    source: <MoviesAndTv />,
+    running: false,
+    minimised: false,
+    icon: <img src={moviesAndTv} height='30px' />,
     pinnedToTaskbar: true,
     isFocused: false,
   },

@@ -19,19 +19,24 @@ const TitleBar = ({
   handleDrag,
   handleDragEnd,
   parentProcess,
+  overlay,
 }) => {
   return (
     <div
       draggable
       className='title-bar'
-      style={{ backgroundColor, color }}
+      style={{
+        backgroundColor: overlay ? "transparent" : backgroundColor,
+        color,
+        position: overlay ? "absolute" : "",
+      }}
       onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
     >
       <div className='flex-center aplication-icon'>{icon}</div>
       <div className='aplication-name'>{name}</div>
-      <div className='window-controls'>
+      <div className='window-controls' style={ {backgroundColor}}>
         {!parentProcess && (
           <>
             <div className='flex-center' onClick={minimiseWindow}>

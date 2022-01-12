@@ -12,6 +12,8 @@ const openWithDefaultApp = (type, path, name, openApp) => {
       openApp("Notepad", { path: Path.join(path, name) });
     if (fileType === "image")
       openApp("Photos", { path: Path.join(path, name) });
+    if (fileType === "video")
+      openApp("Movies And Tv", { path: Path.join(path, name) });
   }
 };
 

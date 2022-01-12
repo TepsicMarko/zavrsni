@@ -1,6 +1,8 @@
 .title-bar {
   min-height: 1.75rem;
+  width: 100%;
   display: flex;
+  z-index: 10;
 }
 
 .aplication-icon {

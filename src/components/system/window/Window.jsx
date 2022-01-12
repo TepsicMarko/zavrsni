@@ -14,6 +14,7 @@ import TitleBar from "./title-bar/TitleBar";
 const Window = ({
   children,
   app,
+  displayAppName = true,
   icon,
   minWindowWidth,
   minWindowHeight,
@@ -271,9 +272,10 @@ const Window = ({
         handleDragStart={handleDragStart}
         handleDrag={handleDrag}
         handleDragEnd={handleDragEnd}
-        name={fileName || app}
+        name={displayAppName ? fileName || app : ""}
         icon={icon}
         parentProcess={parentProcess}
+        overlay={titleBar.overlay}
       />
       {children}
     </div>
