@@ -55,8 +55,7 @@ const Photos = ({ path }) => {
 
   const togglePhotosFullSceen = () => {
     const Photos =
-      document.getElementsByClassName("photos-toolbar")[0].parentElement
-        .parentElement;
+      document.getElementsByClassName("photos-toolbar")[0].parentElement;
     fullScreen ? closeFullscreen() : openFullscreen(Photos);
     toggleFullScreen();
   };
