@@ -1,16 +1,27 @@
 import { useState, useEffect } from "react";
 
-const useVideoPlayer = (video) => {
+const useVideoPlayer = () => {
+  const [video, setVideo] = useState();
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(50);
-  const [progress, setProgress] = useState(0);
+  const [watched, setWatched] = useState("0");
+  const [duration, setDuration] = useState();
 
   const togglePlay = () => {
     isPlaying ? video.pause() : video.play();
     setIsPlaying(!isPlaying);
   };
 
-  return { togglePlay };
+  return {
+    setVideo,
+    isPlaying,
+    togglePlay,
+    volume,
+    watched,
+    setWatched,
+    duration,
+    setDuration,
+  };
 };
 
 export default useVideoPlayer;

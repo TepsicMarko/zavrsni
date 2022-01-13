@@ -16,8 +16,29 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 3rem;
+  height: fit-content;
   z-index: 1;
+  flex-wrap: wrap;
+  padding-bottom: 1.5rem;
+}
+
+.playback-bar {
+  flex-basis: 100%;
+  padding: 0 0.75rem;
+  box-sizing: border-box;
+  padding-bottom: 1rem;
+}
+
+.watched-time,
+.remaning-time {
+  color: white;
+  width: 50%;
+  display: inline-block;
+  font-size: 0.8rem;
+}
+
+.remaning-time {
+  text-align: right;
 }
 
 .video-main-controls {
