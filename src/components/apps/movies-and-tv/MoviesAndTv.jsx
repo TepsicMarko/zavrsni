@@ -20,6 +20,7 @@ import useVideoPlayer from "../../../hooks/useVideoPlayer";
 const MoviesAndTv = ({ path }) => {
   const videoRef = useRef(null);
   const volumeSettingsRef = useRef(null);
+  const currentTimeRef = useRef(null);
   const [src, setSrc] = useState("");
   const { readBlob } = useContext(FileSystemContext);
   const [volumeSliderVisibility, setVolumeSiderVisibility] = useState(false);
@@ -31,7 +32,6 @@ const MoviesAndTv = ({ path }) => {
     isMuted,
     toggleMuted,
     changeVolume,
-    currentTime,
     skipForwards,
     skipBackwards,
     setCurrentTime,
@@ -41,7 +41,10 @@ const MoviesAndTv = ({ path }) => {
   } = useVideoPlayer();
 
   const handleDurationLoaded = (e) => setDuration(e.target.duration);
-  const handleProgressChnage = (e) => setCurrentTime(e.target.currentTime);
+  const handleProgressChnage = (e) =>
+    (currentTimeRef.current.textContent = `${formatTime(
+      e.target.currentTime
+    )}`);
 
   const formatTime = (ms) => {
     if (!ms) return "0:00:00";
@@ -106,7 +109,7 @@ const MoviesAndTv = ({ path }) => {
               <Slider
                 min={0}
                 max={duration}
-                value={currentTime}
+                value={videoRef?.current?.currentTime}
                 onChange={handleSliderChange}
                 step={0.01}
                 handleStyle={{
@@ -127,7 +130,7 @@ const MoviesAndTv = ({ path }) => {
                   height: "2px",
                 }}
               />
-              <div className='watched-time'>{formatTime(currentTime)}</div>
+              <div ref={currentTimeRef} className='watched-time'></div>
               <div className='remaning-time'>{formatTime(duration)}</div>
             </div>
             <div className='video-controls-btn'>
