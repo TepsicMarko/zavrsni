@@ -51,6 +51,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .controls-overlay {
@@ -66,4 +67,24 @@
     rgba(0, 0, 0, 0) 100%
   );
   z-index: 0;
+}
+
+.volume-slider {
+  position: absolute;
+  top: -5.25rem;
+  left: 0;
+  height: 4rem;
+  width: 18.5rem;
+  background-color: #1f1f1f;
+}
+
+.volume-slider > .video-controls-btn {
+  margin: 0 1rem;
+}
+
+.volume-slider > div:last-child {
+  color: white;
+  width: 2rem;
+  font-size: 0.75rem;
+  margin: 0 1rem;
 }
