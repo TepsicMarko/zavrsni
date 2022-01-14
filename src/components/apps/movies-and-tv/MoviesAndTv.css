@@ -12,7 +12,8 @@
   max-height: 100%;
 }
 
-.video-controls {
+.video-controls,
+.miniplayer-video-controls {
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -20,6 +21,12 @@
   z-index: 1;
   flex-wrap: wrap;
   padding-bottom: 1.5rem;
+}
+
+.miniplayer-video-controls {
+  height: 100%;
+  padding-bottom: 0rem;
+  align-items: center;
 }
 
 .playback-bar {
@@ -44,6 +51,9 @@
 .video-main-controls {
   flex-grow: 1;
 }
+/* 
+.miniplayer-video-main-controls {
+} */
 
 .video-controls-btn {
   height: 100%;
@@ -67,6 +77,7 @@
     rgba(0, 0, 0, 0) 100%
   );
   z-index: 0;
+  /* background-color: rgba(0, 0, 0, 0.25); */
 }
 
 .volume-slider {
@@ -87,4 +98,24 @@
   width: 2rem;
   font-size: 0.75rem;
   margin: 0 1rem;
+}
+
+.miniplayer-maximise {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 3rem;
+}
+
+.miniplayer-progress-bar-container {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.192);
+  height: 4px;
+}
+
+.miniplayer-progress-bar {
+  height: 100%;
+  background-color: white;
 }

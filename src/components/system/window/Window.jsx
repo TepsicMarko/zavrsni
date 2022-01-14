@@ -25,6 +25,7 @@ const Window = ({
   fileName,
   enableIframe,
   disableIframe,
+  zIndex,
 }) => {
   const [minWidth] = useState(remToPx(minWindowWidth));
   const [minHeight] = useState(remToPx(minWindowHeight));
@@ -231,7 +232,9 @@ const Window = ({
         ...position,
         minWidth,
         minWindowHeight,
-        zIndex: processes[parentProcess || app]
+        zIndex: zIndex
+          ? zIndex
+          : processes[parentProcess || app]
           ? processes[parentProcess || app].isFocused
             ? 200 + (parentProcess ? 1 : 0)
             : 100 + (parentProcess ? 1 : 0)

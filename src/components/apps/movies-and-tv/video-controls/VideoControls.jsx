@@ -18,8 +18,6 @@ const VideoControls = ({
   togglePlay,
   toggleMuted,
   changeVolume,
-  skipForwards,
-  skipBackwards,
   volume,
   isMuted,
   isMiniplayer,
@@ -51,6 +49,18 @@ const VideoControls = ({
     setVolumeSiderVisibility(!volumeSliderVisibility);
   };
 
+  const skipForwards = () => {
+    const newTime = currentTime + 30;
+    videoRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const skipBackwards = () => {
+    const newTime = currentTime - 10;
+    videoRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
   useEffect(() => {
     videoRef.current.ontimeupdate = (e) => setCurrentTime(e.target.currentTime);
   }, []);
@@ -73,55 +83,20 @@ const VideoControls = ({
   }, []);
 
   return (
-    <div className='flex-center video-controls'>
-      <div className='playback-bar'>
-        <Slider
-          min={0}
-          max={duration}
-          value={currentTime}
-          onChange={handleSliderChange}
-          step={0.01}
-          handleStyle={{
-            height: 20,
-            width: 20,
-            marginTop: -8.5,
-            marginLeft: 0,
-            backgroundColor: "transparent",
-            border: "2px solid #5CDCE6",
-          }}
-          trackStyle={{
-            background: "#5CDCE6",
-            marginTop: -1,
-            borderRadius: "0",
-          }}
-          railStyle={{
-            backgroundColor: "rgba(255, 255, 255, 0.25)",
-            height: "2px",
-          }}
-        />
-        <div className='watched-time'>{formatTime(currentTime)}</div>
-        {/* <div className='remaning-time'>{formatTime(duration)}</div> */}
-      </div>
-      <div className='video-controls-btn'>
-        {volumeSliderVisibility && (
-          <div ref={volumeSettingsRef} className='flex-center volume-slider'>
-            <div className='video-controls-btn'>
-              {isMuted ? (
-                <BsVolumeMute
-                  color='white'
-                  size='1.5rem'
-                  onClick={toggleMuted}
-                />
-              ) : (
-                <BsVolumeUp color='white' size='1.5rem' onClick={toggleMuted} />
-              )}
-            </div>
+    <div
+      className={`flex-center ${
+        isMiniplayer ? "miniplayer-" : ""
+      }video-controls`}
+    >
+      {!isMiniplayer && (
+        <>
+          <div className='playback-bar'>
             <Slider
               min={0}
-              max={100}
-              value={volume}
-              onChange={changeVolume}
-              step={1}
+              max={duration}
+              value={currentTime}
+              onChange={handleSliderChange}
+              step={0.01}
               handleStyle={{
                 height: 20,
                 width: 20,
@@ -133,26 +108,80 @@ const VideoControls = ({
               trackStyle={{
                 background: "#5CDCE6",
                 marginTop: -1,
+                borderRadius: "0",
               }}
               railStyle={{
                 backgroundColor: "rgba(255, 255, 255, 0.25)",
                 height: "2px",
               }}
             />
-            <div className='flex-center'>{volume}</div>
+            <div className='watched-time'>{formatTime(currentTime)}</div>
+            <div className='remaning-time'>{formatTime(duration)}</div>
           </div>
-        )}
-        <BsVolumeUp
-          color='white'
-          size='1.5rem'
-          onClick={toggleVolumeSettings}
-        />
-      </div>
-      <div className='video-controls-btn'>
-        <MdOutlineSubtitles color='white' size='1.5rem' />
-      </div>
+          <div className='video-controls-btn'>
+            {volumeSliderVisibility && (
+              <div
+                ref={volumeSettingsRef}
+                className='flex-center volume-slider'
+              >
+                <div className='video-controls-btn'>
+                  {isMuted ? (
+                    <BsVolumeMute
+                      color='white'
+                      size='1.5rem'
+                      onClick={toggleMuted}
+                    />
+                  ) : (
+                    <BsVolumeUp
+                      color='white'
+                      size='1.5rem'
+                      onClick={toggleMuted}
+                    />
+                  )}
+                </div>
+                <Slider
+                  min={0}
+                  max={100}
+                  value={volume}
+                  onChange={changeVolume}
+                  step={1}
+                  handleStyle={{
+                    height: 20,
+                    width: 20,
+                    marginTop: -8.5,
+                    marginLeft: 0,
+                    backgroundColor: "transparent",
+                    border: "2px solid #5CDCE6",
+                  }}
+                  trackStyle={{
+                    background: "#5CDCE6",
+                    marginTop: -1,
+                  }}
+                  railStyle={{
+                    backgroundColor: "rgba(255, 255, 255, 0.25)",
+                    height: "2px",
+                  }}
+                />
+                <div className='flex-center'>{volume}</div>
+              </div>
+            )}
+            <BsVolumeUp
+              color='white'
+              size='1.5rem'
+              onClick={toggleVolumeSettings}
+            />
+          </div>
+          <div className='video-controls-btn'>
+            <MdOutlineSubtitles color='white' size='1.5rem' />
+          </div>
+        </>
+      )}
 
-      <div className='flex-center video-main-controls'>
+      <div
+        className={`flex-center ${
+          isMiniplayer ? "miniplayer-" : ""
+        }video-main-controls`}
+      >
         <MdReplay10 color='white' size='1.75rem' onClick={skipBackwards} />
         <div className='video-controls-btn'>
           {!isPlaying ? (
@@ -168,16 +197,30 @@ const VideoControls = ({
         />
       </div>
 
-      <div className='video-controls-btn'>
+      <div
+        className={
+          "video-controls-btn" + (isMiniplayer ? " miniplayer-maximise" : "")
+        }
+      >
         <CgMiniPlayer color='white' size='1.5rem' onClick={toggleMiniplayer} />
       </div>
-      <div className='video-controls-btn'>
-        <AiOutlineExpandAlt
-          color='white'
-          size='1.5rem'
-          onClick={fullscreenVideo}
-        />
-      </div>
+      {!isMiniplayer && (
+        <div className='video-controls-btn'>
+          <AiOutlineExpandAlt
+            color='white'
+            size='1.5rem'
+            onClick={fullscreenVideo}
+          />
+        </div>
+      )}
+      {isMiniplayer && (
+        <div className='miniplayer-progress-bar-container'>
+          <div
+            className='miniplayer-progress-bar'
+            style={{ width: (currentTime / duration) * 100 + "%" }}
+          ></div>
+        </div>
+      )}
     </div>
   );
 };

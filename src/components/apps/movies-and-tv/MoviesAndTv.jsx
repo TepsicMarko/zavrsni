@@ -44,7 +44,13 @@ const MoviesAndTv = ({ path }) => {
       displayAppName={false}
       minWindowWidth='9rem'
       minWindowHeight='10rem'
-      titleBar={{ color: "white", backgroundColor: "black", overlay: true }}
+      titleBar={{
+        color: "white",
+        backgroundColor: !isMiniplayer ? "black" : "transparent",
+        overlay: true,
+      }}
+      parentProcess={isMiniplayer ? "Movies And Tv" : ""}
+      zIndex={isMiniplayer ? 1000 : ""}
     >
       <WindowContent backgroundColor='black' flex flexDirection='column'>
         <div className='video-container'>
@@ -69,7 +75,13 @@ const MoviesAndTv = ({ path }) => {
             fullscreenVideo={fullscreenVideo}
             toggleMiniplayer={toggleMiniplayer}
           />
-          <div className='controls-overlay'></div>
+          <div
+            className='controls-overlay'
+            style={{
+              background: isMiniplayer ? "rgba(0, 0, 0, 0.6)" : "",
+              height: isMiniplayer ? "100%" : "",
+            }}
+          ></div>
         </div>
       </WindowContent>
     </Window>
