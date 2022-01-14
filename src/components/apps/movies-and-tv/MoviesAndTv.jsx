@@ -35,6 +35,14 @@ const MoviesAndTv = ({ path }) => {
   const handleDurationLoaded = (e) => setDuration(e.target.duration);
   const handleProgressChnage = (e) => setWatched(e.target.currentTime);
 
+  const formatTime = (ms) => {
+    const hh = Math.round(ms / 3600);
+    const mm = Math.round(ms / 60);
+    const ss = Math.round(ms);
+
+    return `${hh}:${mm < 10 ? "0" + mm : mm}:${ss < 10 ? "0" + ss : ss}`;
+  };
+
   useEffect(() => {
     path && readBlob(path, (blobSrc) => setSrc(blobSrc));
   }, []);
@@ -85,8 +93,8 @@ const MoviesAndTv = ({ path }) => {
                   height: "2px",
                 }}
               />
-              <div className='watched-time'>{watched}</div>
-              <div className='remaning-time'>{duration}</div>
+              <div className='watched-time'>{formatTime(watched)}</div>
+              <div className='remaning-time'>{formatTime(duration)}</div>
             </div>
             <div className='video-controls-btn'>
               <BsVolumeUp color='white' size='1.5rem' />
