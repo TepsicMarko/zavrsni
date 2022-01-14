@@ -26,22 +26,26 @@ const MoviesAndTv = ({ path }) => {
     isPlaying,
     togglePlay,
     volume,
-    watched,
-    setWatched,
+    currentTime,
+    setCurrentTime,
     duration,
     setDuration,
   } = useVideoPlayer();
 
   const handleDurationLoaded = (e) => setDuration(e.target.duration);
-  const handleProgressChnage = (e) => setWatched(e.target.currentTime);
+  const handleProgressChnage = (e) => setCurrentTime(e.target.currentTime);
 
   const formatTime = (ms) => {
+    if (!ms) return "0:00:00";
+
     const hh = Math.round(ms / 3600);
     const mm = Math.round(ms / 60);
     const ss = Math.round(ms);
 
     return `${hh}:${mm < 10 ? "0" + mm : mm}:${ss < 10 ? "0" + ss : ss}`;
   };
+
+  const handleSliderChange = (ms) => setCurrentTime(ms);
 
   useEffect(() => {
     path && readBlob(path, (blobSrc) => setSrc(blobSrc));
@@ -73,7 +77,8 @@ const MoviesAndTv = ({ path }) => {
               <Slider
                 min={0}
                 max={duration}
-                value={watched}
+                value={currentTime}
+                onChange={handleSliderChange}
                 step={0.01}
                 handleStyle={{
                   height: 20,
@@ -93,7 +98,7 @@ const MoviesAndTv = ({ path }) => {
                   height: "2px",
                 }}
               />
-              <div className='watched-time'>{formatTime(watched)}</div>
+              <div className='watched-time'>{formatTime(currentTime)}</div>
               <div className='remaning-time'>{formatTime(duration)}</div>
             </div>
             <div className='video-controls-btn'>
