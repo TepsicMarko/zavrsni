@@ -1,3 +1,4 @@
+import "./VideoControls.css";
 import { useState, useEffect, useRef } from "react";
 import { BsVolumeUp, BsVolumeMute } from "react-icons/bs";
 import {
@@ -12,7 +13,15 @@ import { AiOutlineExpandAlt } from "react-icons/ai";
 import Slider from "rc-slider";
 import useVideoPlayer from "../../../../hooks/useVideoPlayer";
 
-const VideoControls = ({ src, videoRef, isMiniplayer, toggleMiniplayer }) => {
+const VideoControls = ({
+  src,
+  videoRef,
+  videoName,
+  isMiniplayer,
+  toggleMiniplayer,
+  videoContorlsVisibility,
+  setVideoContorlsVisibility,
+}) => {
   const volumeSettingsRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [volumeSliderVisibility, setVolumeSiderVisibility] = useState(false);
@@ -28,8 +37,8 @@ const VideoControls = ({ src, videoRef, isMiniplayer, toggleMiniplayer }) => {
     // skipForwards,
     // skipBackwards,
     // setCurrentTime,
-    /* fast state chnages in this custom hook for some reason couse performance
-     * problems, but when updateing the same state with indentical frequency inside
+    /* fast state changes in this custom hook for some reason couse performance
+     * problems, but when updating the same state with indentical frequency inside
      * the component there in no performance issues
      */
     duration,
@@ -70,6 +79,18 @@ const VideoControls = ({ src, videoRef, isMiniplayer, toggleMiniplayer }) => {
     setCurrentTime(newTime);
   };
 
+  const playVideo = () => {
+    togglePlay();
+    setVideoContorlsVisibility(false);
+  };
+
+  const pauseVideo = (e) => {
+    togglePlay();
+    e.stopPropagation();
+  };
+
+  const stopPropagation = (e) => e.stopPropagation();
+
   useEffect(() => {
     videoRef.current.ontimeupdate = (e) => setCurrentTime(e.target.currentTime);
     videoRef.current.ondurationchange = (e) => setDuration(e.target.duration);
@@ -96,15 +117,17 @@ const VideoControls = ({ src, videoRef, isMiniplayer, toggleMiniplayer }) => {
     src && setVideo(videoRef.current);
   }, [src]);
 
-  return (
+  return videoContorlsVisibility ? (
     <div
       className={`flex-center ${
         isMiniplayer ? "miniplayer-" : ""
       }video-controls`}
+      onClick={!isMiniplayer ? stopPropagation : null}
     >
       {!isMiniplayer && (
         <>
           <div className='playback-bar'>
+            <div className='video-name'>{videoName}</div>
             <Slider
               min={0}
               max={duration}
@@ -196,19 +219,23 @@ const VideoControls = ({ src, videoRef, isMiniplayer, toggleMiniplayer }) => {
           isMiniplayer ? "miniplayer-" : ""
         }video-main-controls`}
       >
-        <MdReplay10 color='white' size='1.75rem' onClick={skipBackwards} />
+        <div className='video-controls-btn'>
+          <MdReplay10 color='white' size='1.75rem' onClick={skipBackwards} />
+        </div>
         <div className='video-controls-btn'>
           {!isPlaying ? (
-            <FiPlay color='white' size='1.25rem' onClick={togglePlay} />
+            <FiPlay color='white' size='1.25rem' onClick={playVideo} />
           ) : (
-            <AiOutlinePause color='white' size='1.5rem' onClick={togglePlay} />
+            <AiOutlinePause color='white' size='1.5rem' onClick={pauseVideo} />
           )}
         </div>
-        <MdOutlineForward30
-          color='white'
-          size='1.75rem'
-          onClick={skipForwards}
-        />
+        <div className='video-controls-btn'>
+          <MdOutlineForward30
+            color='white'
+            size='1.75rem'
+            onClick={skipForwards}
+          />
+        </div>
       </div>
 
       <div
@@ -236,6 +263,6 @@ const VideoControls = ({ src, videoRef, isMiniplayer, toggleMiniplayer }) => {
         </div>
       )}
     </div>
-  );
+  ) : null;
 };
 export default VideoControls;
