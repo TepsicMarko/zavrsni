@@ -45,6 +45,7 @@ const MoviesAndTv = ({ path }) => {
       }}
       parentProcess={isMiniplayer ? "Movies And Tv" : ""}
       zIndex={isMiniplayer ? 1000 : ""}
+      onClose={(endProcess) => endProcess("Movies And Tv")}
     >
       <WindowContent backgroundColor='black' flex flexDirection='column'>
         <div
