@@ -10,23 +10,32 @@ import { AiOutlinePause } from "react-icons/ai";
 import { CgMiniPlayer } from "react-icons/cg";
 import { AiOutlineExpandAlt } from "react-icons/ai";
 import Slider from "rc-slider";
+import useVideoPlayer from "../../../../hooks/useVideoPlayer";
 
-const VideoControls = ({
-  videoRef,
-  duration,
-  isPlaying,
-  togglePlay,
-  toggleMuted,
-  changeVolume,
-  volume,
-  isMuted,
-  isMiniplayer,
-  fullscreenVideo,
-  toggleMiniplayer,
-}) => {
+const VideoControls = ({ src, videoRef, isMiniplayer, toggleMiniplayer }) => {
   const volumeSettingsRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [volumeSliderVisibility, setVolumeSiderVisibility] = useState(false);
+  const {
+    setVideo,
+    isPlaying,
+    togglePlay,
+    volume,
+    isMuted,
+    toggleMuted,
+    changeVolume,
+    // currentTime,
+    // skipForwards,
+    // skipBackwards,
+    // setCurrentTime,
+    /* fast state chnages in this custom hook for some reason couse performance
+     * problems, but when updateing the same state with indentical frequency inside
+     * the component there in no performance issues
+     */
+    duration,
+    setDuration,
+    fullscreenVideo,
+  } = useVideoPlayer();
 
   const formatTime = (ms) => {
     if (!ms) return "0:00:00";
@@ -63,6 +72,7 @@ const VideoControls = ({
 
   useEffect(() => {
     videoRef.current.ontimeupdate = (e) => setCurrentTime(e.target.currentTime);
+    videoRef.current.ondurationchange = (e) => setDuration(e.target.duration);
   }, []);
 
   useEffect(() => {
@@ -81,6 +91,10 @@ const VideoControls = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    src && setVideo(videoRef.current);
+  }, [src]);
 
   return (
     <div
