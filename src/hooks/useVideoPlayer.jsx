@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import useFullScreenToggle from "./useFullScreenToggle";
 
 const useVideoPlayer = () => {
   const [video, setVideo] = useState();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(50);
   const [isMuted, setIsMuted] = useState(false);
+  const [isFullScreen, toggleFullScreen] = useFullScreenToggle();
+  const [volume, setVolume] = useState(50);
   const [currentTime, setCurrentTime] = useState("0");
   const [duration, setDuration] = useState();
 
@@ -25,9 +27,7 @@ const useVideoPlayer = () => {
     setCurrentTime(newTime);
   };
 
-  const fullscreenVideo = () => {
-    video.parentElement.requestFullscreen();
-  };
+  const toggleFullScreenVideo = () => toggleFullScreen(video.parentElement);
 
   const changeVolume = (vol) => {
     setVolume(vol);
@@ -59,7 +59,7 @@ const useVideoPlayer = () => {
     setCurrentTime,
     duration,
     setDuration,
-    fullscreenVideo,
+    toggleFullScreenVideo,
   };
 };
 

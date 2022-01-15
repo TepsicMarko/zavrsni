@@ -9,13 +9,14 @@ import { BsTrash } from "react-icons/bs";
 import { AiOutlineExpandAlt } from "react-icons/ai";
 import Panzoom from "@panzoom/panzoom";
 import useToggle from "../../../hooks/useToggle";
+import useFullScreenToggle from "../../../hooks/useFullScreenToggle";
 
 const Photos = ({ path }) => {
   const imageContainerRef = useRef(null);
   const [src, setSrc] = useState("");
   const [zoom, setZoom] = useState(100);
   const [panzoom, setPanzoom] = useState();
-  const [fullScreen, toggleFullScreen] = useToggle(false);
+  const [isFullScreen, toggleFullScreen] = useFullScreenToggle();
   const { readFileContent, deleteFSO } = useContext(FileSystemContext);
   const { endProcess } = useContext(ProcessesContext);
 
@@ -56,28 +57,7 @@ const Photos = ({ path }) => {
   const togglePhotosFullSceen = () => {
     const Photos =
       document.getElementsByClassName("photos-toolbar")[0].parentElement;
-    fullScreen ? closeFullscreen() : openFullscreen(Photos);
-    toggleFullScreen();
-  };
-
-  const openFullscreen = (el) => {
-    if (el.requestFullscreen) {
-      el.requestFullscreen();
-    } else if (el.webkitRequestFullscreen) {
-      el.webkitRequestFullscreen();
-    } else if (el.msRequestFullscreen) {
-      el.msRequestFullscreen();
-    }
-  };
-
-  const closeFullscreen = () => {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
+    toggleFullScreen(Photos);
   };
 
   useEffect(() => {

@@ -34,7 +34,7 @@ const VideoControls = ({ src, videoRef, isMiniplayer, toggleMiniplayer }) => {
      */
     duration,
     setDuration,
-    fullscreenVideo,
+    toggleFullScreenVideo,
   } = useVideoPlayer();
 
   const formatTime = (ms) => {
@@ -223,7 +223,7 @@ const VideoControls = ({ src, videoRef, isMiniplayer, toggleMiniplayer }) => {
           <AiOutlineExpandAlt
             color='white'
             size='1.5rem'
-            onClick={fullscreenVideo}
+            onClick={toggleFullScreenVideo}
           />
         </div>
       )}
