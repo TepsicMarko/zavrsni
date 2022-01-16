@@ -13,6 +13,8 @@ import Photos from "../components/apps/photos/Photos";
 import photos from "../assets/photos.png";
 import MoviesAndTv from "../components/apps/movies-and-tv/MoviesAndTv";
 import moviesAndTv from "../assets/movies-and-tv.png";
+import CommandPrompt from "../components/apps/command-prompt/CommandPrompt";
+import cmd from "../assets/cmd.png";
 
 export const ProcessesContext = createContext();
 
@@ -64,6 +66,14 @@ const initialState = {
     running: false,
     minimised: false,
     icon: <img src={moviesAndTv} height='30px' />,
+    pinnedToTaskbar: true,
+    isFocused: false,
+  },
+  "Command Prompt": {
+    source: <CommandPrompt icon={<img src={cmd} width='15px' />} />,
+    running: false,
+    minimised: false,
+    icon: <img src={cmd} width='30px' />,
     pinnedToTaskbar: true,
     isFocused: false,
   },

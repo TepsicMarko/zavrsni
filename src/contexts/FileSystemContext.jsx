@@ -91,8 +91,10 @@ export const FileSystemProvider = ({ children }) => {
     });
   };
 
-  const getFolder = (path, callback) => {
-    readdir(path).then((dirContent) => callback(dirContent));
+  const getFolder = async (path, callback) => {
+    const dirContent = await readdir(path);
+    if (callback) callback(dirContent);
+    else return dirContent;
   };
 
   const readFileContent = (path, callback) => {
@@ -131,6 +133,11 @@ export const FileSystemProvider = ({ children }) => {
       unlink(Path.addTrailing(path), name);
     }
   };
+
+  const doesPathExist = async (path) =>
+    await new Promise((resolve, reject) =>
+      fs.exists(path, (exists) => resolve(exists))
+    );
 
   const initilizeFileSystem = () => {
     console.log("initializing file system");
@@ -205,6 +212,7 @@ export const FileSystemProvider = ({ children }) => {
         exists,
         findFSO,
         moveFSO,
+        doesPathExist,
       }}
     >
       {children}
