@@ -10,18 +10,23 @@ const commands = (currentPath, changePath, listFolderContents) => ({
 
   cd: {
     description: "Displays the name of or changes the current directory.",
-    fn: (folder) => (!folder ? currentPath : changePath(folder)),
+    fn: (folder, ...args) =>
+      !folder ? currentPath : changePath([folder, ...args].join(" ")),
   },
 
   ls: {
     description: "list directory contents",
-    fn: (path) =>
-      !path ? listFolderContents(currentPath) : listFolderContents(path),
+    fn: (path, ...args) =>
+      !path
+        ? listFolderContents("ls")
+        : listFolderContents("ls", [path, ...args].join(" ")),
   },
   dir: {
     description: "Displays a list of files and subdirectories in a directory.",
-    fn: (path) =>
-      !path ? listFolderContents(currentPath) : listFolderContents(path),
+    fn: (path, ...args) =>
+      !path
+        ? listFolderContents("dir")
+        : listFolderContents("dir", [path, ...args].join(" ")),
   },
 });
 

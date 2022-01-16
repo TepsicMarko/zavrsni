@@ -1,0 +1,18 @@
+/* DirectoryContentOutput */
+
+.fso-info > * {
+  font-family: Consolas;
+  font-weight: 100;
+}
+
+.modified-date,
+.modified-time,
+.file-type {
+  display: inline-block;
+  width: 6rem;
+}
+
+.file-type {
+  width: 8rem;
+  margin-right: 1rem;
+}

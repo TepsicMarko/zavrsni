@@ -6,7 +6,7 @@ import { FileSystemContext } from "../../../contexts/FileSystemContext";
 import Terminal from "react-console-emulator";
 import commands from "./commands";
 import { path as Path } from "filer";
-import moment from "moment";
+import DirectoryContentOutput from "./command-outputs/DirectoryContentOutput";
 
 const CommandPrompt = ({ icon }) => {
   const { doesPathExist, getFolder } = useContext(FileSystemContext);
@@ -14,7 +14,14 @@ const CommandPrompt = ({ icon }) => {
   const terminal = useRef(null);
 
   const changePath = async (folder) => {
-    const newPath = Path.join(path, folder);
+    console.log(folder);
+    if (!folder.includes('"') && folder.includes(" "))
+      return "cd: too many arguments";
+
+    const toManyArgs = folder.slice(folder.lastIndexOf('"')).includes(" ");
+    if (toManyArgs) return "cd: too many arguments";
+
+    const newPath = Path.join(path, folder.replaceAll('"', ""));
     const exists = await doesPathExist(newPath);
     if (exists) {
       setPath(newPath);
@@ -23,25 +30,11 @@ const CommandPrompt = ({ icon }) => {
     }
   };
 
-  const listFolderContents = async () => {
-    const folderContent = await getFolder(path);
-    return (
-      <div>
-        {folderContent.map((fso) => (
-          <div key={fso.node}>
-            <span>{moment(fso.mtime).format("MM/DD/yy")}</span>
-            <span> {moment(fso.mtime).format("hh:mm A")}</span>
-            <span>
-              {" "}
-              {fso.type === "DIRECTORY"
-                ? "<" + fso.type.substring(0, 3) + ">"
-                : fso.size}
-            </span>
-            <span> {fso.name}</span>
-          </div>
-        ))}
-      </div>
+  const listFolderContents = async (command, folder) => {
+    const folderContent = await getFolder(
+      folder ? Path.join(path, folder) : path
     );
+    return <DirectoryContentOutput folderContent={folderContent} />;
   };
 
   useEffect(() => {

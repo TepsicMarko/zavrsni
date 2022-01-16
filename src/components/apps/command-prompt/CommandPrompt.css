@@ -8,7 +8,7 @@
 
 .command-prompt {
   width: 100%;
-  min-height: 10000% !important;
+  min-height: 100% !important;
   height: fit-content;
   overflow: visible !important;
   background-color: black !important;
