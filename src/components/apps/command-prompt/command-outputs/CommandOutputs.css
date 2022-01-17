@@ -1,5 +1,6 @@
 /* DirectoryContentOutput */
 
+.fso-info,
 .fso-info > * {
   font-family: Consolas;
   font-weight: 100;

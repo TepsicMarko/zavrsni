@@ -1,17 +1,18 @@
 const commands = (currentPath, changePath, listFolderContents) => ({
   pwd: {
-    description: "Displays the name of or changes the current directory.",
+    description: "Print the full filename of the current working directory.",
     fn: () => currentPath,
   },
   chdir: {
     description: "Displays the name of or changes the current directory.",
-    fn: () => currentPath,
+    fn: (path, ...args) =>
+      !path ? currentPath : changePath([path, ...args].join(" ")),
   },
 
   cd: {
     description: "Displays the name of or changes the current directory.",
-    fn: (folder, ...args) =>
-      !folder ? currentPath : changePath([folder, ...args].join(" ")),
+    fn: (path, ...args) =>
+      !path ? currentPath : changePath([path, ...args].join(" ")),
   },
 
   ls: {
@@ -19,7 +20,7 @@ const commands = (currentPath, changePath, listFolderContents) => ({
     fn: (path, ...args) =>
       !path
         ? listFolderContents("ls")
-        : listFolderContents("ls", [path, ...args].join(" ")),
+        : listFolderContents("ls", path, ...args),
   },
   dir: {
     description: "Displays a list of files and subdirectories in a directory.",

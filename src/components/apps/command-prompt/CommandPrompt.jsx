@@ -30,11 +30,78 @@ const CommandPrompt = ({ icon }) => {
     }
   };
 
-  const listFolderContents = async (command, folder) => {
-    const folderContent = await getFolder(
-      folder ? Path.join(path, folder) : path
-    );
-    return <DirectoryContentOutput folderContent={folderContent} />;
+  const listFolderContents = async (command, folder, ...args) => {
+    if (command === "dir") {
+      if (folder) {
+        const toManyArgs = folder.slice(folder.lastIndexOf('"')).includes(" ");
+        if (toManyArgs) return "too many arguments";
+      }
+
+      try {
+        const folderContent = await getFolder(
+          Path.join(path, folder ? folder.replaceAll('"', "") : "")
+        );
+
+        return (
+          <DirectoryContentOutput
+            command={command}
+            folderContent={folderContent}
+            folderName={Path.join(
+              path,
+              folder ? folder.replaceAll('"', "") : ""
+            )}
+          />
+        );
+      } catch (err) {
+        console.log(err);
+        return "File not found";
+      }
+    } else {
+      if (folder) {
+        args = [folder, ...args];
+        let folderPaths = [];
+
+        for (let i = 0; i < args.length; i++) {
+          if (args[i].includes('"')) {
+            const folderPath = `${args[i]} ${args[i + 1]}`;
+            folderPaths.push(folderPath.replaceAll('"', ""));
+            i++;
+          } else {
+            folderPaths.push(args[i]);
+          }
+        }
+        console.log(folderPaths);
+
+        let foldersContent = await Promise.all(
+          folderPaths.map(async (folderPath) => {
+            try {
+              return await getFolder(Path.join(path, folderPath));
+            } catch (err) {
+              return `ls: cannot access ${folderPath}: No such file or directory`;
+            }
+          })
+        );
+        console.log(foldersContent);
+
+        return foldersContent.map((folderContent, i) => (
+          <DirectoryContentOutput
+            command={command}
+            folderName={Path.basename(folderPaths[i])}
+            folderContent={folderContent}
+          />
+        ));
+      } else {
+        const folderContent = await getFolder(path);
+
+        return (
+          <DirectoryContentOutput
+            command={command}
+            folderContent={folderContent}
+            folderName=''
+          />
+        );
+      }
+    }
   };
 
   useEffect(() => {
