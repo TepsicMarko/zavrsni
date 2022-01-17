@@ -1,16 +1,89 @@
 import "./CommandOutputs.css";
 import moment from "moment";
+import { useState, useEffect } from "react";
+import { path as Path } from "filer";
 
-const DirectoryContentOutput = ({ command, folderName, folderContent }) => {
-  return (
+const DirectoryContentOutput = ({
+  currentPath,
+  command,
+  path,
+  args,
+  getFolder,
+}) => {
+  const [commandOutput, setCommandOutput] = useState([]);
+
+  useEffect(async () => {
+    if (command === "dir") {
+      if (path) {
+        const toManyArgs = path.slice(path.lastIndexOf('"')).includes(" ");
+        if (toManyArgs) setCommandOutput([{ err: "To many arguments" }]);
+      }
+
+      try {
+        const folderContent = await getFolder(
+          Path.join(currentPath, path ? path.replaceAll('"', "") : "")
+        );
+
+        setCommandOutput([
+          {
+            folderName: Path.join(
+              currentPath,
+              path ? path.replaceAll('"', "") : ""
+            ),
+            content: folderContent,
+          },
+        ]);
+      } catch (err) {
+        console.log(err);
+        setCommandOutput([{ err: "Folder not found" }]);
+      }
+    } else {
+      if (path) {
+        args = [path, ...args];
+        let folderPaths = [];
+
+        for (let i = 0; i < args.length; i++) {
+          if (args[i].includes('"')) {
+            const folderPath = `${args[i]} ${args[i + 1]}`;
+            folderPaths.push(folderPath.replaceAll('"', ""));
+            i++;
+          } else {
+            folderPaths.push(args[i]);
+          }
+        }
+
+        let foldersContent = await Promise.all(
+          folderPaths.map(async (folderPath) => {
+            try {
+              return {
+                folderName: Path.basename(folderPath),
+                content: await getFolder(Path.join(currentPath, folderPath)),
+              };
+            } catch (err) {
+              return {
+                err: `ls: cannot access ${folderPath}: No such file or directory`,
+              };
+            }
+          })
+        );
+
+        setCommandOutput(foldersContent);
+      } else {
+        const folderContent = await getFolder(currentPath);
+        setCommandOutput([{ folderName: "", content: folderContent }]);
+      }
+    }
+  }, []);
+
+  return commandOutput.map(({ folderName, content, err }) => (
     <>
       <div className='folder-name'>
-        {typeof folderContent !== "string" &&
+        {content &&
           folderName &&
           (command === "dir" ? `Directory of ${folderName}` : folderName + ":")}
       </div>
-      {typeof folderContent !== "string" ? (
-        folderContent.map((fso) => (
+      {content &&
+        content.map((fso) => (
           <div key={fso.node} className='fso-info'>
             <span className='modified-date'>
               {moment(fso.mtime).format("MM/DD/yy")}
@@ -28,14 +101,16 @@ const DirectoryContentOutput = ({ command, folderName, folderContent }) => {
                 ? "<" + fso.type.substring(0, 3) + ">"
                 : fso.size}
             </span>
-            <span>{command === "ls" ? `"${fso.name}"` : fso.name}</span>
+            <span>
+              {command === "ls" && fso.name.includes(" ")
+                ? `"${fso.name}"`
+                : fso.name}
+            </span>
           </div>
-        ))
-      ) : (
-        <div className='fso-info'>{folderContent}</div>
-      )}
+        ))}
+      {err && <div className='fso-info'>{err}</div>}
     </>
-  );
+  ));
 };
 
 export default DirectoryContentOutput;
