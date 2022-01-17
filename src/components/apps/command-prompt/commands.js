@@ -1,4 +1,12 @@
-const commands = (currentPath, changePath, listFolderContents) => ({
+import moment from "moment";
+
+const commands = (
+  terminal,
+  currentPath,
+  changePath,
+  listFolderContents,
+  endProcess
+) => ({
   pwd: {
     description: "Print the full filename of the current working directory.",
     fn: () => currentPath,
@@ -28,6 +36,27 @@ const commands = (currentPath, changePath, listFolderContents) => ({
       !path
         ? listFolderContents("dir")
         : listFolderContents("dir", [path, ...args].join(" ")),
+  },
+
+  date: {
+    description: "print or set the system date and time",
+    fn: () => moment().format("ddd MMM DD HH:mm:ss YYYY "),
+  },
+
+  echo: {
+    description: "Echo the STRING(s) to standard output.",
+    fn: (...args) => args.map((arg, i) => (i === 0 ? arg : ` ${arg}`)).join(""),
+  },
+
+  cls: {
+    description: "clears the screen",
+    fn: () => console.clear(terminal.current.clearStdout()),
+  },
+
+  exit: {
+    description:
+      "Quits the CMD.EXE program (command interpreter) or the current batch file.",
+    fn: () => endProcess("Command Prompt"),
   },
 });
 

@@ -3,6 +3,7 @@ import Window from "../../system/window/Window";
 import WindowContent from "../../system/window/window-content/WindowContent";
 import { useRef, useState, useEffect, useContext } from "react";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
+import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import Terminal from "react-console-emulator";
 import commands from "./commands";
 import { path as Path } from "filer";
@@ -10,6 +11,7 @@ import DirectoryContentOutput from "./command-outputs/DirectoryContentOutput";
 
 const CommandPrompt = ({ icon }) => {
   const { doesPathExist, getFolder } = useContext(FileSystemContext);
+  const { endProcess } = useContext(ProcessesContext);
   const [currentPath, setCurrentPath] = useState("/C/users/admin");
   const terminal = useRef(null);
 
@@ -58,7 +60,13 @@ const CommandPrompt = ({ icon }) => {
         <div className='command-prompt-container'>
           <Terminal
             ref={terminal}
-            commands={commands(currentPath, changePath, listFolderContents)}
+            commands={commands(
+              terminal,
+              currentPath,
+              changePath,
+              listFolderContents,
+              endProcess
+            )}
             autofocus
             className='command-prompt'
             contentClassName='command-prompt-content'
