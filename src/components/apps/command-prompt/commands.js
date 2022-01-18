@@ -9,7 +9,9 @@ const commands = (
   createNewFolders,
   deleteFolders,
   createNewFiles,
-  readFiles
+  readFiles,
+  processes,
+  killTasks
 ) => ({
   pwd: {
     description: "Print the full filename of the current working directory.",
@@ -103,8 +105,33 @@ const commands = (
   },
 
   cat: {
-    description: " Concatenate FILE(s) to standard output.",
+    description: "Concatenate FILE(s) to standard output.",
     fn: (...args) => (args ? readFiles(...args) : ""),
+  },
+
+  tasklist: {
+    description:
+      "This tool displays a list of currently running processes on local machine.",
+    fn: () => (
+      <div>
+        <div>Image Name</div>
+        <div>=========================</div>
+        {processes.map((process) => (
+          <div>{process}</div>
+        ))}
+      </div>
+    ),
+  },
+
+  taskkill: {
+    description:
+      "This tool is used to terminate tasks by process id (PID) or image name.",
+    fn: (flag, ...args) =>
+      flag && flag.toLowerCase() === "/im"
+        ? args
+          ? killTasks(...args)
+          : "ERROR: Invalid syntax. Value expected for '/im'."
+        : "ERROR: Invalid syntax. Neither /FI nor /PID nor /IM were specified.",
   },
 });
 

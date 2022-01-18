@@ -20,7 +20,7 @@ const CommandPrompt = ({ icon }) => {
     writeFileAsync,
     readFileContent,
   } = useContext(FileSystemContext);
-  const { endProcess } = useContext(ProcessesContext);
+  const { endProcess, processes } = useContext(ProcessesContext);
   const [currentPath, setCurrentPath] = useState("/C/users/admin");
   const terminal = useRef(null);
 
@@ -155,6 +155,19 @@ const CommandPrompt = ({ icon }) => {
     );
   };
 
+  const killTasks = (...args) => {
+    const tasks = formatCommandLineArguments(...args);
+
+    return tasks
+      .map((task) => {
+        if (processes[task] && processes[task].running) {
+          endProcess(task);
+          return null;
+        } else return `ERROR: The process ${task} not found.`;
+      })
+      .filter((el) => el);
+  };
+
   return (
     <Window
       app='Command Prompt'
@@ -176,12 +189,17 @@ const CommandPrompt = ({ icon }) => {
               createNewFolders,
               deleteFolders,
               createNewFiles,
-              readFiles
+              readFiles,
+              Object.keys(processes).filter(
+                (process) => processes[process].running
+              ),
+              killTasks
             )}
             autofocus
             className='command-prompt'
             contentClassName='command-prompt-content'
             promptLabelClassName='command-prompt-label'
+            inputClassName='command-prompt-input'
             messageClassName='command-prompt-message'
             welcomeMessage={`Microsoft Windows [Version 10.0.19044.1466]
           (c) Microsoft Corporation. All rights reserved.`}
