@@ -5,7 +5,8 @@ const commands = (
   currentPath,
   changePath,
   listFolderContents,
-  endProcess
+  endProcess,
+  createNewFolders
 ) => ({
   pwd: {
     description: "Print the full filename of the current working directory.",
@@ -57,6 +58,19 @@ const commands = (
     description:
       "Quits the CMD.EXE program (command interpreter) or the current batch file.",
     fn: () => endProcess("Command Prompt"),
+  },
+
+  mkdir: {
+    description: "Create the DIRECTORY(ies), if they do not already exist.",
+    fn: (...args) =>
+      args.length ? createNewFolders(...args) : "mkdir: missing operand",
+  },
+  md: {
+    description: "Creates a directory.",
+    fn: (...args) =>
+      args.length
+        ? createNewFolders(...args)
+        : "The syntax of the command is incorrect.",
   },
 });
 

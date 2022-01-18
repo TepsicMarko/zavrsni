@@ -20,6 +20,11 @@ export const FileSystemProvider = ({ children }) => {
       }
     });
 
+  const mkdirAsync = (path) =>
+    new Promise((resolve, reject) => {
+      fs.mkdir(path, (err) => (err ? reject(err) : resolve(true)));
+    });
+
   const writeFile = (path, type, isNewFile, content = "", i = 1) => {
     if (isNewFile) {
       exists(`${path}.${type}`)
@@ -213,6 +218,7 @@ export const FileSystemProvider = ({ children }) => {
         findFSO,
         moveFSO,
         doesPathExist,
+        mkdirAsync,
       }}
     >
       {children}

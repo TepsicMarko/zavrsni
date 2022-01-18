@@ -10,13 +10,13 @@ import { path as Path } from "filer";
 import DirectoryContentOutput from "./command-outputs/DirectoryContentOutput";
 
 const CommandPrompt = ({ icon }) => {
-  const { doesPathExist, getFolder } = useContext(FileSystemContext);
+  const { doesPathExist, getFolder, mkdirAsync } =
+    useContext(FileSystemContext);
   const { endProcess } = useContext(ProcessesContext);
   const [currentPath, setCurrentPath] = useState("/C/users/admin");
   const terminal = useRef(null);
 
   const changePath = async (path) => {
-    console.log(path);
     if (!path.includes('"') && path.includes(" "))
       return "cd: too many arguments";
 
@@ -33,7 +33,6 @@ const CommandPrompt = ({ icon }) => {
   };
 
   const listFolderContents = async (command, path, ...args) => {
-    console.log(command, path);
     return (
       <DirectoryContentOutput
         currentPath={currentPath}
@@ -43,6 +42,47 @@ const CommandPrompt = ({ icon }) => {
         getFolder={getFolder}
       />
     );
+  };
+
+  const createNewFolders = async (...args) => {
+    if (args.length === 1) {
+      try {
+        await mkdirAsync(Path.join(currentPath, args[0]));
+        return null;
+      } catch (err) {
+        return `mkdir: cannot create directory '${args[0]}': File exists`;
+      }
+    }
+    if (args.length > 1) {
+      let folderPaths = [];
+
+      for (let i = 0; i < args.length; i++) {
+        if (args[i].includes('"')) {
+          const folderPath = `${args[i]} ${args[i + 1]}`;
+          folderPaths.push(folderPath.replaceAll('"', ""));
+          i++;
+        } else {
+          folderPaths.push(args[i]);
+        }
+      }
+
+      const failedFolderPaths = await Promise.all(
+        folderPaths.map(async (folderPath) => {
+          try {
+            await mkdirAsync(Path.join(currentPath, folderPath));
+          } catch (err) {
+            console.log(err);
+            return `mkdir: cannot create directory '${folderPath}': File exists`;
+          }
+        })
+      );
+
+      console.log(
+        failedFolderPaths,
+        failedFolderPaths.filter((el) => el)
+      );
+      return failedFolderPaths.filter((el) => el);
+    }
   };
 
   useEffect(() => {
@@ -65,7 +105,8 @@ const CommandPrompt = ({ icon }) => {
               currentPath,
               changePath,
               listFolderContents,
-              endProcess
+              endProcess,
+              createNewFolders
             )}
             autofocus
             className='command-prompt'
