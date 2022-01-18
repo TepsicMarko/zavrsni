@@ -63,15 +63,21 @@ const commands = (
   mkdir: {
     description: "Create the DIRECTORY(ies), if they do not already exist.",
     fn: (...args) =>
-      args.length ? createNewFolders(...args) : "mkdir: missing operand",
+      args.length
+        ? createNewFolders("mkdir", ...args)
+        : "mkdir: missing operand",
   },
   md: {
     description: "Creates a directory.",
     fn: (...args) =>
       args.length
-        ? createNewFolders(...args)
+        ? createNewFolders("md", ...args)
         : "The syntax of the command is incorrect.",
   },
+
+  // rm: {
+  //   description: "Remove the FILE(s).",
+  // }
 });
 
 export default commands;

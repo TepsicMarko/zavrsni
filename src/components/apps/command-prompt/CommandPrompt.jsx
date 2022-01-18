@@ -44,13 +44,15 @@ const CommandPrompt = ({ icon }) => {
     );
   };
 
-  const createNewFolders = async (...args) => {
+  const createNewFolders = async (command, ...args) => {
     if (args.length === 1) {
       try {
         await mkdirAsync(Path.join(currentPath, args[0]));
         return null;
       } catch (err) {
-        return `mkdir: cannot create directory '${args[0]}': File exists`;
+        return command === "mkdir"
+          ? `mkdir: cannot create directory '${args[0]}': File exists`
+          : `A subdirectory or file ${args[0]} already exists.`;
       }
     }
     if (args.length > 1) {
@@ -58,8 +60,16 @@ const CommandPrompt = ({ icon }) => {
 
       for (let i = 0; i < args.length; i++) {
         if (args[i].includes('"')) {
-          const folderPath = `${args[i]} ${args[i + 1]}`;
-          folderPaths.push(folderPath.replaceAll('"', ""));
+          let folderPath = "";
+          for (let j = i; j < args.length; j++) {
+            folderPath += " " + args[j];
+            if (args[j].includes('"') && j !== i) {
+              i = j - 1;
+              break;
+            }
+          }
+
+          folderPaths.push(folderPath.replaceAll('"', "").trim());
           i++;
         } else {
           folderPaths.push(args[i]);
@@ -72,22 +82,17 @@ const CommandPrompt = ({ icon }) => {
             await mkdirAsync(Path.join(currentPath, folderPath));
           } catch (err) {
             console.log(err);
-            return `mkdir: cannot create directory '${folderPath}': File exists`;
+            return command === "mkdir"
+              ? `mkdir: cannot create directory '${folderPath}': File exists`
+              : `A subdirectory or file ${folderPath} already exists.`;
           }
         })
       );
 
-      console.log(
-        failedFolderPaths,
-        failedFolderPaths.filter((el) => el)
-      );
       return failedFolderPaths.filter((el) => el);
     }
   };
 
-  useEffect(() => {
-    console.log(terminal.current);
-  }, [terminal]);
   return (
     <Window
       app='Command Prompt'

@@ -44,8 +44,16 @@ const DirectoryContentOutput = ({
 
         for (let i = 0; i < args.length; i++) {
           if (args[i].includes('"')) {
-            const folderPath = `${args[i]} ${args[i + 1]}`;
-            folderPaths.push(folderPath.replaceAll('"', ""));
+            let folderPath = "";
+            for (let j = i; j < args.length; j++) {
+              folderPath += " " + args[j];
+              if (args[j].includes('"') && j !== i) {
+                i = j - 1;
+                break;
+              }
+            }
+
+            folderPaths.push(folderPath.replaceAll('"', "").trim());
             i++;
           } else {
             folderPaths.push(args[i]);
