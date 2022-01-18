@@ -3,6 +3,7 @@ import { AiFillFileText } from "react-icons/ai";
 import {
   BsFillFileEarmarkImageFill,
   BsFillFileEarmarkPlayFill,
+  BsFileEarmarkFill,
 } from "react-icons/bs";
 
 const fileTypeIcons = {
@@ -13,7 +14,11 @@ const fileTypeIcons = {
 };
 
 const getFileTypeIcon = (fileType) => {
-  return fileTypeIcons[fileType.toLowerCase()];
+  return fileType ? (
+    fileTypeIcons[fileType.toLowerCase()]
+  ) : (
+    <BsFileEarmarkFill size='0.9rem' />
+  );
 };
 
 export default getFileTypeIcon;

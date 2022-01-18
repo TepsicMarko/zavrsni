@@ -7,7 +7,9 @@ const commands = (
   listFolderContents,
   endProcess,
   createNewFolders,
-  deleteFolders
+  deleteFolders,
+  createNewFiles,
+  readFiles
 ) => ({
   pwd: {
     description: "Print the full filename of the current working directory.",
@@ -93,6 +95,16 @@ const commands = (
       args.length
         ? deleteFolders("rmdir", false, ...args)
         : "The syntax of the command is incorrect.",
+  },
+
+  touch: {
+    description: "Creates an empty file.",
+    fn: (...args) => (args.length ? createNewFiles(...args) : ""),
+  },
+
+  cat: {
+    description: " Concatenate FILE(s) to standard output.",
+    fn: (...args) => (args ? readFiles(...args) : ""),
   },
 });
 

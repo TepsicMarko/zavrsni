@@ -25,6 +25,11 @@ export const FileSystemProvider = ({ children }) => {
       fs.mkdir(path, (err) => (err ? reject(err) : resolve(true)));
     });
 
+  const writeFileAsync = (paht) =>
+    new Promise((resolve, reject) => {
+      fs.writeFile(paht, "", (err) => (err ? reject(err) : resolve(true)));
+    });
+
   const writeFile = (path, type, isNewFile, content = "", i = 1) => {
     if (isNewFile) {
       exists(`${path}.${type}`)
@@ -122,8 +127,10 @@ export const FileSystemProvider = ({ children }) => {
     else return dirContent;
   };
 
-  const readFileContent = (path, callback) => {
-    readFile(path).then((content) => callback(content));
+  const readFileContent = async (path, callback) => {
+    const content = await readFile(path);
+    if (callback) callback(content);
+    else return content;
   };
 
   const readBlob = (path, callback) => {
@@ -241,6 +248,7 @@ export const FileSystemProvider = ({ children }) => {
         moveFSO,
         doesPathExist,
         mkdirAsync,
+        writeFileAsync,
       }}
     >
       {children}

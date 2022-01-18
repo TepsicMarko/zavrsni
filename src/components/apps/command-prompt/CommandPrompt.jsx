@@ -8,11 +8,18 @@ import Terminal from "react-console-emulator";
 import commands from "./commands";
 import { path as Path } from "filer";
 import DirectoryContentOutput from "./command-outputs/DirectoryContentOutput";
+import FileContentsOutput from "./command-outputs/FileContentsOutput";
 import formatCommandLineArguments from "../../../helpers/formatCommandLineArgumnets";
 
 const CommandPrompt = ({ icon }) => {
-  const { doesPathExist, getFolder, mkdirAsync, deleteFSO } =
-    useContext(FileSystemContext);
+  const {
+    doesPathExist,
+    getFolder,
+    mkdirAsync,
+    deleteFSO,
+    writeFileAsync,
+    readFileContent,
+  } = useContext(FileSystemContext);
   const { endProcess } = useContext(ProcessesContext);
   const [currentPath, setCurrentPath] = useState("/C/users/admin");
   const terminal = useRef(null);
@@ -119,6 +126,35 @@ const CommandPrompt = ({ icon }) => {
     }
   };
 
+  const createNewFiles = async (...args) => {
+    const filePaths = formatCommandLineArguments(...args);
+
+    const failedFilePaths = await Promise.all(
+      filePaths.map(async (filePath) => {
+        try {
+          await writeFileAsync(Path.join(currentPath, filePath));
+        } catch (err) {
+          return ``;
+        }
+      })
+    );
+
+    return failedFilePaths.filter((el) => el);
+  };
+
+  const readFiles = async (...args) => {
+    // this component only exist because terminal for some reason
+    // won't render html elements except when they are returned from
+    // a react component
+    return (
+      <FileContentsOutput
+        currentPath={currentPath}
+        args={args}
+        readFileContent={readFileContent}
+      />
+    );
+  };
+
   return (
     <Window
       app='Command Prompt'
@@ -138,7 +174,9 @@ const CommandPrompt = ({ icon }) => {
               listFolderContents,
               endProcess,
               createNewFolders,
-              deleteFolders
+              deleteFolders,
+              createNewFiles,
+              readFiles
             )}
             autofocus
             className='command-prompt'
