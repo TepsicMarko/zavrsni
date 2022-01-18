@@ -8,9 +8,10 @@ import Terminal from "react-console-emulator";
 import commands from "./commands";
 import { path as Path } from "filer";
 import DirectoryContentOutput from "./command-outputs/DirectoryContentOutput";
+import formatCommandLineArguments from "../../../helpers/formatCommandLineArgumnets";
 
 const CommandPrompt = ({ icon }) => {
-  const { doesPathExist, getFolder, mkdirAsync } =
+  const { doesPathExist, getFolder, mkdirAsync, deleteFSO } =
     useContext(FileSystemContext);
   const { endProcess } = useContext(ProcessesContext);
   const [currentPath, setCurrentPath] = useState("/C/users/admin");
@@ -56,35 +57,60 @@ const CommandPrompt = ({ icon }) => {
       }
     }
     if (args.length > 1) {
-      let folderPaths = [];
-
-      for (let i = 0; i < args.length; i++) {
-        if (args[i].includes('"')) {
-          let folderPath = "";
-          for (let j = i; j < args.length; j++) {
-            folderPath += " " + args[j];
-            if (args[j].includes('"') && j !== i) {
-              i = j - 1;
-              break;
-            }
-          }
-
-          folderPaths.push(folderPath.replaceAll('"', "").trim());
-          i++;
-        } else {
-          folderPaths.push(args[i]);
-        }
-      }
+      const folderPaths = formatCommandLineArguments(...args);
 
       const failedFolderPaths = await Promise.all(
         folderPaths.map(async (folderPath) => {
           try {
             await mkdirAsync(Path.join(currentPath, folderPath));
           } catch (err) {
-            console.log(err);
             return command === "mkdir"
               ? `mkdir: cannot create directory '${folderPath}': File exists`
               : `A subdirectory or file ${folderPath} already exists.`;
+          }
+        })
+      );
+
+      return failedFolderPaths.filter((el) => el);
+    }
+  };
+
+  const deleteFolders = async (command, recusive, ...args) => {
+    if (args.every((arg) => arg === ""))
+      return command === "rm"
+        ? "rm: missing operand"
+        : "The syntax of the command is incorrect.";
+    if (args.length === 1) {
+      try {
+        await deleteFSO(currentPath, args[0], "directory", recusive);
+      } catch (err) {
+        return err.errno == 53
+          ? command === "rm"
+            ? `rm: cannot remove '${args[0]}': Is a directory`
+            : "The directory is not empty."
+          : command === "rm"
+          ? `rm: cannot remove '${args[0]}': No such file or directory`
+          : "The system cannot find the file specified.";
+      }
+    }
+    if (args.length > 1) {
+      const folderPaths = formatCommandLineArguments(...args);
+
+      console.log(folderPaths);
+
+      const failedFolderPaths = await Promise.all(
+        folderPaths.map(async (folderPath) => {
+          try {
+            await deleteFSO(currentPath, folderPath, "directory", recusive);
+          } catch (err) {
+            console.log(err);
+            return err.errno == 53
+              ? command === "rm"
+                ? `rm: cannot remove '${folderPath}': Is a directory`
+                : "The directory is not empty."
+              : command === "rm"
+              ? `rm: cannot remove '${folderPath}': No such file or directory`
+              : "The system cannot find the file specified.";
           }
         })
       );
@@ -111,7 +137,8 @@ const CommandPrompt = ({ icon }) => {
               changePath,
               listFolderContents,
               endProcess,
-              createNewFolders
+              createNewFolders,
+              deleteFolders
             )}
             autofocus
             className='command-prompt'

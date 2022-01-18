@@ -6,7 +6,8 @@ const commands = (
   changePath,
   listFolderContents,
   endProcess,
-  createNewFolders
+  createNewFolders,
+  deleteFolders
 ) => ({
   pwd: {
     description: "Print the full filename of the current working directory.",
@@ -75,9 +76,24 @@ const commands = (
         : "The syntax of the command is incorrect.",
   },
 
-  // rm: {
-  //   description: "Remove the FILE(s).",
-  // }
+  rm: {
+    description: "remove files or directories",
+    fn: (flag, ...args) =>
+      flag
+        ? flag === "-rf"
+          ? args.length
+            ? deleteFolders("rm", true, ...args)
+            : "rm: missing operand"
+          : deleteFolders("rm", false, ...[flag, ...args])
+        : "rm: missing operand",
+  },
+  rmdir: {
+    description: "Removes (deletes) a directory",
+    fn: (...args) =>
+      args.length
+        ? deleteFolders("rmdir", false, ...args)
+        : "The syntax of the command is incorrect.",
+  },
 });
 
 export default commands;

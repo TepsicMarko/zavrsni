@@ -74,7 +74,27 @@ export const FileSystemProvider = ({ children }) => {
       fs.exists(path, (exists) => (exists ? resolve(true) : reject()));
     });
 
-  const rmdir = (path) => fs.rmdir(path, (err) => console.log(err));
+  const rmdir = (path) =>
+    new Promise((resolve, reject) =>
+      fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)))
+    );
+
+  const rmdirRecursive = (path) =>
+    new Promise((resolve, reject) => {
+      fs.readdir(path, { withFileTypes: true }, (err, files) => {
+        if (err) reject(err);
+        else {
+          Promise.all(
+            files.map((file) => {
+              if (file.isDirectory()) rmdirRecursive(`${path}/${file.name}`);
+              else fs.unlink(`${path}/${file.name}`, (err) => console.log(err));
+            })
+          ).then(() =>
+            fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)))
+          );
+        }
+      });
+    });
 
   const unlink = (path, name) =>
     fs.unlink(Path.join(path, name), (err) => console.log(err));
@@ -131,9 +151,11 @@ export const FileSystemProvider = ({ children }) => {
     fs.rename(currentPath, newPath, (err) => console.log(err));
   };
 
-  const deleteFSO = (path, name, type) => {
+  const deleteFSO = (path, name, type, recusive = true) => {
     if (type === "directory") {
-      rmdir(Path.join(path, name));
+      return recusive
+        ? rmdirRecursive(Path.join(path, name))
+        : rmdir(Path.join(path, name));
     } else {
       unlink(Path.addTrailing(path), name);
     }
