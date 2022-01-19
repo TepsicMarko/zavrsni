@@ -1,156 +1,123 @@
 import { useState, createContext, cloneElement } from "react";
-import { FcFolder } from "react-icons/fc";
-import FileExplorer from "../components/apps/file-explorer/FileExplorer";
-import Notepad from "../components/apps/notepad/Notepad";
-import notepad from "../assets/notepad.png";
-import Chrome from "../components/apps/chrome/Chrome";
-import chrome from "../assets/chrome.png";
-import chromeSmall from "../assets/chrome-small.png";
 import { DialogsProvider } from "./DialogsContext";
-import TaskManager from "../components/apps/task-manager/TaskManager";
-import taskManager from "../assets/task-manager.png";
-import Photos from "../components/apps/photos/Photos";
-import photos from "../assets/photos.png";
-import MoviesAndTv from "../components/apps/movies-and-tv/MoviesAndTv";
-import moviesAndTv from "../assets/movies-and-tv.png";
-import CommandPrompt from "../components/apps/command-prompt/CommandPrompt";
-import cmd from "../assets/cmd.png";
-
+import appConfigurations from "../utils/constants/appConfigurations";
+import { nanoid } from "nanoid";
 export const ProcessesContext = createContext();
 
-const initialState = {
-  "File Explorer": {
-    source: <FileExplorer icon={<FcFolder />} />,
-    running: false,
-    minimised: false,
-    icon: <FcFolder />,
-    pinnedToTaskbar: true,
-    isFocused: false,
-  },
-  Notepad: {
-    source: <Notepad icon={<img src={notepad} width='20rem' />} />,
-    running: false,
-    minimised: false,
-    icon: <img src={notepad} width='30rem' />,
-    pinnedToTaskbar: true,
-    isFocused: false,
-    childProcess: {},
-  },
-  Chrome: {
-    source: <Chrome icon={<img src={chromeSmall} />} />,
-    running: false,
-    minimised: false,
-    icon: <img src={chrome} />,
-    pinnedToTaskbar: true,
-    isFocused: false,
-  },
-  TaskManager: {
-    source: <TaskManager icon={<img src={taskManager} height='20px' />} />,
-    running: false,
-    minimised: false,
-    icon: <img src={taskManager} height='30px' />,
-    pinnedToTaskbar: true,
-    isFocused: false,
-  },
-  Photos: {
-    source: <Photos />,
-    running: false,
-    minimised: false,
-    icon: <img src={photos} height='30px' />,
-    pinnedToTaskbar: true,
-    isFocused: false,
-  },
-  "Movies And TV": {
-    source: <MoviesAndTv />,
-    running: false,
-    minimised: false,
-    icon: <img src={moviesAndTv} height='30px' />,
-    pinnedToTaskbar: true,
-    isFocused: false,
-  },
-  "Command Prompt": {
-    source: <CommandPrompt icon={<img src={cmd} width='15px' />} />,
-    running: false,
-    minimised: false,
-    icon: <img src={cmd} width='30px' />,
-    pinnedToTaskbar: true,
-    isFocused: false,
-  },
-};
-
 export const ProcessesProvider = ({ children }) => {
-  const [processes, setProcesses] = useState({ ...initialState });
+  const [processes, setProcesses] = useState({});
+  const [lastFocusedProcess, setLastFocusedProcess] = useState({
+    name: "",
+    pid: "",
+  });
 
   const unfocuseProcesses = () => {
-    const unfocusedProcesses = { ...processes };
+    let unfocusedProcesses = { ...processes };
     for (let process in unfocusedProcesses) {
-      unfocusedProcesses[process].isFocused = false;
+      for (let processInstance in unfocusedProcesses[process]) {
+        unfocusedProcesses[process][processInstance].isFocused = false;
+        setLastFocusedProcess({ name: process, pid: processInstance });
+      }
     }
     return unfocusedProcesses;
   };
 
   const startProcess = (name, props = {}) => {
     const hasProps = Object.keys(props).length;
-    setProcesses({
-      ...unfocuseProcesses(),
-      [name]: {
-        ...processes[name],
-        running: true,
-        minimised: false,
-        isFocused: true,
-        source: hasProps
-          ? cloneElement(processes[name].source, { ...props })
-          : processes[name].source,
-      },
-    });
-  };
+    const unfocusedProcesses = unfocuseProcesses();
 
-  const startChildProcess = (parent, child, props) => {
-    const hasProps = Object.keys(props).length;
     setProcesses({
-      ...processes,
-      [parent]: {
-        ...processes[parent],
-        childProcess: {
-          ...processes[child],
-          name: child,
+      ...unfocusedProcesses,
+      [name]: {
+        ...unfocusedProcesses[name],
+        [nanoid()]: {
+          ...appConfigurations[name],
           running: true,
+          isFocused: true,
           source: hasProps
-            ? cloneElement(processes[child].source, { ...props })
-            : processes[child].source,
+            ? cloneElement(appConfigurations[name].source, { ...props })
+            : appConfigurations[name].source,
         },
       },
     });
   };
 
-  const endProcess = (name, parentProcess) => {
+  const startChildProcess = (parent, ppid, child, props) => {
+    // ppid => parent pid
+    const hasProps = Object.keys(props).length;
     setProcesses({
       ...processes,
-      [parentProcess ? parentProcess : name]: {
-        ...processes[parentProcess ? parentProcess : name],
-        running: parentProcess ? true : false,
-        source: parentProcess
-          ? processes[parentProcess].source
-          : initialState[name].source,
-        childProcess: {},
+      [parent]: {
+        ...processes[parent],
+        [ppid]: {
+          ...processes[parent][ppid],
+          childProcess: {
+            ...appConfigurations[child],
+            name: child,
+            running: true,
+            source: hasProps
+              ? cloneElement(appConfigurations[child].source, { ...props })
+              : appConfigurations[child].source,
+          },
+        },
       },
     });
   };
 
-  const minimiseToTaskbar = (name) => {
+  // const endProcess = (name, parentProcess) => {
+  //   setProcesses({
+  //     ...processes,
+  //     [parentProcess ? parentProcess : name]: {
+  //       ...processes[parentProcess ? parentProcess : name],
+  //       running: parentProcess ? true : false,
+  //       source: parentProcess
+  //         ? processes[parentProcess].source
+  //         : initialState[name].source,
+  //       childProcess: {},
+  //     },
+  //   });
+  // };
+
+  const endProcess = (name, pid, parentProcess) => {
+    let newProcessesState = { ...processes };
+
+    delete newProcessesState[name][pid];
+    newProcessesState[lastFocusedProcess.name][
+      lastFocusedProcess.pid
+    ].isFocused = true;
+
+    setProcesses(newProcessesState);
+  };
+
+  const minimiseToTaskbar = (name, pid) => {
     setProcesses({
       ...processes,
-      [name]: { ...processes[name], minimised: true },
+      [name]: {
+        ...processes[name],
+        [pid]: { ...processes[name][pid], minimised: true },
+      },
     });
   };
 
-  const focusProcess = (name, parentProcess) => {
-    if (!processes[parentProcess || name].isFocused) {
+  // const focusProcess = (name, parentProcess) => {
+  //   if (!processes[parentProcess || name].isFocused) {
+  //     const newState = { ...processes };
+  //     for (let process in newState) {
+  //       if (process === (parentProcess || name))
+  //         newState[process].isFocused = true;
+  //       else newState[process].isFocused = false;
+  //     }
+  //     setProcesses(newState);
+  //   }
+  // };
+
+  const focusProcess = (name, pid, parentProcess) => {
+    if (!processes[parentProcess || name][pid].isFocused) {
       const newState = { ...processes };
       for (let process in newState) {
         if (process === (parentProcess || name))
-          newState[process].isFocused = true;
-        else newState[process].isFocused = false;
+          newState[process][pid].isFocused = true;
+        else newState[process][pid].isFocused = false;
       }
       setProcesses(newState);
     }

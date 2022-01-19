@@ -9,6 +9,7 @@ import remToPx from "../../../utils/helpers/remToPx";
 import moment from "moment";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import useToggle from "../../../hooks/useToggle";
+import appConfigurations from "../../../utils/constants/appConfigurations";
 
 const Taskbar = ({
   width,
@@ -116,8 +117,8 @@ const Taskbar = ({
   const renderTaskbarIcons = () => {
     const taskbarIcons = [];
 
-    for (let process in processes) {
-      const app = processes[process];
+    for (let process in appConfigurations) {
+      const app = appConfigurations[process];
       taskbarIcons.push({ ...app, name: process });
     }
 
@@ -128,7 +129,7 @@ const Taskbar = ({
       return (
         <div className='flex-center taskbar-icon' onClick={handleClick}>
           {React.cloneElement(app.icon, { size: "1.5rem" })}
-          {app.running && <span></span>}
+          {processes[app.name] && <span></span>}
         </div>
       );
     });
