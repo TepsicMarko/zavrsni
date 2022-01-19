@@ -34,7 +34,7 @@ const MoviesAndTv = ({ path }) => {
 
   return (
     <Window
-      app='Movies And Tv'
+      app='Movies And TV'
       displayAppName={false}
       minWindowWidth='9rem'
       minWindowHeight='10rem'
@@ -43,9 +43,9 @@ const MoviesAndTv = ({ path }) => {
         backgroundColor: !isMiniplayer ? "black" : "transparent",
         overlay: true,
       }}
-      parentProcess={isMiniplayer ? "Movies And Tv" : ""}
+      parentProcess={isMiniplayer ? "Movies And TV" : ""}
       zIndex={isMiniplayer ? 1000 : ""}
-      onClose={(endProcess) => endProcess("Movies And Tv")}
+      onClose={(endProcess) => endProcess("Movies And TV")}
     >
       <WindowContent backgroundColor='black' flex flexDirection='column'>
         <div

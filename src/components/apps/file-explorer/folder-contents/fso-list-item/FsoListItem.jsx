@@ -1,14 +1,14 @@
 import "./FsoListItem.css";
 import { memo, useRef, useContext } from "react";
-import getFileTypeIcon from "../../../../../utils/getFileTypeIcon";
+import getFileTypeIcon from "../../../../../utils/helpers/getFileTypeIcon";
 import FsoListItemContextMenu from "../../../../system/component-specific-context-menus/FsoListItemContextMenu";
-import selectInputContent from "../../../../../utils/selectInputContent";
+import selectInputContent from "../../../../../utils/helpers/selectInputContent";
 import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuContext";
 import { ProcessesContext } from "../../../../../contexts/ProcessesContext";
 import { path as Path } from "filer";
 import useInput from "../../../../../hooks/useInput";
-import openWithDefaultApp from "../../../../../helpers/openWithDefaultApp";
-import getFileType from "../../../../../helpers/getFileType";
+import openWithDefaultApp from "../../../../../utils/helpers/openWithDefaultApp";
+import getFileType from "../../../../../utils/helpers/getFileType";
 
 const FsoListItem = ({
   name,

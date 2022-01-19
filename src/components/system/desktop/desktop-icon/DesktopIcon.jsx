@@ -8,9 +8,9 @@ import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import useInput from "../../../../hooks/useInput";
 import DesktopIconContextMenu from "../../component-specific-context-menus/DesktopIconContextMenu";
-import openWithDefaultApp from "../../../../helpers/openWithDefaultApp";
+import openWithDefaultApp from "../../../../utils/helpers/openWithDefaultApp";
 import { path as Path } from "filer";
-import getFileType from "../../../../helpers/getFileType";
+import getFileType from "../../../../utils/helpers/getFileType";
 
 const DesktopIcon = ({
   name,

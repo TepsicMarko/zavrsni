@@ -15,7 +15,7 @@ const openWithDefaultApp = (type, path, name, openApp) => {
     if (fileType === "image")
       openApp("Photos", { path: Path.join(path, name) });
     if (fileType === "video")
-      openApp("Movies And Tv", { path: Path.join(path, name) });
+      openApp("Movies And TV", { path: Path.join(path, name) });
   }
 };
 

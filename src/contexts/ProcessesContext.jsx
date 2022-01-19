@@ -43,7 +43,6 @@ const initialState = {
     icon: <img src={chrome} />,
     pinnedToTaskbar: true,
     isFocused: false,
-    childProcess: {},
   },
   TaskManager: {
     source: <TaskManager icon={<img src={taskManager} height='20px' />} />,
@@ -61,7 +60,7 @@ const initialState = {
     pinnedToTaskbar: true,
     isFocused: false,
   },
-  "Movies And Tv": {
+  "Movies And TV": {
     source: <MoviesAndTv />,
     running: false,
     minimised: false,

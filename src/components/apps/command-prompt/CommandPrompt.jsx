@@ -9,7 +9,7 @@ import commands from "./commands";
 import { path as Path } from "filer";
 import DirectoryContentOutput from "./command-outputs/DirectoryContentOutput";
 import FileContentsOutput from "./command-outputs/FileContentsOutput";
-import formatCommandLineArguments from "../../../helpers/formatCommandLineArgumnets";
+import formatCommandLineArguments from "../../../utils/helpers/formatCommandLineArgumnets";
 
 const CommandPrompt = ({ icon }) => {
   const {

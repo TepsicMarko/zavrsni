@@ -6,7 +6,7 @@ import React, {
   useRef,
   useCallback,
 } from "react";
-import remToPx from "../../../helpers/remToPx";
+import remToPx from "../../../utils/helpers/remToPx";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import { WindowDimensionsContext } from "../../../contexts/WindowDimensionsContext";
 import TitleBar from "./title-bar/TitleBar";

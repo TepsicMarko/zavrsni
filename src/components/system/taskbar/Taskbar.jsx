@@ -5,7 +5,7 @@ import { VscSearch } from "react-icons/vsc";
 import { MdOutlineKeyboardArrowUp, MdMessage } from "react-icons/md";
 import { AiOutlineWifi } from "react-icons/ai";
 import { GiSpeaker } from "react-icons/gi";
-import remToPx from "../../../helpers/remToPx";
+import remToPx from "../../../utils/helpers/remToPx";
 import moment from "moment";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import useToggle from "../../../hooks/useToggle";

@@ -3,7 +3,7 @@ import ColumnHeading from "./column-heading/ColumnHeading";
 import FsoListItem from "./fso-list-item/FsoListItem";
 import { useState, useEffect, useContext, useRef, useCallback } from "react";
 import useWatchFolder from "../../../../hooks/useWatchFolder";
-import remToPx from "../../../../helpers/remToPx";
+import remToPx from "../../../../utils/helpers/remToPx";
 import moment from "moment";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { WindowDimensionsContext } from "../../../../contexts/WindowDimensionsContext";

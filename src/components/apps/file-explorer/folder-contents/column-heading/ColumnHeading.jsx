@@ -1,6 +1,6 @@
 import "./ColumnHeading.css";
 import { useState, memo } from "react";
-import remToPx from "../../../../../helpers/remToPx";
+import remToPx from "../../../../../utils/helpers/remToPx";
 
 const ColumnHeading = ({ name, width, setColumnHeadingWidth, visible }) => {
   const [initialWidth, setInitialWidth] = useState(remToPx(width));

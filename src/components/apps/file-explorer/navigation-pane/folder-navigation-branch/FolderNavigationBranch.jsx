@@ -9,7 +9,7 @@ import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuCon
 import NavigationPaneBranchContextMenu from "../../../../system/component-specific-context-menus/NavigationPaneBranchContextMenu";
 import { FileSystemContext } from "../../../../../contexts/FileSystemContext";
 import useInput from "../../../../../hooks/useInput";
-import selectInputContent from "../../../../../utils/selectInputContent";
+import selectInputContent from "../../../../../utils/helpers/selectInputContent";
 
 const FolderNavigationBranch = ({
   branchName,

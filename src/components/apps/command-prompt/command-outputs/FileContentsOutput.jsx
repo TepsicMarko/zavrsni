@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import formatCommandLineArguments from "../../../../helpers/formatCommandLineArgumnets";
+import formatCommandLineArguments from "../../../../utils/helpers/formatCommandLineArgumnets";
 import { path as Path } from "filer";
 
 const FileContentsOutput = ({

@@ -10,7 +10,7 @@ import { useState, memo, useEffect, useContext } from "react";
 import { FcFolder } from "react-icons/fc";
 import { VscClose } from "react-icons/vsc";
 import { path as Path } from "filer";
-import remToPx from "../../../../helpers/remToPx";
+import remToPx from "../../../../utils/helpers/remToPx";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import usePathHistory from "../../../../hooks/usePathHistory";
 

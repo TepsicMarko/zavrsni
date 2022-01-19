@@ -1,6 +1,6 @@
 import ContextMenuItem from "../context-menu/context-menu-item/ContextMenuItem";
 import { path as Path } from "filer";
-import openWithDefaultApp from "../../../helpers/openWithDefaultApp";
+import openWithDefaultApp from "../../../utils/helpers/openWithDefaultApp";
 
 const FsoListItemContextMenu = ({
   name,
