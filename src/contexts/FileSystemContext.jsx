@@ -153,10 +153,12 @@ export const FileSystemProvider = ({ children }) => {
     writeFile(path, "", false, content);
   };
 
-  const moveFSO = (currentPath, newPath) => {
-    console.log(currentPath, newPath);
-    fs.rename(currentPath, newPath, (err) => console.log(err));
-  };
+  const moveFSO = (currentPath, newPath) =>
+    new Promise((resolve, reject) => {
+      fs.rename(currentPath, newPath, (err) =>
+        err ? reject(err) : resolve(true)
+      );
+    });
 
   const deleteFSO = (path, name, type, recusive = true) => {
     if (type === "directory") {
@@ -168,10 +170,10 @@ export const FileSystemProvider = ({ children }) => {
     }
   };
 
-  const doesPathExist = async (path) =>
-    await new Promise((resolve, reject) =>
-      fs.exists(path, (exists) => resolve(exists))
-    );
+  const doesPathExist = (path) =>
+    new Promise((resolve, reject) => {
+      fs.exists(path, (exists) => (exists ? resolve(exists) : reject()));
+    });
 
   const initilizeFileSystem = () => {
     console.log("initializing file system");

@@ -1,4 +1,5 @@
 import moment from "moment";
+import ShutdownOutput from "./command-outputs/ShutdownOutput";
 
 const commands = (
   terminal,
@@ -12,7 +13,8 @@ const commands = (
   readFiles,
   processes,
   killTasks,
-  renameFiles
+  renameFiles,
+  moveFiles
 ) => ({
   pwd: {
     description: "Print the full filename of the current working directory.",
@@ -153,6 +155,20 @@ const commands = (
       args.length > 1
         ? renameFiles("rename", ...args)
         : "The syntax of the command is incorrect.",
+  },
+
+  move: {
+    description: "Moves files and directories.",
+    fn: async (...args) => moveFiles(...args),
+  },
+  mv: {
+    description: "Rename SOURCE to DEST, or move SOURCE to DIRECTORY.",
+    fn: async (...args) => moveFiles(...args),
+  },
+
+  shutdown: {
+    description: "power-off or reboot the machine",
+    fn: (time) => <ShutdownOutput time={parseInt(time)} />,
   },
 });
 

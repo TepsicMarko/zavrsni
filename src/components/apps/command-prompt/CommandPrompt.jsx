@@ -20,6 +20,7 @@ const CommandPrompt = ({ icon }) => {
     writeFileAsync,
     readFileContent,
     renameFSO,
+    moveFSO,
   } = useContext(FileSystemContext);
   const { endProcess, processes } = useContext(ProcessesContext);
   const [currentPath, setCurrentPath] = useState("/C/users/admin");
@@ -204,6 +205,47 @@ const CommandPrompt = ({ icon }) => {
     }
   };
 
+  const moveFiles = async (...args) => {
+    const [origin, destination, ...rest] = formatCommandLineArguments(...args);
+    if (rest.length)
+      return "The system cannot find the file specified. Too many arguments.";
+    if (origin && destination) {
+      let destinationExists = false;
+      try {
+        destinationExists = await doesPathExist(
+          Path.join(currentPath, destination)
+        );
+      } catch (err) {
+        //do nothing
+      }
+      try {
+        console.log(
+          Path.join(currentPath, origin),
+          Path.join(
+            currentPath,
+            destinationExists
+              ? Path.join(destination, Path.basename(origin))
+              : destination
+          )
+        );
+        await moveFSO(
+          Path.join(currentPath, origin),
+          Path.join(
+            currentPath,
+            destinationExists
+              ? Path.join(destination, Path.basename(origin))
+              : destination
+          )
+        );
+      } catch (err) {
+        console.log(err);
+        return err.errno === 34
+          ? "The system cannot find the file specified."
+          : "File already exists at destination";
+      }
+    } else return "The syntax of the command is incorrect.";
+  };
+
   return (
     <Window
       app='Command Prompt'
@@ -230,7 +272,8 @@ const CommandPrompt = ({ icon }) => {
                 (process) => processes[process].running
               ),
               killTasks,
-              renameFiles
+              renameFiles,
+              moveFiles
             )}
             autofocus
             className='command-prompt'
