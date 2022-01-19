@@ -17,7 +17,7 @@ const FsoListItem = ({
   size,
   columnHeadingsWidth,
   path,
-  updateFSO,
+  renameFSO,
   deleteFSO,
   changePath,
   location,
@@ -60,7 +60,7 @@ const FsoListItem = ({
     e.target.setAttribute("contenteditable", "false");
 
     if (name !== inputValue && inputValue.length)
-      updateFSO({ old: name, new: inputValue }, path);
+      renameFSO(path, { old: name, new: inputValue });
   };
 
   const handleRightClick = (e) =>

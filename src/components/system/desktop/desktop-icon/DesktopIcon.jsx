@@ -24,14 +24,14 @@ const DesktopIcon = ({
   const [isSelected, setIsSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
   const [imgSrc, setImgSrc] = useState("");
-  const { updateFSO, deleteFSO, readFileContent, readBlob } =
+  const { renameFSO, deleteFSO, readFileContent, readBlob } =
     useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
 
   const handleBlur = (e) => {
     if (name !== inputValue && inputValue.length && isSelected) {
-      updateFSO({ old: name, new: inputValue }, path);
+      renameFSO(path, { old: name, new: inputValue });
       updateGridItemName({ old: name, new: inputValue });
     }
   };

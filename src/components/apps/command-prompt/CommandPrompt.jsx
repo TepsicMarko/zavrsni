@@ -19,6 +19,7 @@ const CommandPrompt = ({ icon }) => {
     deleteFSO,
     writeFileAsync,
     readFileContent,
+    renameFSO,
   } = useContext(FileSystemContext);
   const { endProcess, processes } = useContext(ProcessesContext);
   const [currentPath, setCurrentPath] = useState("/C/users/admin");
@@ -142,12 +143,13 @@ const CommandPrompt = ({ icon }) => {
     return failedFilePaths.filter((el) => el);
   };
 
-  const readFiles = async (...args) => {
+  const readFiles = async (command, ...args) => {
     // this component only exist because terminal for some reason
     // won't render html elements except when they are returned from
     // a react component
     return (
       <FileContentsOutput
+        command={command}
         currentPath={currentPath}
         args={args}
         readFileContent={readFileContent}
@@ -166,6 +168,40 @@ const CommandPrompt = ({ icon }) => {
         } else return `ERROR: The process ${task} not found.`;
       })
       .filter((el) => el);
+  };
+
+  const renameFiles = async (command, ...args) => {
+    if (command === "rename") {
+      const allNames = formatCommandLineArguments(...args);
+      const oldNames = allNames.filter((el, i) => i % 2 === 0);
+      const newNames = allNames.filter((el, i) => i % 2 !== 0);
+      const failedRenames = await Promise.all(
+        oldNames.map(async (oldName, i) => {
+          const newName = newNames[i];
+          if (newName) {
+            try {
+              await renameFSO(currentPath, { old: oldName, new: newName });
+              return null;
+            } catch (err) {
+              console.log(err);
+              return `The system cannot find the file specified.`;
+            }
+          } else {
+            return `The syntax of the command is incorrect.`;
+          }
+        })
+      );
+
+      return failedRenames.filter((el) => el).map((el) => <div>{el}</div>);
+    }
+
+    const [oldPath, newPath] = formatCommandLineArguments(...args);
+
+    try {
+      await renameFSO(currentPath, { old: oldPath, new: newPath });
+    } catch (err) {
+      return `The system cannot find the file specified.`;
+    }
   };
 
   return (
@@ -193,7 +229,8 @@ const CommandPrompt = ({ icon }) => {
               Object.keys(processes).filter(
                 (process) => processes[process].running
               ),
-              killTasks
+              killTasks,
+              renameFiles
             )}
             autofocus
             className='command-prompt'

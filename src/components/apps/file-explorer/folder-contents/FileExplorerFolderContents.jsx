@@ -26,7 +26,7 @@ const FileExplorerFolderContents = ({
   const {
     watch,
     getFolder,
-    updateFSO,
+    renameFSO,
     deleteFSO,
     createFSO,
     moveFSO,
@@ -173,7 +173,7 @@ const FileExplorerFolderContents = ({
                 size={fso.size}
                 columnHeadingsWidth={columnHeadingsWidth}
                 path={path}
-                updateFSO={updateFSO}
+                renameFSO={renameFSO}
                 deleteFSO={deleteFSO}
                 changePath={changePath}
                 location={fso.path}

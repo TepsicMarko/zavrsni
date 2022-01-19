@@ -11,7 +11,8 @@ const commands = (
   createNewFiles,
   readFiles,
   processes,
-  killTasks
+  killTasks,
+  renameFiles
 ) => ({
   pwd: {
     description: "Print the full filename of the current working directory.",
@@ -106,7 +107,11 @@ const commands = (
 
   cat: {
     description: "Concatenate FILE(s) to standard output.",
-    fn: (...args) => (args ? readFiles(...args) : ""),
+    fn: (...args) => (args ? readFiles("cat", ...args) : ""),
+  },
+  type: {
+    description: "Displays the contents of a text file or files.",
+    fn: (...args) => (args ? readFiles("type", ...args) : ""),
   },
 
   tasklist: {
@@ -132,6 +137,22 @@ const commands = (
           ? killTasks(...args)
           : "ERROR: Invalid syntax. Value expected for '/im'."
         : "ERROR: Invalid syntax. Neither /FI nor /PID nor /IM were specified.",
+  },
+
+  rename: {
+    description:
+      "Renames file or files with <oldname> <newname> pairs syntax. If one pairs value is missing, only that pair will thow an error while others will not",
+    fn: (...args) =>
+      args.length > 1
+        ? renameFiles("rename", ...args)
+        : "The syntax of the command is incorrect.",
+  },
+  ren: {
+    description: "Renames a file",
+    fn: (...args) =>
+      args.length > 1
+        ? renameFiles("rename", ...args)
+        : "The syntax of the command is incorrect.",
   },
 });
 

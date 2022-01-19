@@ -2,12 +2,16 @@ import { useState, useEffect } from "react";
 import formatCommandLineArguments from "../../../../helpers/formatCommandLineArgumnets";
 import { path as Path } from "filer";
 
-const FileContentsOutput = ({ currentPath, args, readFileContent }) => {
+const FileContentsOutput = ({
+  command,
+  currentPath,
+  args,
+  readFileContent,
+}) => {
   const [commandOutput, setCommandOutput] = useState([]);
+  const [filePaths] = useState(formatCommandLineArguments(...args));
 
   useEffect(async () => {
-    const filePaths = formatCommandLineArguments(...args);
-
     const fileContents = await Promise.all(
       filePaths.map(async (filePath) => {
         try {
@@ -21,8 +25,11 @@ const FileContentsOutput = ({ currentPath, args, readFileContent }) => {
     setCommandOutput(fileContents);
   }, []);
 
-  return commandOutput.map((output) => (
-    <div className='file-content'>{output}</div>
+  return commandOutput.map((output, i) => (
+    <div className='file-content'>
+      {command === "type" && filePaths.length > 1 && <div>{filePaths[i]}:</div>}
+      {output}
+    </div>
   ));
 };
 

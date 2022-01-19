@@ -22,7 +22,7 @@ const FolderNavigationBranch = ({
   expandBranches,
   setExpandBranches,
 }) => {
-  const { watch, getFolder, createFSO, deleteFSO, updateFSO, moveFSO } =
+  const { watch, getFolder, createFSO, deleteFSO, renameFSO, moveFSO } =
     useContext(FileSystemContext);
   const [isOpen, toggleOpen, setToggleState] = useToggle(open);
   const [folderContent] = useWatchFolder(
@@ -80,7 +80,7 @@ const FolderNavigationBranch = ({
     inputRef.current.setAttribute("contenteditable", "false");
 
     if (branchName !== inputValue && inputValue.length)
-      updateFSO({ old: branchName, new: inputValue }, basePath);
+      renameFSO(basePath, { old: branchName, new: inputValue });
   };
 
   const handleDragStart = (e) => {

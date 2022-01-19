@@ -142,12 +142,12 @@ export const FileSystemProvider = ({ children }) => {
     });
   };
 
-  const updateFSO = (name, path) => {
-    console.log(name, path);
-    fs.rename(Path.join(path, name.old), Path.join(path, name.new), (err) =>
-      console.log(err)
-    );
-  };
+  const renameFSO = (path, name) =>
+    new Promise((resolve, reject) => {
+      fs.rename(Path.join(path, name.old), Path.join(path, name.new), (err) =>
+        err ? reject(err) : resolve(true)
+      );
+    });
 
   const saveFile = (path, content) => {
     writeFile(path, "", false, content);
@@ -237,7 +237,7 @@ export const FileSystemProvider = ({ children }) => {
         createFSO,
         createBlob,
         getFolder,
-        updateFSO,
+        renameFSO,
         saveFile,
         deleteFSO,
         readFileContent,
