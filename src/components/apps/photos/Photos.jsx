@@ -11,7 +11,7 @@ import Panzoom from "@panzoom/panzoom";
 import useToggle from "../../../hooks/useToggle";
 import useFullScreenToggle from "../../../hooks/useFullScreenToggle";
 
-const Photos = ({ path }) => {
+const Photos = ({ path, pid }) => {
   const imageContainerRef = useRef(null);
   const [src, setSrc] = useState("");
   const [zoom, setZoom] = useState(100);
@@ -93,6 +93,7 @@ const Photos = ({ path }) => {
   return (
     <Window
       app='Photos'
+      pid={pid}
       minWindowWidth='31rem'
       minWindowHeight='20rem'
       titleBar={{ color: "#EFEFEF", backgroundColor: "#2B2B2B" }}

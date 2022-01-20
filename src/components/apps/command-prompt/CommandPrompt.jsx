@@ -11,7 +11,7 @@ import DirectoryContentOutput from "./command-outputs/DirectoryContentOutput";
 import FileContentsOutput from "./command-outputs/FileContentsOutput";
 import formatCommandLineArguments from "../../../utils/helpers/formatCommandLineArgumnets";
 
-const CommandPrompt = ({ icon }) => {
+const CommandPrompt = ({ icon, pid }) => {
   const {
     doesPathExist,
     getFolder,
@@ -249,6 +249,7 @@ const CommandPrompt = ({ icon }) => {
   return (
     <Window
       app='Command Prompt'
+      pid={pid}
       icon={icon}
       minWindowWidth='15rem'
       minWindowHeight='5rem'

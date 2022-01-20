@@ -12,6 +12,7 @@ import { WindowDimensionsProvider } from "../../../contexts/WindowDimensionsCont
 import FileExplorerStatusBar from "./status-bar/FileExplorerStatusBar";
 
 const FileExplorer = ({
+  pid,
   icon,
   customPath,
   mode = "v",
@@ -43,6 +44,7 @@ const FileExplorer = ({
     <WindowDimensionsProvider>
       <Window
         app='File Explorer'
+        pid={pid}
         icon={icon}
         minWindowWidth={minWidth || "14rem"}
         minWindowHeight={minHeight || "16rem"}

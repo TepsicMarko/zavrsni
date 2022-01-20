@@ -11,7 +11,7 @@ import { nanoid } from "nanoid";
 import UnsavedChanges from "./dialogs/UnsavedChanges";
 import { path as Path } from "filer";
 
-const Notepad = ({ icon, path = "" }) => {
+const Notepad = ({ icon, path = "", pid }) => {
   const [filePath, setFilePath] = useState(path);
   const [text, setText] = useState({ content: "", lines: 1 });
   const [wordWrap, setWordWrap] = useState(false);
@@ -111,7 +111,9 @@ const Notepad = ({ icon, path = "" }) => {
 
   const onClose = () => {
     if (!filePath) {
-      text.content.length ? openUnsavedChangesDialog() : endProcess("Notepad");
+      text.content.length
+        ? openUnsavedChangesDialog()
+        : endProcess("Notepad", pid);
     } else {
       readFileContent(filePath, isContentSame);
     }
@@ -130,6 +132,7 @@ const Notepad = ({ icon, path = "" }) => {
   return (
     <Window
       app='Notepad'
+      pid={pid}
       fileName={
         filePath
           ? Path.basename(filePath) + " - Notepad"

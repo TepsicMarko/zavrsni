@@ -7,7 +7,7 @@ import "rc-slider/assets/index.css";
 import VideoControls from "./video-controls/VideoControls";
 import { path as Path } from "filer";
 
-const MoviesAndTv = ({ path }) => {
+const MoviesAndTv = ({ path, pid }) => {
   const videoRef = useRef(null);
   const [src, setSrc] = useState("");
   const { readBlob } = useContext(FileSystemContext);
@@ -35,6 +35,7 @@ const MoviesAndTv = ({ path }) => {
   return (
     <Window
       app='Movies And TV'
+      pid={pid}
       displayAppName={false}
       minWindowWidth='9rem'
       minWindowHeight='10rem'
@@ -45,7 +46,7 @@ const MoviesAndTv = ({ path }) => {
       }}
       parentProcess={isMiniplayer ? "Movies And TV" : ""}
       zIndex={isMiniplayer ? 1000 : ""}
-      onClose={(endProcess) => endProcess("Movies And TV")}
+      onClose={(endProcess) => endProcess("Movies And TV", pid)}
     >
       <WindowContent backgroundColor='black' flex flexDirection='column'>
         <div

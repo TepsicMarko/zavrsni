@@ -27,7 +27,8 @@ const Taskbar = ({
   const [isResizing, toggleResizing] = useToggle();
   const verticalWidthRef = useRef(0);
   const horizontalHeightRef = useRef(0);
-  const { processes, startProcess } = useContext(ProcessesContext);
+  const { processes, startProcess, focusProcess } =
+    useContext(ProcessesContext);
 
   const isVerticalClassName = (className) => {
     return `${className}${
@@ -124,12 +125,18 @@ const Taskbar = ({
 
     return taskbarIcons.map((app) => {
       const handleClick = () => {
-        startProcess(app.name);
+        if (Object.keys(processes[app.name] || {}).length === 1) {
+          focusProcess(app.name);
+        }
+
+        if (!processes[app.name] || !Object.keys(processes[app.name]).length)
+          startProcess(app.name);
       };
+
       return (
         <div className='flex-center taskbar-icon' onClick={handleClick}>
           {React.cloneElement(app.icon, { size: "1.5rem" })}
-          {processes[app.name] && <span></span>}
+          {Object.keys(processes[app.name] || {}).length ? <span></span> : null}
         </div>
       );
     });

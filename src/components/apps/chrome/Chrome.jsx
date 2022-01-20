@@ -5,7 +5,7 @@ import ChromeNavbar from "./navbar/ChromeNavbar";
 import usePathHistory from "../../../hooks/usePathHistory";
 import { useState, useEffect, useRef } from "react";
 
-const Chrome = ({ icon }) => {
+const Chrome = ({ icon, pid }) => {
   const [url, setUrl] = useState("");
   const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(
     url,
@@ -50,6 +50,7 @@ const Chrome = ({ icon }) => {
   return (
     <Window
       app='Chrome'
+      pid={pid}
       icon={icon}
       minWindowWidth='15rem'
       minWindowHeight='5rem'

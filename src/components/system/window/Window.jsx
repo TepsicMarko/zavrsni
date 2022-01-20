@@ -14,6 +14,7 @@ import TitleBar from "./title-bar/TitleBar";
 const Window = ({
   children,
   app,
+  pid,
   displayAppName = true,
   icon,
   minWindowWidth,
@@ -152,14 +153,18 @@ const Window = ({
     e.stopPropagation();
   };
 
-  const closeWindow = useCallback(() => {
-    if (onClose) {
-      onClose(endProcess);
-    } else endProcess(app, parentProcess);
-  }, [app, endProcess, parentProcess, onClose]);
+  const closeWindow = useCallback(
+    (e) => {
+      e.stopPropagation();
+      if (onClose) {
+        onClose(endProcess);
+      } else endProcess(app, pid, parentProcess);
+    },
+    [app, endProcess, parentProcess, onClose]
+  );
 
   const minimiseWindow = useCallback(
-    () => minimiseToTaskbar(app),
+    () => minimiseToTaskbar(app, pid),
     [app, minimiseToTaskbar]
   );
 
@@ -179,7 +184,7 @@ const Window = ({
     }
   }, [height, width, previousDimensionsAndPositionRef.current]);
 
-  const setFocus = () => focusProcess(app, parentProcess);
+  const setFocus = () => focusProcess(app, pid, parentProcess);
 
   useEffect(() => {
     appDataRef.current = { width, height, position };
@@ -234,13 +239,11 @@ const Window = ({
         minWindowHeight,
         zIndex: zIndex
           ? zIndex
-          : processes[parentProcess || app]
-          ? processes[parentProcess || app].isFocused
-            ? 200 + (parentProcess ? 1 : 0)
-            : 100 + (parentProcess ? 1 : 0)
-          : 300,
-        visibility: processes[app]
-          ? !processes[app].minimised
+          : processes[parentProcess || app][pid] &&
+            processes[parentProcess || app][pid].focusLevel +
+              (parentProcess ? 1 : 0),
+        visibility: processes[app][pid]
+          ? !processes[app][pid].minimised
             ? "visible"
             : "hidden"
           : "",

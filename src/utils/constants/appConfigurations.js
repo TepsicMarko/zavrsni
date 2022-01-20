@@ -21,7 +21,7 @@ const appConfigurations = {
     minimised: false,
     icon: <FcFolder />,
     pinnedToTaskbar: true,
-    isFocused: false,
+    // isFocused: false,
   },
   Notepad: {
     source: <Notepad icon={<img src={notepad} width='20rem' />} />,
@@ -29,7 +29,7 @@ const appConfigurations = {
     minimised: false,
     icon: <img src={notepad} width='30rem' />,
     pinnedToTaskbar: true,
-    isFocused: false,
+    // isFocused: false,
     childProcess: {},
   },
   Chrome: {
@@ -38,7 +38,7 @@ const appConfigurations = {
     minimised: false,
     icon: <img src={chrome} />,
     pinnedToTaskbar: true,
-    isFocused: false,
+    // isFocused: false,
   },
   TaskManager: {
     source: <TaskManager icon={<img src={taskManager} height='20px' />} />,
@@ -46,7 +46,7 @@ const appConfigurations = {
     minimised: false,
     icon: <img src={taskManager} height='30px' />,
     pinnedToTaskbar: true,
-    isFocused: false,
+    // isFocused: false,
   },
   Photos: {
     source: <Photos />,
@@ -54,7 +54,7 @@ const appConfigurations = {
     minimised: false,
     icon: <img src={photos} height='30px' />,
     pinnedToTaskbar: true,
-    isFocused: false,
+    // isFocused: false,
   },
   "Movies And TV": {
     source: <MoviesAndTv />,
@@ -62,7 +62,7 @@ const appConfigurations = {
     minimised: false,
     icon: <img src={moviesAndTv} height='30px' />,
     pinnedToTaskbar: true,
-    isFocused: false,
+    // isFocused: false,
   },
   "Command Prompt": {
     source: <CommandPrompt icon={<img src={cmd} width='15px' />} />,

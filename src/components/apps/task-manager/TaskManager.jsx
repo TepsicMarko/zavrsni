@@ -5,7 +5,7 @@ import StatusBar from "../../system/window/status-bar/StatusBar";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import { useState, useContext } from "react";
 
-const TaskManager = ({ icon }) => {
+const TaskManager = ({ icon, pid }) => {
   const [selectedProcess, setSelectedProcess] = useState("");
   const { processes, endProcess } = useContext(ProcessesContext);
 
@@ -20,6 +20,7 @@ const TaskManager = ({ icon }) => {
   return (
     <Window
       app='TaskManager'
+      pid={pid}
       icon={icon}
       minWindowWidth='9rem'
       minWindowHeight='6.5rem'
