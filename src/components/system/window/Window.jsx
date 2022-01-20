@@ -51,15 +51,14 @@ const Window = ({
     setPosition({ top: clientY - offset.y, left: clientX - offset.x });
   };
 
-  const handleDragStart = useCallback(
-    (e) => {
-      resizable && setFocus();
-      const { offsetX, offsetY } = e.nativeEvent;
-      e.dataTransfer.setDragImage(new Image(), 0, 0);
-      setOffset({ x: offsetX, y: offsetY });
-    },
-    [processes]
-  );
+  const setFocus = () => focusProcess(app, pid, parentProcess);
+
+  const handleDragStart = (e) => {
+    resizable && setFocus();
+    const { offsetX, offsetY } = e.nativeEvent;
+    e.dataTransfer.setDragImage(new Image(), 0, 0);
+    setOffset({ x: offsetX, y: offsetY });
+  };
 
   const handleDrag = useCallback((e) => updateWindowPosition(e), [offset]);
   const handleDragEnd = useCallback((e) => updateWindowPosition(e), [offset]);
@@ -164,7 +163,10 @@ const Window = ({
   );
 
   const minimiseWindow = useCallback(
-    () => minimiseToTaskbar(app, pid),
+    (e) => {
+      e.stopPropagation();
+      minimiseToTaskbar(app, pid);
+    },
     [app, minimiseToTaskbar]
   );
 
@@ -183,8 +185,6 @@ const Window = ({
       setPosition({ top: 0, left: 0 });
     }
   }, [height, width, previousDimensionsAndPositionRef.current]);
-
-  const setFocus = () => focusProcess(app, pid, parentProcess);
 
   useEffect(() => {
     appDataRef.current = { width, height, position };

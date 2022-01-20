@@ -77,21 +77,21 @@ export const ProcessesProvider = ({ children }) => {
   };
 
   const minimiseToTaskbar = (name, pid) => {
-    setProcesses({
-      ...processes,
-      [name]: {
-        ...processes[name],
-        [pid]: { ...processes[name][pid], minimised: true },
-      },
-    });
+    let minimised = { ...processes };
+    minimised[name][pid].minimised = true;
+
+    setProcesses(minimised);
   };
 
   const focusProcess = (name, pid, parentProcess) => {
     if (!pid) pid = Object.keys(processes[name])[0];
     const isFocused =
       processes[name][pid].focusLevel === (processesFocusLevel.length + 1) * 10;
+    const isOnlyProcess = processesFocusLevel.length === 1;
 
-    if (!isFocused) {
+    console.log("FOCUS", name, pid, isFocused, isOnlyProcess);
+
+    if (isOnlyProcess || !isFocused) {
       let newProcessesFocusLevel = [...processesFocusLevel];
       let newProcessesState = { ...processes };
 
@@ -109,6 +109,9 @@ export const ProcessesProvider = ({ children }) => {
         ({ name, pid, focusLevel }) =>
           (newProcessesState[name][pid].focusLevel = focusLevel)
       );
+
+      if (newProcessesState[name][pid].minimised)
+        newProcessesState[name][pid].minimised = false;
 
       setProcesses(newProcessesState);
       setProcessesFocusLevel(newProcessesFocusLevel);

@@ -103,7 +103,7 @@ const Notepad = ({ icon, path = "", pid }) => {
 
   const isContentSame = (fileContent) => {
     if (fileContent === text.content) {
-      endProcess("Notepad");
+      endProcess("Notepad", pid);
     } else {
       openUnsavedChangesDialog();
     }
