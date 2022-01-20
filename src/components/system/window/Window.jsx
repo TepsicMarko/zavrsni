@@ -242,8 +242,8 @@ const Window = ({
           : processes[parentProcess || app][pid] &&
             processes[parentProcess || app][pid].focusLevel +
               (parentProcess ? 1 : 0),
-        visibility: processes[app][pid]
-          ? !processes[app][pid].minimised
+        visibility: processes[parentProcess || app][pid]
+          ? !processes[parentProcess || app][pid].minimised
             ? "visible"
             : "hidden"
           : "",

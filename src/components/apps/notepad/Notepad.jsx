@@ -56,7 +56,7 @@ const Notepad = ({ icon, path = "", pid }) => {
 
   const handleSave = (callback) => {
     if (!filePath) {
-      startChildProcess("Notepad", "File Explorer", {
+      startChildProcess("Notepad", pid, "File Explorer", {
         customPath: "/C/users/admin/Documents",
         mode: "w",
         parentProcess: "Notepad",
@@ -70,6 +70,7 @@ const Notepad = ({ icon, path = "", pid }) => {
           : createFile,
         minWidth: "31rem",
         minHeight: "17rem",
+        ppid: pid,
       });
       closeDialog(dialogID);
     } else {
@@ -131,6 +132,7 @@ const Notepad = ({ icon, path = "", pid }) => {
 
   return (
     <Window
+      key={pid}
       app='Notepad'
       pid={pid}
       fileName={
@@ -163,6 +165,7 @@ const Notepad = ({ icon, path = "", pid }) => {
           setZoom={setZoom}
           openUnsavedChangesDialog={openUnsavedChangesDialog}
           resetNotepad={resetNotepad}
+          pid={pid}
         />
         <div
           className='notepad-text-content-container'

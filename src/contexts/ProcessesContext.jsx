@@ -28,7 +28,6 @@ export const ProcessesProvider = ({ children }) => {
         ...processes[name],
         [pid]: {
           ...appConfigurations[name],
-          running: true,
           focusLevel,
           source: hasProps
             ? cloneElement(appConfigurations[name].source, { ...props })
@@ -43,7 +42,7 @@ export const ProcessesProvider = ({ children }) => {
   const startChildProcess = (parent, ppid, child, props) => {
     // ppid => parent pid
     const hasProps = Object.keys(props).length;
-    setProcesses({
+    const why = {
       ...processes,
       [parent]: {
         ...processes[parent],
@@ -52,28 +51,33 @@ export const ProcessesProvider = ({ children }) => {
           childProcess: {
             ...appConfigurations[child],
             name: child,
-            running: true,
             source: hasProps
               ? cloneElement(appConfigurations[child].source, { ...props })
               : appConfigurations[child].source,
           },
         },
       },
-    });
+    };
+
+    console.log(why);
+    setProcesses({ ...why });
   };
 
   const endProcess = (name, pid, parentProcess) => {
     let newProcessesState = { ...processes };
     let newProcessesFocusLevel = [...processesFocusLevel];
 
-    delete newProcessesState[name][pid];
-    newProcessesFocusLevel = adjustProcessesFocusLevel(
-      pid,
-      newProcessesFocusLevel
-    );
+    if (parentProcess) newProcessesState[parentProcess][pid].childProcess = {};
+    else {
+      delete newProcessesState[name][pid];
+      newProcessesFocusLevel = adjustProcessesFocusLevel(
+        pid,
+        newProcessesFocusLevel
+      );
 
+      setProcessesFocusLevel(newProcessesFocusLevel);
+    }
     setProcesses(newProcessesState);
-    setProcessesFocusLevel(newProcessesFocusLevel);
   };
 
   const minimiseToTaskbar = (name, pid) => {
@@ -84,14 +88,12 @@ export const ProcessesProvider = ({ children }) => {
   };
 
   const focusProcess = (name, pid, parentProcess) => {
-    if (!pid) pid = Object.keys(processes[name])[0];
+    if (!pid) pid = Object.keys(processes[parentProcess || name])[0];
     const isFocused =
-      processes[name][pid].focusLevel === (processesFocusLevel.length + 1) * 10;
-    const isOnlyProcess = processesFocusLevel.length === 1;
-
-    console.log("FOCUS", name, pid, isFocused, isOnlyProcess);
-
-    if (isOnlyProcess || !isFocused) {
+      processes[parentProcess || name][pid].focusLevel ===
+      processesFocusLevel.length * 10;
+    // const isOnlyProcess = processesFocusLevel.length === 1;
+    if (!isFocused || processes[parentProcess || name][pid].minimised) {
       let newProcessesFocusLevel = [...processesFocusLevel];
       let newProcessesState = { ...processes };
 
@@ -100,18 +102,18 @@ export const ProcessesProvider = ({ children }) => {
         newProcessesFocusLevel
       );
       newProcessesFocusLevel.push({
-        name,
+        name: parentProcess || name,
         pid,
         focusLevel: (newProcessesFocusLevel.length + 1) * 10,
       });
 
       newProcessesFocusLevel.forEach(
         ({ name, pid, focusLevel }) =>
-          (newProcessesState[name][pid].focusLevel = focusLevel)
+          (newProcessesState[parentProcess || name][pid].focusLevel =
+            focusLevel)
       );
 
-      if (newProcessesState[name][pid].minimised)
-        newProcessesState[name][pid].minimised = false;
+      newProcessesState[parentProcess || name][pid].minimised = false;
 
       setProcesses(newProcessesState);
       setProcessesFocusLevel(newProcessesFocusLevel);
@@ -135,28 +137,25 @@ export const ProcessesProvider = ({ children }) => {
           return Object.keys(processes[process]).map((processInstance) => {
             const appInstance = processes[process][processInstance];
 
-            return appInstance.running ? (
-              appInstance.childProcess ? (
-                <>
-                  {cloneElement(appInstance.source, {
-                    key: processInstance,
-                    pid: processInstance,
-                  })}
-                  {Object.keys(appInstance.childProcess).length
-                    ? cloneElement(appInstance.childProcess.source, {
-                        key:
-                          processInstance + "-" + appInstance.childProcess.name,
-                        pid: processInstance,
-                      })
-                    : null}
-                </>
-              ) : (
-                cloneElement(appInstance.source, {
+            return appInstance.childProcess ? (
+              <>
+                {cloneElement(appInstance.source, {
                   key: processInstance,
                   pid: processInstance,
-                })
-              )
-            ) : null;
+                })}
+                {Object.keys(appInstance.childProcess).length
+                  ? cloneElement(appInstance.childProcess.source, {
+                      key:
+                        processInstance + "-" + appInstance.childProcess.name,
+                    })
+                  : null}
+              </>
+            ) : (
+              cloneElement(appInstance.source, {
+                key: processInstance,
+                pid: processInstance,
+              })
+            );
           });
         })}
       </DialogsProvider>

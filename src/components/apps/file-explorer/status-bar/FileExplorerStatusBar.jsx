@@ -10,6 +10,7 @@ const FileExplorerStatusBar = ({
   parentProcess,
   openFile,
   endParrentProcess,
+  ppid,
 }) => {
   const [fileName, setFileName] = useState("");
   const [fileType, setFileType] = useState("Text Document (*.txt)");
@@ -17,12 +18,12 @@ const FileExplorerStatusBar = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    endProcess("File Explorer", parentProcess);
+    endProcess("File Explorer", ppid, parentProcess);
     createFile(path, fileName);
-    endParrentProcess && endProcess("Notepad");
+    endParrentProcess && endProcess("Notepad", ppid);
   };
 
-  const closeWindow = () => endProcess("File Explorer", parentProcess);
+  const closeWindow = () => endProcess("File Explorer", ppid, parentProcess);
 
   const handleChange = (e) => {
     if (e.target.name === "name") {
@@ -39,8 +40,10 @@ const FileExplorerStatusBar = ({
   const loadFile = (e) => {
     e.preventDefault();
     openFile(path, fileName);
-    endProcess("File Explorer", parentProcess);
+    endProcess("File Explorer", ppid, parentProcess);
   };
+
+  const stopPropagation = (e) => e.stopPropagation();
 
   return (
     <>
@@ -106,7 +109,7 @@ const FileExplorerStatusBar = ({
               </select>
             </label>
             <div className='open-or-cancel'>
-              <button>Open</button>
+              <button onclick={stopPropagation}>Open</button>
               <button onClick={closeWindow}>Cancel</button>
             </div>
           </div>

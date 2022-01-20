@@ -24,6 +24,7 @@ const ContextMenuItem = ({
   const handleMouseLeve = () => setIsMouseOver(false);
 
   const handleClick = (e) => {
+    e.stopPropagation();
     onClick(returnName ? name : e);
     closeMenu && closeMenu();
   };

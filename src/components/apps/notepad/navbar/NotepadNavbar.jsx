@@ -5,13 +5,6 @@ import EditDropdownMenu from "./navbar-dropdown-menus/EditDropdownMenu";
 import FormatDropdownMenu from "./navbar-dropdown-menus/FormatDropdownMenu";
 import ViewDropdownMenu from "./navbar-dropdown-menus/ViewDropdownMenu";
 
-const dropdownMenus = {
-  File: <FileDropdownMenu />,
-  Edit: <EditDropdownMenu />,
-  Format: <FormatDropdownMenu />,
-  View: <ViewDropdownMenu />,
-};
-
 const NotepadNavbar = ({
   textContent,
   filePath,
@@ -25,6 +18,7 @@ const NotepadNavbar = ({
   setZoom,
   openUnsavedChangesDialog,
   resetNotepad,
+  pid,
 }) => {
   const [activeTab, setActiveTab] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -80,26 +74,31 @@ const NotepadNavbar = ({
                 e.stopPropagation();
               }}
             >
-              {name === "File"
-                ? cloneElement(dropdownMenus[name], {
-                    setFilePath,
-                    textContent,
-                    filePath,
-                    openUnsavedChangesDialog,
-                    resetNotepad,
-                  })
-                : name === "Edit"
-                ? cloneElement(dropdownMenus[name], {
-                    divRef,
-                  })
-                : name === "Format"
-                ? cloneElement(dropdownMenus[name], { setWordWrap, wordWrap })
-                : cloneElement(dropdownMenus[name], {
-                    statusBarVisible,
-                    setStatusBarVisibility,
-                    zoom,
-                    setZoom,
-                  })}
+              {name === "File" && (
+                <FileDropdownMenu
+                  setFilePath={setFilePath}
+                  textContent={textContent}
+                  filePath={filePath}
+                  openUnsavedChangesDialog={openUnsavedChangesDialog}
+                  resetNotepad={resetNotepad}
+                  pid={pid}
+                />
+              )}
+              {name === "Edit" && <EditDropdownMenu divRef={divRef} />}
+              {name === "Format" && (
+                <FormatDropdownMenu
+                  setWordWrap={setWordWrap}
+                  wordWrap={wordWrap}
+                />
+              )}
+              {name === "View" && (
+                <ViewDropdownMenu
+                  setStatusBarVisibility={setStatusBarVisibility}
+                  statusBarVisible={statusBarVisible}
+                  setZoom={setZoom}
+                  zoom={zoom}
+                />
+              )}
             </div>
           )}
         </div>

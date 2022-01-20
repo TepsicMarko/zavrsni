@@ -23,6 +23,7 @@ const FileExplorer = ({
   minHeight,
   openFile,
   endParrentProcess,
+  ppid,
 }) => {
   const [activeTab, setActiveTab] = useState("Home");
   const [path, setPath] = useState(customPath || "/C/users/admin");
@@ -44,7 +45,7 @@ const FileExplorer = ({
     <WindowDimensionsProvider>
       <Window
         app='File Explorer'
-        pid={pid}
+        pid={ppid || pid}
         icon={icon}
         minWindowWidth={minWidth || "14rem"}
         minWindowHeight={minHeight || "16rem"}
@@ -109,6 +110,7 @@ const FileExplorer = ({
             endParrentProcess={endParrentProcess}
             parentProcess={parentProcess}
             openFile={openFile}
+            ppid={ppid}
           />
         </StatusBar>
       </Window>

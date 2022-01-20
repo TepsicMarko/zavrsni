@@ -10,6 +10,7 @@ const FileDropdownMenu = ({
   setFilePath,
   openUnsavedChangesDialog,
   resetNotepad,
+  pid,
 }) => {
   const { startChildProcess, endProcess } = useContext(ProcessesContext);
   const { createFSO, saveFile, readFileContent } =
@@ -21,6 +22,7 @@ const FileDropdownMenu = ({
   };
 
   const openSelectedFile = (path, name) => {
+    console.log(path, name);
     setFilePath(Path.join(path, name));
   };
 
@@ -32,7 +34,7 @@ const FileDropdownMenu = ({
   };
 
   const saveAs = (e) => {
-    startChildProcess("Notepad", "File Explorer", {
+    startChildProcess("Notepad", pid, "File Explorer", {
       customPath: "/C/users/admin/Documents",
       mode: "w",
       parentProcess: "Notepad",
@@ -40,11 +42,12 @@ const FileDropdownMenu = ({
       createFile,
       minWidth: "31rem",
       minHeight: "17rem",
+      ppid: pid,
     });
   };
 
   const openFileSelection = () => {
-    startChildProcess("Notepad", "File Explorer", {
+    startChildProcess("Notepad", pid, "File Explorer", {
       customPath: "/C/users/admin/Documents",
       mode: "r",
       parentProcess: "Notepad",
@@ -52,6 +55,7 @@ const FileDropdownMenu = ({
       openFile: openSelectedFile,
       minWidth: "31rem",
       minHeight: "17rem",
+      ppid: pid,
     });
   };
 

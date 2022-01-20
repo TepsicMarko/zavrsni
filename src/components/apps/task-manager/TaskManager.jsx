@@ -36,7 +36,7 @@ const TaskManager = ({ icon, pid }) => {
           <div className='open-processes'>
             {Object.keys(processes).map((process) => {
               const app = processes[process];
-              return app.running ? (
+              return (
                 <div
                   className='open-process'
                   onClick={selectProcess}
@@ -48,7 +48,7 @@ const TaskManager = ({ icon, pid }) => {
                   {app.icon}
                   {process}
                 </div>
-              ) : null;
+              );
             })}
           </div>
         </div>
