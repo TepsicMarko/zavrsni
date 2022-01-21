@@ -25,6 +25,7 @@ const FsoListItem = ({
   setExpandBranches,
   openFile,
   endProcess,
+  ppid,
 }) => {
   const {
     Name,
@@ -82,7 +83,7 @@ const FsoListItem = ({
   const handleDoubleClick = (e) => {
     if (openFile) {
       openFile(path, name);
-      return endProcess("File Explorer", "Notepad");
+      return endProcess("File Explorer", ppid, "Notepad");
     }
     if (type === "DIRECTORY") {
       setExpandBranches(true);

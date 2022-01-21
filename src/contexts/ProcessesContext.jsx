@@ -1,6 +1,5 @@
 import { useState, createContext, cloneElement } from "react";
-import { DialogsProvider } from "./DialogsContext";
-import appConfigurations from "../utils/constants/appConfigurations";
+import processConfigurations from "../utils/constants/processConfigurations";
 import { nanoid } from "nanoid";
 export const ProcessesContext = createContext();
 
@@ -27,11 +26,11 @@ export const ProcessesProvider = ({ children }) => {
       [name]: {
         ...processes[name],
         [pid]: {
-          ...appConfigurations[name],
+          ...processConfigurations[name],
           focusLevel,
           source: hasProps
-            ? cloneElement(appConfigurations[name].source, { ...props })
-            : appConfigurations[name].source,
+            ? cloneElement(processConfigurations[name].source, { ...props })
+            : processConfigurations[name].source,
         },
       },
     });
@@ -41,26 +40,27 @@ export const ProcessesProvider = ({ children }) => {
 
   const startChildProcess = (parent, ppid, child, props) => {
     // ppid => parent pid
+    console.log("Starting child process" + child);
+    // setTimeout(() => {}, 500);
     const hasProps = Object.keys(props).length;
-    const why = {
+    setProcesses({
       ...processes,
       [parent]: {
         ...processes[parent],
         [ppid]: {
           ...processes[parent][ppid],
           childProcess: {
-            ...appConfigurations[child],
+            ...processConfigurations[child],
             name: child,
             source: hasProps
-              ? cloneElement(appConfigurations[child].source, { ...props })
-              : appConfigurations[child].source,
+              ? cloneElement(processConfigurations[child].source, {
+                  ...props,
+                })
+              : processConfigurations[child].source,
           },
         },
       },
-    };
-
-    console.log(why);
-    setProcesses({ ...why });
+    });
   };
 
   const endProcess = (name, pid, parentProcess) => {
@@ -131,34 +131,31 @@ export const ProcessesProvider = ({ children }) => {
         focusProcess,
       }}
     >
-      <DialogsProvider>
-        {children}
-        {Object.keys(processes).flatMap((process) => {
-          return Object.keys(processes[process]).map((processInstance) => {
-            const appInstance = processes[process][processInstance];
+      {children}
+      {Object.keys(processes).flatMap((process) => {
+        return Object.keys(processes[process]).map((processInstance) => {
+          const appInstance = processes[process][processInstance];
 
-            return appInstance.childProcess ? (
-              <>
-                {cloneElement(appInstance.source, {
-                  key: processInstance,
-                  pid: processInstance,
-                })}
-                {Object.keys(appInstance.childProcess).length
-                  ? cloneElement(appInstance.childProcess.source, {
-                      key:
-                        processInstance + "-" + appInstance.childProcess.name,
-                    })
-                  : null}
-              </>
-            ) : (
-              cloneElement(appInstance.source, {
+          return appInstance.childProcess ? (
+            <>
+              {cloneElement(appInstance.source, {
                 key: processInstance,
                 pid: processInstance,
-              })
-            );
-          });
-        })}
-      </DialogsProvider>
+              })}
+              {Object.keys(appInstance.childProcess).length
+                ? cloneElement(appInstance.childProcess.source, {
+                    key: processInstance + "-" + appInstance.childProcess.name,
+                  })
+                : null}
+            </>
+          ) : (
+            cloneElement(appInstance.source, {
+              key: processInstance,
+              pid: processInstance,
+            })
+          );
+        });
+      })}
     </ProcessesContext.Provider>
   );
 };

@@ -5,10 +5,8 @@ import StatusBar from "../../system/window/status-bar/StatusBar";
 import NotepadNavbar from "./navbar/NotepadNavbar";
 import { useState, memo, useEffect, useContext, useRef } from "react";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
-import { DialogsContext } from "../../../contexts/DialogsContext";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import { nanoid } from "nanoid";
-import UnsavedChanges from "./dialogs/UnsavedChanges";
 import { path as Path } from "filer";
 
 const Notepad = ({ icon, path = "", pid }) => {
@@ -20,7 +18,6 @@ const Notepad = ({ icon, path = "", pid }) => {
   const [statusBarVisible, setStatusBarVisibility] = useState(true);
   const { readFileContent, createFSO, saveFile } =
     useContext(FileSystemContext);
-  const { openDialog, closeDialog } = useContext(DialogsContext);
   const { startChildProcess, endProcess } = useContext(ProcessesContext);
   const divRef = useRef(null);
 
@@ -56,6 +53,7 @@ const Notepad = ({ icon, path = "", pid }) => {
 
   const handleSave = (callback) => {
     if (!filePath) {
+      endProcess("Unsaved Changes Dialog", pid, "Notepad");
       startChildProcess("Notepad", pid, "File Explorer", {
         customPath: "/C/users/admin/Documents",
         mode: "w",
@@ -72,35 +70,32 @@ const Notepad = ({ icon, path = "", pid }) => {
         minHeight: "17rem",
         ppid: pid,
       });
-      closeDialog(dialogID);
     } else {
       saveFile(filePath, text.content);
-      closeDialog(dialogID);
-      callback && callback();
-      !callback && endProcess("Notepad");
+      endProcess("Unsaved Changes Dialog", pid, "Notepad");
+      callback ? callback() : endProcess("Notepad", pid);
     }
   };
 
   const handleDontSave = (callback) => {
-    closeDialog(dialogID);
-    callback ? callback() : endProcess("Notepad");
+    endProcess("Unsaved Changes Dialog", pid, "Notepad");
+    callback ? callback() : endProcess("Notepad", pid);
   };
 
   const handleCancel = () => {
-    closeDialog(dialogID);
+    endProcess("Unsaved Changes Dialog", pid, "Notepad");
   };
 
-  const openUnsavedChangesDialog = (customHandleSave) =>
-    openDialog(
-      dialogID,
-      <UnsavedChanges
-        icon={icon}
-        handleSave={() => handleSave(customHandleSave)}
-        handleDontSave={() => handleDontSave(customHandleSave)}
-        handleCancel={handleCancel}
-        filePath={filePath}
-      />
-    );
+  const openUnsavedChangesDialog = (callback) =>
+    startChildProcess("Notepad", pid, "Unsaved Changes Dialog", {
+      icon,
+      handleSave: () => handleSave(callback),
+      handleDontSave: () => handleDontSave(callback),
+      handleCancel,
+      filePath,
+      ppid: pid,
+      parentProcess: "Notepad",
+    });
 
   const isContentSame = (fileContent) => {
     if (fileContent === text.content) {

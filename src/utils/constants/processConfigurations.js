@@ -14,6 +14,8 @@ import moviesAndTv from "../../assets/movies-and-tv.png";
 import CommandPrompt from "../../components/apps/command-prompt/CommandPrompt";
 import cmd from "../../assets/cmd.png";
 
+import UnsavedChanges from "../../components/system/dialogs/UnsavedChanges";
+
 const appConfigurations = {
   "File Explorer": {
     source: <FileExplorer icon={<FcFolder />} />,
@@ -60,4 +62,10 @@ const appConfigurations = {
   },
 };
 
-export default appConfigurations;
+const dialogConfigurations = {
+  "Unsaved Changes Dialog": {
+    source: <UnsavedChanges />,
+  },
+};
+
+export default { ...appConfigurations, ...dialogConfigurations };

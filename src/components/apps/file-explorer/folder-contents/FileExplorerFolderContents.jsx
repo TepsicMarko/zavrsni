@@ -22,6 +22,7 @@ const FileExplorerFolderContents = ({
   setExpandBranches,
   openFile,
   endProcess,
+  ppid,
 }) => {
   const {
     watch,
@@ -181,6 +182,7 @@ const FileExplorerFolderContents = ({
                 setExpandBranches={setExpandBranches}
                 openFile={openFile}
                 endProcess={endProcess}
+                ppid={ppid}
               />
             );
           }

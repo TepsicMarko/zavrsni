@@ -92,6 +92,7 @@ const FileExplorer = ({
               setExpandBranches={setExpandBranches}
               openFile={openFile}
               endProcess={endProcess}
+              ppid={ppid}
             />
           </div>
         </WindowContent>

@@ -9,7 +9,7 @@ import remToPx from "../../../utils/helpers/remToPx";
 import moment from "moment";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import useToggle from "../../../hooks/useToggle";
-import appConfigurations from "../../../utils/constants/appConfigurations";
+import processConfigurations from "../../../utils/constants/processConfigurations";
 
 const Taskbar = ({
   width,
@@ -118,9 +118,9 @@ const Taskbar = ({
   const renderTaskbarIcons = () => {
     const taskbarIcons = [];
 
-    for (let process in appConfigurations) {
-      const app = appConfigurations[process];
-      taskbarIcons.push({ ...app, name: process });
+    for (let process in processConfigurations) {
+      const app = processConfigurations[process];
+      app.pinnedToTaskbar && taskbarIcons.push({ ...app, name: process });
     }
 
     return taskbarIcons.map((app) => {

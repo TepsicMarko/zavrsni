@@ -1,7 +1,7 @@
 import "./UnsavedChanges.css";
-import Window from "../../../system/window/Window";
-import WindowContent from "../../../system/window/window-content/WindowContent";
-import StatusBar from "../../../system/window/status-bar/StatusBar";
+import Window from "../window/Window";
+import WindowContent from "../window/window-content/WindowContent";
+import StatusBar from "../window/status-bar/StatusBar";
 
 const UnsavedChanges = ({
   icon,
@@ -9,10 +9,14 @@ const UnsavedChanges = ({
   handleDontSave,
   handleCancel,
   filePath,
+  ppid,
+  parentProcess,
 }) => {
   return (
     <Window
-      process='Notepad-dialog'
+      process='Unsaved Changes Dialog'
+      parentProcess={parentProcess}
+      pid={ppid}
       icon={icon}
       minWindowWidth='20rem'
       minWindowHeight='9rem'
@@ -20,6 +24,7 @@ const UnsavedChanges = ({
       onClose={handleCancel}
       //in this case parent process isn't the right prop name for the job, but i think that it would be redundant to have two differently named props which do the same thing
       resizable={false}
+      limitedWindowControls
     >
       <WindowContent backgroundColor='white' flex flexDirection='column'>
         <div className='unsaved-changes-message'>{`Do you want to save chnages to ${
