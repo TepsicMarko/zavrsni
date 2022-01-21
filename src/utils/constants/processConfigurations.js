@@ -68,4 +68,6 @@ const dialogConfigurations = {
   },
 };
 
+export { appConfigurations };
+
 export default { ...appConfigurations, ...dialogConfigurations };

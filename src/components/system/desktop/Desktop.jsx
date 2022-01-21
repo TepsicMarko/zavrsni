@@ -1,6 +1,6 @@
 import "./Desktop.css";
 import { useContext, useState } from "react";
-import windows from "../../../assets/windows.jpg";
+import windowsDefault from "../../../assets/windowsDefault.jpg";
 import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
@@ -19,7 +19,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
   const [handleExternalFileDrop] = useExternalFileDrop(createFSO, createBlob);
   const folderName = "Desktop";
-  const wallpaper = windows;
+  const wallpaper = windowsDefault;
   const { renderOptions } = useContext(RightClickMenuContext);
   const { startProcess } = useContext(ProcessesContext);
 

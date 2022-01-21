@@ -2,9 +2,10 @@
 .taskbar-vertical {
   position: absolute;
   bottom: 0;
-  background-color: rgba(0, 204, 255, 0.25);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: rgba(0, 0, 0, 0.65);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: flex;
   min-height: 2.75rem;
   min-width: 4.25rem;
@@ -17,7 +18,7 @@
 
 .start-and-search,
 .start-and-search-vertical {
-  flex-basis: 20%;
+  flex-basis: 22rem;
   display: flex;
 }
 

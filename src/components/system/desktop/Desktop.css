@@ -6,4 +6,5 @@
   grid-template-rows: repeat(10, 1fr); */
   grid-column-gap: 1px;
   grid-row-gap: 0.5rem;
+  background-size: cover;
 }

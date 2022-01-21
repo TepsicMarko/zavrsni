@@ -10,6 +10,7 @@ import moment from "moment";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import useToggle from "../../../hooks/useToggle";
 import processConfigurations from "../../../utils/constants/processConfigurations";
+import StartMenu from "./start-menu/StartMenu";
 
 const Taskbar = ({
   width,
@@ -25,6 +26,7 @@ const Taskbar = ({
   const [isSearchFocused, toggleFocused] = useToggle();
   const [time, setTime] = useState(moment().format("h:mm a"));
   const [isResizing, toggleResizing] = useToggle();
+  const [isStartMenuVisible, setStartMenuVisibility] = useState(false);
   const verticalWidthRef = useRef(0);
   const horizontalHeightRef = useRef(0);
   const { processes, startProcess, focusProcess } =
@@ -142,6 +144,10 @@ const Taskbar = ({
     });
   };
 
+  const toggleStartMenu = () => {
+    setStartMenuVisibility(!isStartMenuVisible);
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       console.log("updating time");
@@ -185,7 +191,7 @@ const Taskbar = ({
         onDragEnd={handleResizeEnd}
       ></div>
       <div className={isVerticalClassName("start-and-search")}>
-        <div className='flex-center start'>
+        <div className='flex-center start' onClick={toggleStartMenu}>
           <BsWindows color='white' size='1.15rem' />
         </div>
         <div className='flex-center windows-search'>
@@ -229,6 +235,8 @@ const Taskbar = ({
           <MdMessage size='1.35rem' />
         </div>
       </div>
+
+      {isStartMenuVisible && <StartMenu />}
     </div>
   );
 };
