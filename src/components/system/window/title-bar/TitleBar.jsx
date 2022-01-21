@@ -9,7 +9,7 @@ import { memo } from "react";
 
 const TitleBar = ({
   icon,
-  name,
+  title,
   backgroundColor,
   color,
   maximiseWindow,
@@ -18,7 +18,7 @@ const TitleBar = ({
   handleDragStart,
   handleDrag,
   handleDragEnd,
-  parentProcess,
+  limitedWindowControls,
   overlay,
 }) => {
   return (
@@ -35,9 +35,9 @@ const TitleBar = ({
       onDragEnd={handleDragEnd}
     >
       <div className='flex-center aplication-icon'>{icon}</div>
-      <div className='aplication-name'>{name}</div>
-      <div className='window-controls' style={ {backgroundColor}}>
-        {!parentProcess && (
+      <div className='aplication-name'>{title}</div>
+      <div className='window-controls' style={{ backgroundColor }}>
+        {!limitedWindowControls && (
           <>
             <div className='flex-center' onClick={minimiseWindow}>
               <VscChromeMinimize color={color} size='0.85rem' />
@@ -50,7 +50,7 @@ const TitleBar = ({
         <div
           className='flex-center'
           style={{
-            maxWidth: parentProcess ? "41px" : "",
+            maxWidth: limitedWindowControls ? "41px" : "",
           }}
           onClick={closeWindow}
         >

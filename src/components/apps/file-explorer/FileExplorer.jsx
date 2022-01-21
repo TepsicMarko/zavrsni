@@ -44,7 +44,7 @@ const FileExplorer = ({
   return (
     <WindowDimensionsProvider>
       <Window
-        app='File Explorer'
+        process='File Explorer'
         pid={ppid || pid}
         icon={icon}
         minWindowWidth={minWidth || "14rem"}

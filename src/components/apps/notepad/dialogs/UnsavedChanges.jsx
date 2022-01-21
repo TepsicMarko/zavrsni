@@ -12,14 +12,12 @@ const UnsavedChanges = ({
 }) => {
   return (
     <Window
-      app='Notepad-dialog'
-      fileName='Notepad'
+      process='Notepad-dialog'
       icon={icon}
       minWindowWidth='20rem'
       minWindowHeight='9rem'
-      titleBar={{ color: "black", backgroundColor: "white" }}
+      titleBar={{ color: "black", backgroundColor: "white", title: "Notepad" }}
       onClose={handleCancel}
-      parentProcess={true}
       //in this case parent process isn't the right prop name for the job, but i think that it would be redundant to have two differently named props which do the same thing
       resizable={false}
     >

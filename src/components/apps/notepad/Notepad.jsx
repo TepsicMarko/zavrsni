@@ -132,18 +132,18 @@ const Notepad = ({ icon, path = "", pid }) => {
 
   return (
     <Window
-      key={pid}
-      app='Notepad'
+      process='Notepad'
       pid={pid}
-      fileName={
-        filePath
-          ? Path.basename(filePath) + " - Notepad"
-          : "*Untilted - Notepad"
-      }
       icon={icon}
       minWindowWidth='9rem'
       minWindowHeight='8.2rem'
-      titleBar={{ color: "black", backgroundColor: "white" }}
+      titleBar={{
+        color: "black",
+        backgroundColor: "white",
+        title: filePath
+          ? Path.basename(filePath) + " - Notepad"
+          : "*Untilted - Notepad",
+      }}
       onClose={onClose}
     >
       <WindowContent

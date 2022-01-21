@@ -248,7 +248,7 @@ const CommandPrompt = ({ icon, pid }) => {
 
   return (
     <Window
-      app='Command Prompt'
+      process='Command Prompt'
       pid={pid}
       icon={icon}
       minWindowWidth='15rem'

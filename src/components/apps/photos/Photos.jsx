@@ -92,7 +92,7 @@ const Photos = ({ path, pid }) => {
 
   return (
     <Window
-      app='Photos'
+      process='Photos'
       pid={pid}
       minWindowWidth='31rem'
       minWindowHeight='20rem'

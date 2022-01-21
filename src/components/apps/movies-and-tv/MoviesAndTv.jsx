@@ -34,9 +34,9 @@ const MoviesAndTv = ({ path, pid }) => {
 
   return (
     <Window
-      app='Movies And TV'
+      process='Movies And TV'
       pid={pid}
-      displayAppName={false}
+      displayTitle={false}
       minWindowWidth='9rem'
       minWindowHeight='10rem'
       titleBar={{
@@ -44,9 +44,8 @@ const MoviesAndTv = ({ path, pid }) => {
         backgroundColor: !isMiniplayer ? "black" : "transparent",
         overlay: true,
       }}
-      parentProcess={isMiniplayer ? "Movies And TV" : ""}
-      zIndex={isMiniplayer ? 1000 : ""}
-      onClose={(endProcess) => endProcess("Movies And TV", pid)}
+      limitedWindowControls={isMiniplayer}
+      zIndex={isMiniplayer ? 1000 : null}
     >
       <WindowContent backgroundColor='black' flex flexDirection='column'>
         <div

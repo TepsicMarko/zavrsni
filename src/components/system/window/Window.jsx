@@ -13,9 +13,10 @@ import TitleBar from "./title-bar/TitleBar";
 
 const Window = ({
   children,
-  app,
+  process,
+  dialog,
   pid,
-  displayAppName = true,
+  displayTitle = true,
   icon,
   minWindowWidth,
   minWindowHeight,
@@ -23,10 +24,10 @@ const Window = ({
   parentProcess,
   onClose,
   resizable = true,
-  fileName,
   enableIframe,
   disableIframe,
   zIndex,
+  limitedWindowControls = false,
 }) => {
   const [minWidth] = useState(remToPx(minWindowWidth));
   const [minHeight] = useState(remToPx(minWindowHeight));
@@ -51,7 +52,7 @@ const Window = ({
     setPosition({ top: clientY - offset.y, left: clientX - offset.x });
   };
 
-  const setFocus = () => focusProcess(app, pid, parentProcess);
+  const setFocus = () => focusProcess(process, pid, parentProcess);
 
   const handleDragStart = (e) => {
     resizable && setFocus();
@@ -157,17 +158,17 @@ const Window = ({
       e.stopPropagation();
       if (onClose) {
         onClose(endProcess);
-      } else endProcess(app, pid, parentProcess);
+      } else endProcess(process, pid, parentProcess);
     },
-    [app, endProcess, parentProcess, onClose]
+    [process, endProcess, parentProcess, onClose]
   );
 
   const minimiseWindow = useCallback(
     (e) => {
       e.stopPropagation();
-      minimiseToTaskbar(app, pid);
+      minimiseToTaskbar(process, pid);
     },
-    [app, minimiseToTaskbar]
+    [process, minimiseToTaskbar]
   );
 
   const maximiseWindow = useCallback(() => {
@@ -193,7 +194,7 @@ const Window = ({
   useEffect(() => {
     const saveAppData = () => {
       sessionStorage.setItem(
-        app,
+        dialog || process,
         JSON.stringify({
           ...appDataRef.current,
           previousDimensionsAndPosition:
@@ -203,7 +204,7 @@ const Window = ({
     };
 
     const loadAppData = () => {
-      const appData = sessionStorage.getItem(app);
+      const appData = sessionStorage.getItem(dialog || process);
       if (appData) {
         const { width, height, position, previousDimensionsAndPosition } =
           JSON.parse(appData);
@@ -239,11 +240,11 @@ const Window = ({
         minWindowHeight,
         zIndex: zIndex
           ? zIndex
-          : processes[parentProcess || app][pid] &&
-            processes[parentProcess || app][pid].focusLevel +
+          : processes[parentProcess || process][pid] &&
+            processes[parentProcess || process][pid].focusLevel +
               (parentProcess ? 1 : 0),
-        visibility: processes[parentProcess || app][pid]
-          ? !processes[parentProcess || app][pid].minimised
+        visibility: processes[parentProcess || process][pid]
+          ? !processes[parentProcess || process][pid].minimised
             ? "visible"
             : "hidden"
           : "",
@@ -278,9 +279,9 @@ const Window = ({
         handleDragStart={handleDragStart}
         handleDrag={handleDrag}
         handleDragEnd={handleDragEnd}
-        name={displayAppName ? fileName || app : ""}
+        title={displayTitle ? titleBar.title || process : ""}
         icon={icon}
-        parentProcess={parentProcess}
+        limitedWindowControls={limitedWindowControls}
         overlay={titleBar.overlay}
       />
       {children}

@@ -49,7 +49,7 @@ const Chrome = ({ icon, pid }) => {
 
   return (
     <Window
-      app='Chrome'
+      process='Chrome'
       pid={pid}
       icon={icon}
       minWindowWidth='15rem'
