@@ -1,5 +1,5 @@
 import "./StartMenu.css";
-import { useState, cloneElement } from "react";
+import { useState, useContext } from "react";
 import {
   AiOutlineUser,
   AiOutlineFile,
@@ -8,13 +8,28 @@ import {
 } from "react-icons/ai";
 import { MdOutlineSettings } from "react-icons/md";
 import { VscMenu } from "react-icons/vsc";
-import { appConfigurations } from "../../../../utils/constants/processConfigurations";
+import AppsAndFeatures from "./app-and-features/AppsAndFeatures";
+import { ProcessesContext } from "../../../../contexts/ProcessesContext";
 
-const StartMenu = () => {
+const StartMenu = ({ colapseStartMenu }) => {
   const [isSidebarVisible, setSidebarVisibility] = useState(false);
+  const { startProcess } = useContext(ProcessesContext);
 
   const expandSidebar = () => setSidebarVisibility(true);
   const colapseSidebar = () => setSidebarVisibility(false);
+
+  const openDocuments = () => {
+    colapseStartMenu();
+    startProcess("File Explorer", { customPath: "/C/users/admin/Documents" });
+  };
+  const openPictures = () => {
+    colapseStartMenu();
+    startProcess("File Explorer", { customPath: "/C/users/admin/Pictures" });
+  };
+  const shutDown = () => {
+    colapseStartMenu();
+    window.location.reload();
+  };
 
   return (
     <div className='start-menu'>
@@ -22,14 +37,16 @@ const StartMenu = () => {
         onMouseEnter={expandSidebar}
         onMouseLeave={colapseSidebar}
         className={`start-menu-sidebar ${
-          isSidebarVisible ? "sidebar-expanded" : ""
+          isSidebarVisible ? "width-animation" : ""
         }`}
       >
-        <div className='sidebar-list-item align-top'>
+        <div
+          className='sidebar-list-item align-top'
+          onMouseOver={(e) => e.stopPropagation()}
+          onClick={isSidebarVisible ? colapseSidebar : expandSidebar}
+        >
           <VscMenu size='1.15rem' />
-          {isSidebarVisible && (
-            <div className='sidebar-list-item-content'>Start</div>
-          )}
+          <div className='sidebar-list-item-content'>Start</div>
         </div>
 
         <div className='sidebar-list-item'>
@@ -38,53 +55,63 @@ const StartMenu = () => {
               <AiOutlineUser size='0.75rem' />
             </div>
           </div>
-          {isSidebarVisible && (
-            <div className='sidebar-list-item-content'>Marko Tepšić </div>
-          )}
+          <div
+            className={`sidebar-list-item-content ${
+              isSidebarVisible ? "visibility-animation" : ""
+            }`}
+          >
+            Marko Tepšić
+          </div>
         </div>
 
-        <div className='sidebar-list-item'>
+        <div className='sidebar-list-item' onClick={openDocuments}>
           <AiOutlineFile size='1.25rem' />
-          {isSidebarVisible && (
-            <div className='sidebar-list-item-content'>Documents</div>
-          )}
+          <div
+            className={`sidebar-list-item-content ${
+              isSidebarVisible ? "visibility-animation" : ""
+            }`}
+          >
+            Documents
+          </div>
         </div>
 
-        <div className='sidebar-list-item'>
+        <div className='sidebar-list-item' onClick={openPictures}>
           <AiOutlinePicture size='1.25rem' />
-          {isSidebarVisible && (
-            <div className='sidebar-list-item-content'>Pictures</div>
-          )}
+          <div
+            className={`sidebar-list-item-content ${
+              isSidebarVisible ? "visibility-animation" : ""
+            }`}
+          >
+            Pictures
+          </div>
         </div>
 
         <div className='sidebar-list-item'>
           <MdOutlineSettings size='1.25rem' />
-          {isSidebarVisible && (
-            <div className='sidebar-list-item-content'>Settings</div>
-          )}
+          <div
+            className={`sidebar-list-item-content ${
+              isSidebarVisible ? "visibility-animation" : ""
+            }`}
+          >
+            Settings
+          </div>
         </div>
 
-        <div className='sidebar-list-item'>
+        <div className='sidebar-list-item' onClick={shutDown}>
           <AiOutlinePoweroff size='1.25rem' />
-          {isSidebarVisible && (
-            <div className='sidebar-list-item-content'>Power</div>
-          )}
+          <div
+            className={`sidebar-list-item-content ${
+              isSidebarVisible ? "visibility-animation" : ""
+            }`}
+          >
+            Power
+          </div>
         </div>
       </div>
-      <div className='apps-and-features'>
-        {Object.keys(appConfigurations).map((app) => (
-          <div className='start-menu-app'>
-            <div className='app-icon'>
-              {cloneElement(appConfigurations[app].icon, {
-                width: "25px",
-                height: "25px",
-                size: "25px",
-              })}
-            </div>
-            <div className='app-name'>{app}</div>
-          </div>
-        ))}
-      </div>
+      <AppsAndFeatures
+        startProcess={startProcess}
+        colapseStartMenu={colapseStartMenu}
+      />
     </div>
   );
 };

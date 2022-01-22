@@ -1,0 +1,45 @@
+.apps-and-features {
+  height: 100%;
+  margin-left: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  padding-top: 1rem;
+}
+
+.apps-and-features-letter {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.apps-and-features-letter > div:first-child {
+  color: white;
+  font-weight: 100;
+  margin-left: 1.5rem;
+  height: 2rem;
+  font-size: 0.85rem;
+}
+
+.start-menu-app {
+  flex-basis: 100%;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  margin-left: 0.25rem;
+}
+
+.start-menu-app:hover {
+  background-color: rgba(0, 0, 0, 0.35);
+}
+
+.app-icon {
+  margin-left: 1rem;
+}
+
+.app-name {
+  color: white;
+  font-weight: 100;
+  padding-left: 0.5rem;
+  font-size: 0.8rem;
+}

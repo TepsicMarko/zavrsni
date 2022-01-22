@@ -2,7 +2,7 @@
   position: absolute;
   top: -30rem;
   left: 0;
-  width: 27.5rem;
+  width: 20rem;
   height: 30rem;
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(20px);
@@ -17,10 +17,12 @@
   flex-wrap: wrap;
   align-content: flex-end;
   z-index: 2;
+  transition: width 0.1s ease-in-out, background 0.1s ease-in-out;
 }
 
-.sidebar-expanded {
-  width: 15em;
+.width-animation {
+  transition: width 0.1s ease-in-out 0.5s, background 0.1s ease-in-out 0.5s;
+  width: 15rem;
   background: rgba(0, 0, 0, 0.65);
 }
 
@@ -36,20 +38,32 @@
 .sidebar-list-item {
   color: white;
   display: flex;
-  justify-content: center;
   flex-basis: 100%;
   padding: 0.75rem 0;
 }
 
+.sidebar-list-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
 .align-top {
   position: absolute;
-  top: 0;
+  top: 0.25rem;
 }
 
 .sidebar-list-item-content {
+  max-width: 0px;
+  white-space: nowrap;
   flex-grow: 1;
   font-size: 0.85rem;
   font-weight: 100;
+  visibility: hidden;
+  transition: visibility 0s ease-in-out;
+}
+
+.visibility-animation {
+  visibility: visible;
+  transition: visibility 0.1s ease-in-out 0.5s;
 }
 
 .user-icon > div {
@@ -58,29 +72,4 @@
 
   background-color: gray;
   border-radius: 50%;
-}
-
-.apps-and-features {
-  height: 100%;
-  margin-left: 3rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-}
-
-.start-menu-app {
-  flex-basis: 100%;
-  height: 3rem;
-  display: flex;
-  align-items: center;
-}
-
-.app-icon {
-  margin-left: 1rem;
-}
-
-.app-name {
-  color: white;
-  font-weight: 100;
-  padding-left: 0.5rem;
 }

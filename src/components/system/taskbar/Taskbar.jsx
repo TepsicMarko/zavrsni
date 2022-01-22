@@ -38,6 +38,8 @@ const Taskbar = ({
     }`;
   };
 
+  const colapseStartMenu = () => setStartMenuVisibility(false);
+
   const determineRotaion = () => {
     switch (Object.keys(taskbarPosition)[0]) {
       case "top":
@@ -236,7 +238,7 @@ const Taskbar = ({
         </div>
       </div>
 
-      {isStartMenuVisible && <StartMenu />}
+      {isStartMenuVisible && <StartMenu colapseStartMenu={colapseStartMenu} />}
     </div>
   );
 };
