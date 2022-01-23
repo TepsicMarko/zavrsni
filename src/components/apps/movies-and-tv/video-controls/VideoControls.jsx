@@ -12,6 +12,7 @@ import { CgMiniPlayer } from "react-icons/cg";
 import { AiOutlineExpandAlt } from "react-icons/ai";
 import Slider from "rc-slider";
 import useVideoPlayer from "../../../../hooks/useVideoPlayer";
+import useClickOutside from "../../../../hooks/useClickOutside";
 
 const VideoControls = ({
   src,
@@ -22,9 +23,11 @@ const VideoControls = ({
   videoContorlsVisibility,
   setVideoContorlsVisibility,
 }) => {
-  const volumeSettingsRef = useRef(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [volumeSliderVisibility, setVolumeSiderVisibility] = useState(false);
+  const volumeSettingsRef = useClickOutside(() =>
+    setVolumeSiderVisibility(false)
+  );
   const {
     setVideo,
     isPlaying,
@@ -94,23 +97,6 @@ const VideoControls = ({
   useEffect(() => {
     videoRef.current.ontimeupdate = (e) => setCurrentTime(e.target.currentTime);
     videoRef.current.ondurationchange = (e) => setDuration(e.target.duration);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (
-        volumeSettingsRef.current &&
-        volumeSettingsRef.current.contains(e.target)
-      ) {
-        return;
-      }
-      setVolumeSiderVisibility(false);
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
   }, []);
 
   useEffect(() => {

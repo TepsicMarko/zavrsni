@@ -4,6 +4,7 @@ import FileDropdownMenu from "./navbar-dropdown-menus/FileDropdownMenu";
 import EditDropdownMenu from "./navbar-dropdown-menus/EditDropdownMenu";
 import FormatDropdownMenu from "./navbar-dropdown-menus/FormatDropdownMenu";
 import ViewDropdownMenu from "./navbar-dropdown-menus/ViewDropdownMenu";
+import useClickOutside from "../../../../hooks/useClickOutside";
 
 const NotepadNavbar = ({
   textContent,
@@ -22,7 +23,10 @@ const NotepadNavbar = ({
 }) => {
   const [activeTab, setActiveTab] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const navRef = useRef(null);
+  const navRef = useClickOutside(() => {
+    setActiveTab("");
+    setIsDropdownOpen(false);
+  });
 
   const changeActiveTab = (e) => {
     setActiveTab(e.target.textContent);
@@ -39,15 +43,6 @@ const NotepadNavbar = ({
     e.stopPropagation();
     isDropdownOpen && setActiveTab(e.target.childNodes[0].textContent);
   };
-  useEffect(() => {
-    const eventHandler = (e) => {
-      setActiveTab("");
-      setIsDropdownOpen(false);
-    };
-
-    document.addEventListener("mousedown", eventHandler);
-    return () => document.removeEventListener("mousedown", eventHandler);
-  }, []);
 
   return (
     <div className='notepad-navbar'>
