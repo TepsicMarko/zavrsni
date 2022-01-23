@@ -1,18 +1,28 @@
 .start-menu {
   position: absolute;
-  top: -30rem;
+  top: 0rem;
   left: 0;
   width: 20rem;
-  height: 30rem;
+  height: 0px;
   background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  transition: height 0.2s ease-in, top 0.2s ease-in, visibility 0.05s linear;
+  visibility: hidden;
+}
+
+.height-animation {
+  visibility: visible;
+  top: -30rem;
+  height: 30rem;
+  transition: height 0.2s ease-out, top 0.2s ease-out,
+    visibility 0.5s linear 0.15s;
 }
 
 .start-menu-sidebar {
   position: absolute;
   width: 3rem;
-  height: 100%;
+  height: 30rem;
   display: flex;
   flex-wrap: wrap;
   align-content: flex-end;

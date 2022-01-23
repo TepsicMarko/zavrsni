@@ -193,7 +193,11 @@ const Taskbar = ({
         onDragEnd={handleResizeEnd}
       ></div>
       <div className={isVerticalClassName("start-and-search")}>
-        <div className='flex-center start' onClick={toggleStartMenu}>
+        <div
+          className='flex-center start'
+          onClick={toggleStartMenu}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
           <BsWindows color='white' size='1.15rem' />
         </div>
         <div className='flex-center windows-search'>
@@ -238,7 +242,10 @@ const Taskbar = ({
         </div>
       </div>
 
-      {isStartMenuVisible && <StartMenu colapseStartMenu={colapseStartMenu} />}
+      <StartMenu
+        isStartMenuVisible={isStartMenuVisible}
+        colapseStartMenu={colapseStartMenu}
+      />
     </div>
   );
 };
