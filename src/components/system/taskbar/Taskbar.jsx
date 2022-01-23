@@ -9,8 +9,10 @@ import remToPx from "../../../utils/helpers/remToPx";
 import moment from "moment";
 import { ProcessesContext } from "../../../contexts/ProcessesContext";
 import useToggle from "../../../hooks/useToggle";
+import useInput from "../../../hooks/useInput";
 import processConfigurations from "../../../utils/constants/processConfigurations";
 import StartMenu from "./start-menu/StartMenu";
+import WindowsSearch from "../windows-search/WindowsSearch";
 
 const Taskbar = ({
   width,
@@ -27,6 +29,8 @@ const Taskbar = ({
   const [time, setTime] = useState(moment().format("h:mm a"));
   const [isResizing, toggleResizing] = useToggle();
   const [isStartMenuVisible, setStartMenuVisibility] = useState(false);
+  const [isWindowsSearchOpen, setIsWindowsSearchOpen] = useState(false);
+  const [searchVal, handleSearchChange] = useInput();
   const verticalWidthRef = useRef(0);
   const horizontalHeightRef = useRef(0);
   const { processes, startProcess, focusProcess } =
@@ -39,6 +43,8 @@ const Taskbar = ({
   };
 
   const colapseStartMenu = () => setStartMenuVisibility(false);
+  const closeWindowsSearch = () => setIsWindowsSearchOpen(false);
+  const openWindowsSearch = () => setIsWindowsSearchOpen(true);
 
   const determineRotaion = () => {
     switch (Object.keys(taskbarPosition)[0]) {
@@ -200,20 +206,29 @@ const Taskbar = ({
         >
           <BsWindows color='white' size='1.15rem' />
         </div>
-        <div className='flex-center windows-search'>
+        <div className='flex-center windows-search-bar'>
           <VscSearch
             className={isVerticalClassName("search-icon")}
             color={isSearchFocused ? "black" : "white"}
           />
           {taskbarOrientation !== "vertical" && (
             <input
+              value={searchVal}
+              onChange={handleSearchChange}
               onFocus={toggleFocused}
               onBlur={toggleFocused}
               type='text'
               placeholder='Type here to search'
               className='search-input'
+              onFocus={openWindowsSearch}
             />
           )}
+          <WindowsSearch
+            serachFor={searchVal}
+            isWindowsSearchOpen={isWindowsSearchOpen}
+            closeWindowsSearch={closeWindowsSearch}
+            startProcess={startProcess}
+          />
         </div>
       </div>
       <div className='app-shortcuts'>{renderTaskbarIcons()}</div>

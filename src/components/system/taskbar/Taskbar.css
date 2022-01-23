@@ -26,7 +26,7 @@
   flex-basis: 3rem;
 }
 
-.windows-search {
+.windows-search-bar {
   flex-grow: 1;
   position: relative;
 }

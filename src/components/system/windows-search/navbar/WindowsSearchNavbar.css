@@ -1,0 +1,33 @@
+.windows-search-navbar {
+  flex-basis: 3rem;
+  display: flex;
+  align-items: center;
+  background-color: #1f1f1f;
+  padding-left: 1rem;
+}
+
+.windows-search-navbar > svg {
+  position: absolute;
+  right: 1rem;
+}
+
+.windows-search-navbar-tab {
+  flex-basis: 3rem;
+  height: 100%;
+  position: relative;
+}
+
+.nav-tab-name {
+  color: white;
+  padding: 0 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 100;
+}
+
+.active-tab-indicator {
+  position: absolute;
+  bottom: 0px;
+  background-color: #4c4a48;
+  width: 90%;
+  height: 0.2rem;
+}
