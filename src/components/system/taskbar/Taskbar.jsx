@@ -25,7 +25,7 @@ const Taskbar = ({
   taskbarOrientation,
   setTaskbarDimensions,
 }) => {
-  const [isSearchFocused, toggleFocused] = useToggle();
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [time, setTime] = useState(moment().format("h:mm a"));
   const [isResizing, toggleResizing] = useToggle();
   const [isStartMenuVisible, setStartMenuVisibility] = useState(false);
@@ -44,7 +44,10 @@ const Taskbar = ({
 
   const colapseStartMenu = () => setStartMenuVisibility(false);
   const closeWindowsSearch = () => setIsWindowsSearchOpen(false);
-  const openWindowsSearch = () => setIsWindowsSearchOpen(true);
+  const openWindowsSearch = () => {
+    setIsSearchFocused(true);
+    setIsWindowsSearchOpen(true);
+  };
 
   const determineRotaion = () => {
     switch (Object.keys(taskbarPosition)[0]) {
@@ -215,8 +218,7 @@ const Taskbar = ({
             <input
               value={searchVal}
               onChange={handleSearchChange}
-              onFocus={toggleFocused}
-              onBlur={toggleFocused}
+              onBlur={() => setIsSearchFocused(false)}
               type='text'
               placeholder='Type here to search'
               className='search-input'
@@ -224,7 +226,7 @@ const Taskbar = ({
             />
           )}
           <WindowsSearch
-            serachFor={searchVal}
+            searchFor={searchVal}
             isWindowsSearchOpen={isWindowsSearchOpen}
             closeWindowsSearch={closeWindowsSearch}
             startProcess={startProcess}

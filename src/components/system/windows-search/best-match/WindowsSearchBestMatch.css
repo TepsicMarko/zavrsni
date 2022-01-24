@@ -1,0 +1,13 @@
+.best-match-container {
+  flex-grow: 1;
+  width: 19rem;
+  display: flex;
+}
+
+.best-match-container > strong {
+  color: white;
+  font-weight: 500;
+  margin: 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}

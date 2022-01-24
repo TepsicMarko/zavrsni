@@ -1,12 +1,10 @@
 import "./WindowsSearch.css";
-import { useState, cloneElement } from "react";
-import WindowsSearchNavbar from "./navbar/WindowsSearchNavbar";
-import { appConfigurations } from "../../../utils/constants/processConfigurations";
-import { TiWeatherPartlySunny } from "react-icons/ti";
-import { IoNewspaperOutline } from "react-icons/io5";
-import { BsClock } from "react-icons/bs";
-import { AiOutlineInfoCircle } from "react-icons/ai";
+import { useState } from "react";
 import useClickOutside from "../../../hooks/useClickOutside";
+import WindowsSearchNavbar from "./navbar/WindowsSearchNavbar";
+import QuickSearch from "./quick-search/QuickSearch";
+import WindowsSearchBestMatch from "./best-match/WindowsSearchBestMatch";
+import AppsAndFilesSearchResult from "./results/AppsAndFilesSearchResult";
 
 const WindowsSearch = ({
   searchFor,
@@ -15,12 +13,8 @@ const WindowsSearch = ({
   startProcess,
 }) => {
   const [searchIn, setSearchIn] = useState("All");
+  const [bestMatch, setBestMatch] = useState("");
   const windowsSearchRef = useClickOutside(closeWindowsSearch);
-
-  const openApp = (app) => {
-    closeWindowsSearch();
-    startProcess(app);
-  };
 
   return (
     <div
@@ -32,50 +26,28 @@ const WindowsSearch = ({
       }`}
     >
       {isWindowsSearchOpen && (
+        <WindowsSearchNavbar
+          searchIn={searchIn}
+          setSearchIn={setSearchIn}
+          isWindowsSearchOpen={isWindowsSearchOpen}
+          closeWindowsSearch={closeWindowsSearch}
+        />
+      )}
+
+      {searchFor ? (
         <>
-          <WindowsSearchNavbar
-            searchIn={searchIn}
-            setSearchIn={setSearchIn}
-            isWindowsSearchOpen={isWindowsSearchOpen}
-            closeWindowsSearch={closeWindowsSearch}
-          />
-          <div className='top-apps'>
-            <strong>Top apps</strong>
-            {[
-              "Command Prompt",
-              "File Explorer",
-              "Notepad",
-              "Movies And TV",
-            ].map((app) => (
-              <div className='flex-center top-app' onClick={() => openApp(app)}>
-                <div className='flex-center top-app-icon'>
-                  {cloneElement(appConfigurations[app].icon, {
-                    width: "30px",
-                    height: "30px",
-                    size: "30px",
-                  })}
-                </div>
-                <div className='top-app-name'>{app}</div>
-              </div>
-            ))}
-          </div>
-          <div className='quick-searches'>
-            <strong>Quick searches</strong>
-            {[
-              { icon: <TiWeatherPartlySunny />, topic: "Weather" },
-              { icon: <IoNewspaperOutline />, topic: "Top News" },
-              { icon: <BsClock />, topic: "Today in history" },
-              { icon: <AiOutlineInfoCircle />, topic: "Coronavirus trends" },
-            ].map((quickSearch, i) => (
-              <div className='quick-search'>
-                <div className='flex-center quick-search-icon'>
-                  {cloneElement(quickSearch.icon, { size: "1.75rem" })}
-                </div>
-                <div className='quick-search-topic'>{quickSearch.topic}</div>
-              </div>
-            ))}
-          </div>
+          <WindowsSearchBestMatch bestMatch={bestMatch} searchIn={searchIn} />
+          {(searchIn === "Apps" || searchIn === "Files") && (
+            <AppsAndFilesSearchResult />
+          )}
         </>
+      ) : (
+        <QuickSearch
+          isWindowsSearchOpen={isWindowsSearchOpen}
+          closeWindowsSearch={closeWindowsSearch}
+          startProcess={startProcess}
+          searchIn={searchIn}
+        />
       )}
     </div>
   );
