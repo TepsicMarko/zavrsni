@@ -58,7 +58,7 @@ const FileExplorerNavigationBar = ({
 
   const startSearch = (e) => {
     if (e.key === "Enter" || e.type === "click") {
-      findFSO(path, search, setSearchResults);
+      findFSO(path, true, search, setSearchResults);
     }
   };
 

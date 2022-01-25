@@ -3,8 +3,7 @@ import FileExplorer from "../../components/apps/file-explorer/FileExplorer";
 import Notepad from "../../components/apps/notepad/Notepad";
 import notepad from "../../assets/notepad.png";
 import Chrome from "../../components/apps/chrome/Chrome";
-import chrome from "../../assets/chrome.png";
-import chromeSmall from "../../assets/chrome-small.png";
+import chrome from "../../assets/chrome.svg";
 import TaskManager from "../../components/apps/task-manager/TaskManager";
 import taskManager from "../../assets/task-manager.png";
 import Photos from "../../components/apps/photos/Photos";
@@ -31,9 +30,9 @@ const appConfigurations = {
     childProcess: {},
   },
   Chrome: {
-    source: <Chrome icon={<img src={chromeSmall} />} />,
+    source: <Chrome icon={<img src={chrome} width='15px' />} />,
     minimised: false,
-    icon: <img src={chrome} />,
+    icon: <img src={chrome} width='25px' />,
     pinnedToTaskbar: true,
   },
   TaskManager: {

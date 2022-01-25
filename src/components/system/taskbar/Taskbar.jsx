@@ -157,6 +157,7 @@ const Taskbar = ({
 
   const toggleStartMenu = () => {
     setStartMenuVisibility(!isStartMenuVisible);
+    closeWindowsSearch();
   };
 
   useEffect(() => {
@@ -222,6 +223,10 @@ const Taskbar = ({
               type='text'
               placeholder='Type here to search'
               className='search-input'
+              onMouseDown={(e) => {
+                e.stopPropagation();
+                colapseStartMenu();
+              }}
               onFocus={openWindowsSearch}
             />
           )}

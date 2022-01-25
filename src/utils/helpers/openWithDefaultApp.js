@@ -9,13 +9,12 @@ const openWithDefaultApp = (type, path, name, openApp) => {
       customPath: Path.join(path, name),
     });
   if (type === "file") {
-    const fileType = getFileType(Path.extname(name));
-    if (fileType === "text")
-      openApp("Notepad", { path: Path.join(path, name) });
-    if (fileType === "image")
-      openApp("Photos", { path: Path.join(path, name) });
-    if (fileType === "video")
-      openApp("Movies And TV", { path: Path.join(path, name) });
+    const filePath = Path.join(path, name);
+    const fileType = getFileType(Path.extname(filePath));
+
+    if (fileType === "text") openApp("Notepad", { path: filePath });
+    if (fileType === "image") openApp("Photos", { path: filePath });
+    if (fileType === "video") openApp("Movies And TV", { path: filePath });
   }
 };
 

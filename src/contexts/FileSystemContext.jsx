@@ -193,29 +193,39 @@ export const FileSystemProvider = ({ children }) => {
     return watcher;
   };
 
-  const findFSO = async (root, searchTerm, setSearchResults) => {
+  const findFSO = async (root, exactMatch, searchTerm, setSearchResults) => {
     const found = [];
-    await findRecursive(root, searchTerm, found);
+    await findRecursive(root, exactMatch, searchTerm, found);
+    if (!setSearchResults) return found;
     setSearchResults(found);
   };
 
-  const findRecursive = (root, searchTerm, found) => {
+  const findRecursive = (root, exactMatch, searchTerm, found) => {
     let i = 0;
     return new Promise((resolve, reject) => {
       readdir(root).then(async (content) => {
         if (content.length > 0) {
           for (let fso of content) {
-            if (fso.name == searchTerm) {
-              console.log(`pushing found fso(${fso.name}) to found`);
-              found.push({
-                ...fso,
-                path: Path.join(root, fso.name),
-              });
-              console.log(found);
+            if (exactMatch) {
+              if (fso.name == searchTerm) {
+                found.push({
+                  ...fso,
+                  path: Path.join(root, fso.name),
+                });
+              }
+            } else {
+              if (fso.name.includes(searchTerm)) {
+                found.push({
+                  ...fso,
+                  path: Path.join(root, fso.name),
+                });
+              }
             }
+
             fso.type === "DIRECTORY" &&
               (await findRecursive(
                 Path.join(root, fso.name),
+                exactMatch,
                 searchTerm,
                 found
               ));

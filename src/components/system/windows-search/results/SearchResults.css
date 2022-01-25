@@ -1,5 +1,95 @@
-.apps-and-files-search-result {
+.apps-or-files-search-result {
   flex-grow: 1;
   width: 19rem;
-  background-color: #11100f;
+  margin: 0.75rem;
+  margin-bottom: 0rem;
+  background-color: #1b1a19;
+}
+
+.basic-app-or-file-info {
+  text-align: center;
+  border-bottom: 2px solid #a4a3a3;
+  padding-bottom: 2rem;
+}
+
+.app-or-file-icon {
+  margin-top: 1.5rem;
+}
+
+.app-or-file-name {
+  margin-top: 1rem;
+  color: white;
+}
+
+.app-or-file-name:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.app-or-file-actions {
+  margin-top: 1rem;
+}
+
+.app-or-file-type {
+  color: lightgray;
+  font-weight: 100;
+  font-size: 0.8rem;
+  margin-top: 0.35rem;
+  text-transform: capitalize;
+}
+
+.aditional-file-info {
+  padding-left: 1.5rem;
+  padding-top: 1rem;
+  padding-right: 1rem;
+  border-bottom: 2px solid #a4a3a3;
+}
+
+.file-location,
+.file-last-modified {
+  display: flex;
+  color: white;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.file-location > div:first-child,
+.file-last-modified > div:first-child {
+  flex-basis: 35%;
+}
+
+.file-location > div:last-child {
+  flex-grow: 1;
+  overflow: hidden;
+  word-break: break-all;
+  word-wrap: break-word;
+  text-decoration: underline;
+  color: lightgray;
+}
+
+.file-location > div:last-child:hover {
+  color: white;
+  cursor: pointer;
+}
+
+.app-or-file-actions > div {
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 1.5rem;
+  color: #ececec;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.app-or-file-actions > div:hover {
+  background-color: #353434;
+}
+
+.app-or-file-actions > div > svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: gray;
+  margin-right: 0.5rem;
 }
