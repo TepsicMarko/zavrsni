@@ -144,6 +144,9 @@ const Taskbar = ({
 
         if (!processes[app.name] || !Object.keys(processes[app.name]).length)
           startProcess(app.name);
+
+        colapseStartMenu();
+        closeWindowsSearch();
       };
 
       return (
@@ -186,10 +189,11 @@ const Taskbar = ({
         ...taskbarPosition,
       }}
       className={isVerticalClassName("taskbar")}
-      draggable
+      draggable={!isStartMenuVisible && !isWindowsSearchOpen}
       onDragStart={!isResizing ? handleDragStart : null}
       onDrag={!isResizing ? handleDrag : null}
       onDragEnd={!isResizing ? handleDragEnd : null}
+      onMouseDown={(e) => e.stopPropagation()}
     >
       <div
         className='taskbar-resize'
