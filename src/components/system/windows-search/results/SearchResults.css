@@ -93,3 +93,49 @@
   color: gray;
   margin-right: 0.5rem;
 }
+
+/* ---WebSearchResuts--- */
+
+.web-search-results {
+  flex-grow: 1;
+  width: 19rem;
+  margin-bottom: 0rem;
+  display: flex;
+  max-height: 100%;
+  flex-wrap: wrap;
+  overflow: overlay;
+  padding: 0.25rem 0;
+}
+
+.web-search-result {
+  background-color: #1b1a19;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin: 0.5rem 0.75rem;
+}
+
+.result-title {
+  color: #7bbcf0;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.result-title:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: #7bbcf0;
+}
+
+.result-url {
+  color: #8bab99;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #484644;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.result-description {
+  color: #edebe9;
+  font-size: 0.9rem;
+}

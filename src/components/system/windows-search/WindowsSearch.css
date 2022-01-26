@@ -1,5 +1,20 @@
+.windows-search {
+  position: absolute;
+  top: -41rem;
+  left: 0;
+  width: 49rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.windows-search-open-animation {
+  height: 41rem;
+  background-color: #2a2a2a;
+}
+
 .windows-search-results {
   flex-grow: 1;
   display: flex;
   background-color: #11100f;
+  min-height: 0px;
 }

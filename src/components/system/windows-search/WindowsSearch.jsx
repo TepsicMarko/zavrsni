@@ -5,6 +5,7 @@ import WindowsSearchNavbar from "./navbar/WindowsSearchNavbar";
 import QuickSearch from "./quick-search/QuickSearch";
 import WindowsSearchBestMatch from "./best-match/WindowsSearchBestMatch";
 import AppsOrFilesSearchResult from "./results/AppsOrFilesSearchResult";
+import WebSearchResults from "./results/WebSearchResults";
 import { appConfigurations } from "../../../utils/constants/processConfigurations";
 import { FileSystemContext } from "../../../contexts/FileSystemContext";
 import getFileType from "../../../utils/helpers/getFileType";
@@ -115,6 +116,7 @@ const WindowsSearch = ({
               openAppOrFile={openAppOrFile}
             />
           )}
+          {searchIn === "Web" && <WebSearchResults />}
         </div>
       ) : (
         <QuickSearch
