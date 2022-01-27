@@ -1,36 +1,6 @@
 import "./SearchResults.css";
 
-const WebSearchResults = ({}) => {
-  const results = [
-    {
-      title:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt quos suscipit consectetur adipisicing",
-      url: "https://somelongurnaexamplename.com",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt quos suscipit itaque amet nulla sequi architecto enim hic illo perspiciatis libero sunt non explicabo est eos optio commodi, quae at?",
-    },
-    {
-      title:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt quos suscipit consectetur adipisicing",
-      url: "https://somelongurnaexamplename.com",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt quos suscipit itaque amet nulla sequi architecto enim hic illo perspiciatis libero sunt non explicabo est eos optio commodi, quae at?",
-    },
-    {
-      title:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt quos suscipit consectetur adipisicing",
-      url: "https://somelongurnaexamplename.com",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt quos suscipit itaque amet nulla sequi architecto enim hic illo perspiciatis libero sunt non explicabo est eos optio commodi, quae at?",
-    },
-    {
-      title:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt quos suscipit consectetur adipisicing",
-      url: "https://somelongurnaexamplename.com",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt quos suscipit itaque amet nulla sequi architecto enim hic illo perspiciatis libero sunt non explicabo est eos optio commodi, quae at?",
-    },
-  ];
+const WebSearchResults = ({ results }) => {
   return (
     <div className='web-search-results'>
       {results.map(({ title, url, description }) => (

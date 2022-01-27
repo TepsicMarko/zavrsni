@@ -13,6 +13,7 @@ import getFileTypeIcon from "../../../utils/helpers/getFileTypeIcon";
 import { path as Path } from "filer";
 import openWithDefaultApp from "../../../utils/helpers/openWithDefaultApp";
 import moment from "moment";
+import axios from "axios";
 
 const WindowsSearch = ({
   searchFor,
@@ -26,6 +27,7 @@ const WindowsSearch = ({
     Files: [],
     Web: [],
   });
+  const [timeoutId, setTimeoutId] = useState();
   const windowsSearchRef = useClickOutside(closeWindowsSearch);
   const { findFSO } = useContext(FileSystemContext);
 
@@ -57,8 +59,30 @@ const WindowsSearch = ({
     }));
   };
 
-  const searchInWeb = () => {
-    return [];
+  const searchInWeb = async () => {
+    const results =
+      await axios.get(`https://www.googleapis.com/customsearch/v1?key=${process.env.REACT_APP_API_KEY}&cx=${process.env.REACT_APP_CX_KEY}&q=${searchFor}
+      `);
+
+    console.log(results);
+    return results.data.items.map(
+      ({
+        // htmlTitle,
+        // htmlFormattedUrl,
+        // htmlSnippettitle,
+        title,
+        link,
+        snippet,
+      }) => ({
+        // title: htmlTitle,
+        // url: htmlFormattedUrl,
+        // description: htmlSnippet,
+        title: title,
+        url: link,
+        description: snippet,
+        query: searchFor,
+      })
+    );
   };
 
   const openAppOrFile = (app, type, filePath) => {
@@ -68,12 +92,13 @@ const WindowsSearch = ({
   };
 
   useEffect(async () => {
+    let timer = null;
     if (searchFor.length) {
       // prettier-ignore
-      const newSearchresults = { 
+      let newSearchresults = { 
         Apps: /**searchIn === "All" || */ searchIn === "Apps" ?  searchInApps() : [], 
         Files: /**searchIn === "All" || */ searchIn === "Files" ?  await searchInFiles() : [],
-        Web: /**searchIn === "All" || */ searchIn === "Web" ? searchInWeb() : [],
+        Web: /**searchIn === "All" || */ searchIn === "Web" ?  await searchInWeb() : [],
       };
 
       setSearchResults(newSearchresults);
@@ -100,8 +125,7 @@ const WindowsSearch = ({
         <div className='windows-search-results'>
           <WindowsSearchBestMatch
             bestMatch={
-              // searchIn === "All" ? searchResults : searchResults[searchIn][0]
-              searchResults[searchIn][0]
+              searchIn === "All" ? searchResults : searchResults[searchIn][0]
             }
             searchIn={searchIn}
             openAppOrFile={openAppOrFile}
@@ -116,7 +140,9 @@ const WindowsSearch = ({
               openAppOrFile={openAppOrFile}
             />
           )}
-          {searchIn === "Web" && <WebSearchResults />}
+          {searchIn === "Web" && (
+            <WebSearchResults results={searchResults[searchIn]} />
+          )}
         </div>
       ) : (
         <QuickSearch
