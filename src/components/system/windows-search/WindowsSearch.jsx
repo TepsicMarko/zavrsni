@@ -66,21 +66,10 @@ const WindowsSearch = ({
 
     console.log(results);
     return results.data.items.map(
-      ({
-        // htmlTitle,
-        // htmlFormattedUrl,
-        // htmlSnippettitle,
-        title,
-        link,
-        snippet,
-      }) => ({
-        // title: htmlTitle,
-        // url: htmlFormattedUrl,
-        // description: htmlSnippet,
+      ({ title, link, htmlFormattedUrl, snippet }) => ({
         title: title,
-        url: link,
+        url: { htmlFormattedUrl, raw: link },
         description: snippet,
-        query: searchFor,
       })
     );
   };
@@ -91,8 +80,12 @@ const WindowsSearch = ({
     closeWindowsSearch();
   };
 
+  const openInBroswer = (url) => {
+    startProcess("Chrome", { initialQuery: url || searchFor });
+    closeWindowsSearch();
+  };
+
   useEffect(async () => {
-    let timer = null;
     if (searchFor.length) {
       // prettier-ignore
       let newSearchresults = { 
@@ -128,7 +121,9 @@ const WindowsSearch = ({
               searchIn === "All" ? searchResults : searchResults[searchIn][0]
             }
             searchIn={searchIn}
+            searchFor={searchFor}
             openAppOrFile={openAppOrFile}
+            openInBroswer={openInBroswer}
           />
           {(searchIn === "Apps" || searchIn === "Files") && (
             <AppsOrFilesSearchResult
@@ -141,7 +136,10 @@ const WindowsSearch = ({
             />
           )}
           {searchIn === "Web" && (
-            <WebSearchResults results={searchResults[searchIn]} />
+            <WebSearchResults
+              results={searchResults[searchIn]}
+              openInBroswer={openInBroswer}
+            />
           )}
         </div>
       ) : (

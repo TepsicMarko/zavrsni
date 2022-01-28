@@ -5,8 +5,8 @@ import ChromeNavbar from "./navbar/ChromeNavbar";
 import usePathHistory from "../../../hooks/usePathHistory";
 import { useState, useEffect, useRef } from "react";
 
-const Chrome = ({ icon, pid }) => {
-  const [url, setUrl] = useState("");
+const Chrome = ({ icon, pid, initialQuery, initialUrl }) => {
+  const [url, setUrl] = useState(initialQuery || initialUrl || "");
   const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(
     url,
     true

@@ -2,9 +2,17 @@ import "./WindowsSearchBestMatch.css";
 import { cloneElement } from "react";
 import { VscSearch } from "react-icons/vsc";
 
-const WindowsSearchBestMatch = ({ bestMatch, searchIn, openAppOrFile }) => {
+const WindowsSearchBestMatch = ({
+  bestMatch,
+  searchIn,
+  searchFor,
+  openAppOrFile,
+  openInBroswer,
+}) => {
   const handleClick = () =>
-    openAppOrFile(bestMatch.name, bestMatch.type, bestMatch.path);
+    searchIn === "Web"
+      ? openInBroswer(searchFor)
+      : openAppOrFile(bestMatch.name, bestMatch.type, bestMatch.path);
 
   return (
     <div className='best-match-container'>
@@ -20,9 +28,12 @@ const WindowsSearchBestMatch = ({ bestMatch, searchIn, openAppOrFile }) => {
             })}
           </div>
           <div className='best-match-name'>
-            {bestMatch.name || bestMatch.query}
-            <div className='best-match-type'>
-              {bestMatch.type || "see web results"}
+            {bestMatch.name || searchFor}
+            <div
+              className='best-match-type'
+              style={{ textTransform: !bestMatch.type ? "none" : "" }}
+            >
+              {bestMatch.type || "See web results"}
               {searchIn === "Files" && (
                 <div className='best-match-last-modified'>
                   Last modified: {bestMatch.mtime}

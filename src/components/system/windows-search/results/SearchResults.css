@@ -101,17 +101,23 @@
   width: 19rem;
   margin-bottom: 0rem;
   display: flex;
+  justify-content: center;
   max-height: 100%;
   flex-wrap: wrap;
-  overflow: overlay;
-  padding: 0.25rem 0;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+  padding-bottom: 4rem;
+}
+
+.web-search-results:hover {
+  overflow-y: overlay;
 }
 
 .web-search-result {
   background-color: #1b1a19;
   border-radius: 0.25rem;
   padding: 0.75rem;
-  margin: 0.5rem 0.75rem;
+  margin: 0.25rem 0.75rem;
 }
 
 .result-title {
@@ -138,4 +144,32 @@
 .result-description {
   color: #edebe9;
   font-size: 0.9rem;
+}
+
+.microsoft-copyright {
+  flex-grow: 1;
+  color: #ececec;
+  font-size: 0.8rem;
+  margin: 0 0.75rem;
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #484644;
+}
+
+.open-in-browser {
+  background-color: #31302f;
+  border: none;
+  color: #ececec;
+  padding: 0.5rem 1rem;
+  border-radius: 0.15rem;
+  position: absolute;
+  bottom: 1rem;
+}
+
+.open-in-broswer:hover {
+  background-color: #404040;
+}
+
+.open-in-broswer > svg {
+  margin-right: 0.5rem;
 }
