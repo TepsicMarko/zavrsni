@@ -1,5 +1,5 @@
 import "./WindowsSearch.css";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import useClickOutside from "../../../hooks/useClickOutside";
 import WindowsSearchNavbar from "./navbar/WindowsSearchNavbar";
 import QuickSearch from "./quick-search/QuickSearch";
@@ -27,11 +27,10 @@ const WindowsSearch = ({
     Files: [],
     Web: [],
   });
-  const [timeoutId, setTimeoutId] = useState();
+  const [intervalId, setIntervalId] = useState();
+  const previousSearchForRef = useRef({});
   const windowsSearchRef = useClickOutside(closeWindowsSearch);
   const { findFSO } = useContext(FileSystemContext);
-
-  const determineBestMatch = () => {};
 
   const searchInApps = () => {
     let results = [];
@@ -60,9 +59,18 @@ const WindowsSearch = ({
   };
 
   const searchInWeb = async () => {
-    const results =
-      await axios.get(`https://www.googleapis.com/customsearch/v1?key=${process.env.REACT_APP_API_KEY}&cx=${process.env.REACT_APP_CX_KEY}&q=${searchFor}
-      `);
+    clearTimeout(intervalId);
+    const results = await new Promise((resolve, reject) => {
+      const intervalId = setTimeout(() => {
+        axios
+          .get(
+            `https://www.googleapis.com/customsearch/v1?key=${process.env.REACT_APP_API_KEY}&cx=${process.env.REACT_APP_CX_KEY}&q=${searchFor}`
+          )
+          .then((res) => resolve(res));
+      }, 500);
+
+      setIntervalId(intervalId);
+    });
 
     console.log(results);
     return results.data.items.map(
@@ -87,15 +95,29 @@ const WindowsSearch = ({
 
   useEffect(async () => {
     if (searchFor.length) {
-      // prettier-ignore
-      let newSearchresults = { 
-        Apps: /**searchIn === "All" || */ searchIn === "Apps" ?  searchInApps() : [], 
-        Files: /**searchIn === "All" || */ searchIn === "Files" ?  await searchInFiles() : [],
-        Web: /**searchIn === "All" || */ searchIn === "Web" ?  await searchInWeb() : [],
+      // // prettier-ignore
+      let newSearchresults = {
+        Apps:
+          /**searchIn === "All" || */ searchIn === "Apps" &&
+          searchFor !== previousSearchForRef.current.Apps
+            ? searchInApps()
+            : searchResults.Apps,
+        Files:
+          /**searchIn === "All" || */ searchIn === "Files" &&
+          searchFor !== previousSearchForRef.current.Files
+            ? await searchInFiles()
+            : searchResults.Files,
+        Web:
+          /**searchIn === "All" || */ searchIn === "Web" &&
+          searchFor !== previousSearchForRef.current.Web
+            ? await searchInWeb()
+            : searchResults.Web,
       };
 
       setSearchResults(newSearchresults);
     }
+
+    previousSearchForRef.current[searchIn] = searchFor;
   }, [searchFor, searchIn]);
 
   return isWindowsSearchOpen ? (
