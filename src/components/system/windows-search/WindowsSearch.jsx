@@ -22,12 +22,12 @@ const WindowsSearch = ({
   startProcess,
 }) => {
   const [searchIn, setSearchIn] = useState("All");
-  const [searchResults, setSearchResults] = useState({
+  const [appsOrFilesSearchResults, setAppsOrFilesSearchResults] = useState({
     Apps: [],
     Files: [],
-    Web: [],
   });
-  const [intervalId, setIntervalId] = useState();
+  const [webSearchResults, setWebSearchResults] = useState([]);
+  const timeoutIdRef = useRef();
   const previousSearchForRef = useRef({});
   const windowsSearchRef = useClickOutside(closeWindowsSearch);
   const { findFSO } = useContext(FileSystemContext);
@@ -59,26 +59,35 @@ const WindowsSearch = ({
   };
 
   const searchInWeb = async () => {
-    clearTimeout(intervalId);
+    clearTimeout(timeoutIdRef.current);
     const results = await new Promise((resolve, reject) => {
-      const intervalId = setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         axios
           .get(
-            `https://www.googleapis.com/customsearch/v1?key=${process.env.REACT_APP_API_KEY}&cx=${process.env.REACT_APP_CX_KEY}&q=${searchFor}`
+            `https://www.googleapis.com/customsearch/v1?key=${
+              process.env.REACT_APP_EVIRONMENT === "dev"
+                ? process.env.REACT_APP_DEV_API_KEY
+                : process.env.REACT_APP_PROD_API_KEY
+            }&cx=${
+              process.env.REACT_APP_EVIRONMENT === "dev"
+                ? process.env.REACT_APP_DEV_CX_KEY
+                : process.env.REACT_APP_PROD_CX_KEY
+            }&q=${searchFor}`
           )
-          .then((res) => resolve(res));
+          .then((res) => resolve(res))
+          .catch((err) => reject(err));
       }, 500);
 
-      setIntervalId(intervalId);
+      timeoutIdRef.current = timeoutId;
     });
 
-    console.log(results);
-    return results.data.items.map(
-      ({ title, link, htmlFormattedUrl, snippet }) => ({
+    console.log(results, searchFor, timeoutIdRef.current);
+    setWebSearchResults(
+      results.data.items.map(({ title, link, htmlFormattedUrl, snippet }) => ({
         title: title,
         url: { htmlFormattedUrl, raw: link },
         description: snippet,
-      })
+      }))
     );
   };
 
@@ -94,39 +103,48 @@ const WindowsSearch = ({
   };
 
   const returnMostRelevantResults = (includeWebResults = true) => {
-    if (searchResults.Apps.length) return searchResults.Apps;
-    if (searchResults.Files.length) return searchResults.Files;
-    if (includeWebResults && searchResults.Web.length) return searchResults.Web;
+    if (appsOrFilesSearchResults.Apps.length)
+      return appsOrFilesSearchResults.Apps;
+    if (appsOrFilesSearchResults.Files.length)
+      return appsOrFilesSearchResults.Files;
+    if (includeWebResults && webSearchResults.length) return webSearchResults;
 
     return [];
   };
 
   useEffect(async () => {
     if (searchFor.length) {
-      let newSearchresults = {
+      let newAppsOfRilesSearchResults = {
         Apps:
           searchIn === "All" ||
           (searchIn === "Apps" &&
             searchFor !== previousSearchForRef.current.Apps)
             ? searchInApps()
-            : searchResults.Apps,
+            : appsOrFilesSearchResults.Apps,
         Files:
           searchIn === "All" ||
           (searchIn === "Files" &&
             searchFor !== previousSearchForRef.current.Files)
             ? await searchInFiles()
-            : searchResults.Files,
-        Web:
-          searchIn === "All" ||
-          (searchIn === "Web" && searchFor !== previousSearchForRef.current.Web)
-            ? await searchInWeb()
-            : searchResults.Web,
+            : appsOrFilesSearchResults.Files,
       };
+      setAppsOrFilesSearchResults(newAppsOfRilesSearchResults);
 
-      setSearchResults(newSearchresults);
+      if (
+        (searchIn === "All" || searchIn === "Web") &&
+        searchFor !== previousSearchForRef.current.Web
+      )
+        setWebSearchResults([]);
+      searchInWeb();
     }
 
-    previousSearchForRef.current[searchIn] = searchFor;
+    if (searchIn === "All")
+      previousSearchForRef.current = {
+        Apps: searchFor,
+        Files: searchFor,
+        Web: searchFor,
+      };
+    else previousSearchForRef.current[searchIn] = searchFor;
   }, [searchFor, searchIn]);
 
   return isWindowsSearchOpen ? (
@@ -151,7 +169,9 @@ const WindowsSearch = ({
             bestMatch={
               searchIn === "All"
                 ? returnMostRelevantResults()
-                : searchResults[searchIn][0]
+                : searchIn === "Web"
+                ? webSearchResults[0]
+                : appsOrFilesSearchResults[searchIn][0]
             }
             searchIn={searchIn}
             searchFor={searchFor}
@@ -165,18 +185,18 @@ const WindowsSearch = ({
               result={
                 searchIn === "All"
                   ? returnMostRelevantResults(false)[0]
-                  : searchResults[searchIn][0]
+                  : appsOrFilesSearchResults[searchIn][0]
               }
               searchIn={searchIn}
               openAppOrFile={openAppOrFile}
             />
           )}
           {((searchIn === "All" &&
-            !searchResults.Apps.length &&
-            !searchResults.Files.length) ||
+            !appsOrFilesSearchResults.Apps.length &&
+            !appsOrFilesSearchResults.Files.length) ||
             searchIn === "Web") && (
             <WebSearchResults
-              results={searchResults.Web}
+              results={webSearchResults}
               openInBroswer={openInBroswer}
             />
           )}
