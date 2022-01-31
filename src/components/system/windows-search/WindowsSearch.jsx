@@ -93,23 +93,32 @@ const WindowsSearch = ({
     closeWindowsSearch();
   };
 
+  const returnMostRelevantResults = (includeWebResults = true) => {
+    if (searchResults.Apps.length) return searchResults.Apps;
+    if (searchResults.Files.length) return searchResults.Files;
+    if (includeWebResults && searchResults.Web.length) return searchResults.Web;
+
+    return [];
+  };
+
   useEffect(async () => {
     if (searchFor.length) {
-      // // prettier-ignore
       let newSearchresults = {
         Apps:
-          /**searchIn === "All" || */ searchIn === "Apps" &&
-          searchFor !== previousSearchForRef.current.Apps
+          searchIn === "All" ||
+          (searchIn === "Apps" &&
+            searchFor !== previousSearchForRef.current.Apps)
             ? searchInApps()
             : searchResults.Apps,
         Files:
-          /**searchIn === "All" || */ searchIn === "Files" &&
-          searchFor !== previousSearchForRef.current.Files
+          searchIn === "All" ||
+          (searchIn === "Files" &&
+            searchFor !== previousSearchForRef.current.Files)
             ? await searchInFiles()
             : searchResults.Files,
         Web:
-          /**searchIn === "All" || */ searchIn === "Web" &&
-          searchFor !== previousSearchForRef.current.Web
+          searchIn === "All" ||
+          (searchIn === "Web" && searchFor !== previousSearchForRef.current.Web)
             ? await searchInWeb()
             : searchResults.Web,
       };
@@ -136,30 +145,38 @@ const WindowsSearch = ({
         closeWindowsSearch={closeWindowsSearch}
       />
 
-      {searchFor && searchIn !== "All" ? (
+      {searchFor ? (
         <div className='windows-search-results'>
           <WindowsSearchBestMatch
             bestMatch={
-              searchIn === "All" ? searchResults : searchResults[searchIn][0]
+              searchIn === "All"
+                ? returnMostRelevantResults()
+                : searchResults[searchIn][0]
             }
             searchIn={searchIn}
             searchFor={searchFor}
             openAppOrFile={openAppOrFile}
             openInBroswer={openInBroswer}
           />
-          {(searchIn === "Apps" || searchIn === "Files") && (
+          {(searchIn === "All" ||
+            searchIn === "Apps" ||
+            searchIn === "Files") && (
             <AppsOrFilesSearchResult
               result={
-                // searchIn === "All" ? searchResults : searchResults[searchIn][0]
-                searchResults[searchIn][0]
+                searchIn === "All"
+                  ? returnMostRelevantResults(false)[0]
+                  : searchResults[searchIn][0]
               }
               searchIn={searchIn}
               openAppOrFile={openAppOrFile}
             />
           )}
-          {searchIn === "Web" && (
+          {((searchIn === "All" &&
+            !searchResults.Apps.length &&
+            !searchResults.Files.length) ||
+            searchIn === "Web") && (
             <WebSearchResults
-              results={searchResults[searchIn]}
+              results={searchResults.Web}
               openInBroswer={openInBroswer}
             />
           )}

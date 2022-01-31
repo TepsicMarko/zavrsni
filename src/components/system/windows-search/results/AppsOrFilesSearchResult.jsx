@@ -17,64 +17,60 @@ const AppsOrFilesSearchResult = ({ result, searchIn, openAppOrFile }) => {
     navigator.clipboard.writeText(result.path);
   };
 
-  return (
+  return result ? (
     <div className='apps-or-files-search-result'>
-      {result ? (
-        <>
-          <div className='basic-app-or-file-info'>
-            <div className='app-or-file-icon'>
-              {cloneElement(result.icon, {
-                size: "70px",
-                width: "70px",
-                height: "70px",
-                color: "white",
-              })}
-            </div>
-            <div className='app-or-file-name' onClick={handleClick}>
-              {result.name}
-            </div>
-            <div className='app-or-file-type'>{result.type}</div>
+      <div className='basic-app-or-file-info'>
+        <div className='app-or-file-icon'>
+          {cloneElement(result.icon, {
+            size: "70px",
+            width: "70px",
+            height: "70px",
+            color: "white",
+          })}
+        </div>
+        <div className='app-or-file-name' onClick={handleClick}>
+          {result.name}
+        </div>
+        <div className='app-or-file-type'>{result.type}</div>
+      </div>
+      {searchIn === "Files" && (
+        <div className='aditional-file-info'>
+          <div className='file-location'>
+            <div>Location:</div>
+            <div onClick={handleClick}>{result.path}</div>
           </div>
-          {searchIn === "Files" && (
-            <div className='aditional-file-info'>
-              <div className='file-location'>
-                <div>Location:</div>
-                <div onClick={handleClick}>{result.path}</div>
-              </div>
-              <div className='file-last-modified'>
-                <div>Last modified:</div>
-                <div>{result.mtime}</div>
-              </div>
-            </div>
-          )}
-          <div className='app-or-file-actions'>
-            <div onClick={handleClick}>
-              <IoOpenOutline />
-              Open
-            </div>
-            {searchIn === "Apps" && (
-              <div onClick={() => alert("comming soon...")}>
-                <BsPin />
-                Pin To Taskbar
-              </div>
-            )}
-            {searchIn === "Files" && (
-              <>
-                <div onClick={openFileLocation}>
-                  <BsFolder2Open />
-                  Open File Location
-                </div>
-                <div onClick={copyToClipboard}>
-                  <MdOutlineFileCopy />
-                  Copy Path
-                </div>
-              </>
-            )}
+          <div className='file-last-modified'>
+            <div>Last modified:</div>
+            <div>{result.mtime}</div>
           </div>
-        </>
-      ) : null}
+        </div>
+      )}
+      <div className='app-or-file-actions'>
+        <div onClick={handleClick}>
+          <IoOpenOutline />
+          Open
+        </div>
+        {searchIn === "Apps" && (
+          <div onClick={() => alert("comming soon...")}>
+            <BsPin />
+            Pin To Taskbar
+          </div>
+        )}
+        {searchIn === "Files" && (
+          <>
+            <div onClick={openFileLocation}>
+              <BsFolder2Open />
+              Open File Location
+            </div>
+            <div onClick={copyToClipboard}>
+              <MdOutlineFileCopy />
+              Copy Path
+            </div>
+          </>
+        )}
+      </div>
     </div>
-  );
+  ) : null;
 };
 
 export default AppsOrFilesSearchResult;
