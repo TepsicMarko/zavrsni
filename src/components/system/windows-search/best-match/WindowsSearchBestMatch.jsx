@@ -10,9 +10,12 @@ const WindowsSearchBestMatch = ({
   openInBroswer,
 }) => {
   const handleClick = () =>
+    // prettier-ignore
     searchIn === "Web"
       ? openInBroswer(searchFor)
-      : openAppOrFile(bestMatch.name, bestMatch.type, bestMatch.path);
+      : bestMatch.url 
+        ? openInBroswer(searchFor)
+        : openAppOrFile(bestMatch.name, bestMatch.type, bestMatch.path);
 
   return (
     <div className='best-match-container'>
@@ -34,7 +37,7 @@ const WindowsSearchBestMatch = ({
               style={{ textTransform: !bestMatch.type ? "none" : "" }}
             >
               {bestMatch.type || "See web results"}
-              {searchIn === "Files" && (
+              {bestMatch.mtime && (
                 <div className='best-match-last-modified'>
                   Last modified: {bestMatch.mtime}
                 </div>

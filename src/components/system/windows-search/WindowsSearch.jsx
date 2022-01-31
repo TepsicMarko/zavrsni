@@ -133,9 +133,10 @@ const WindowsSearch = ({
       if (
         (searchIn === "All" || searchIn === "Web") &&
         searchFor !== previousSearchForRef.current.Web
-      )
+      ) {
         setWebSearchResults([]);
-      searchInWeb();
+        searchInWeb();
+      }
     }
 
     if (searchIn === "All")
@@ -168,7 +169,7 @@ const WindowsSearch = ({
           <WindowsSearchBestMatch
             bestMatch={
               searchIn === "All"
-                ? returnMostRelevantResults()
+                ? returnMostRelevantResults()[0]
                 : searchIn === "Web"
                 ? webSearchResults[0]
                 : appsOrFilesSearchResults[searchIn][0]
