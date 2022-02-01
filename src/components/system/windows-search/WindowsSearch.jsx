@@ -167,13 +167,7 @@ const WindowsSearch = ({
       {searchFor ? (
         <div className='windows-search-results'>
           <WindowsSearchBestMatch
-            bestMatch={
-              searchIn === "All"
-                ? returnMostRelevantResults()[0]
-                : searchIn === "Web"
-                ? webSearchResults[0]
-                : appsOrFilesSearchResults[searchIn][0]
-            }
+            results={{ ...appsOrFilesSearchResults, Web: webSearchResults }}
             searchIn={searchIn}
             searchFor={searchFor}
             openAppOrFile={openAppOrFile}
