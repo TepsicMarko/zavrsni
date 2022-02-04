@@ -7,7 +7,9 @@ import { path as Path } from "filer";
 
 const AppsOrFilesSearchResult = ({ result, searchIn, openAppOrFile }) => {
   const handleClick = () =>
-    openAppOrFile(result.name, result.type, result.path);
+    searchIn === "Apps"
+      ? openAppOrFile(result.name)
+      : openAppOrFile(result.name, result.type, result.path);
 
   const openFileLocation = () =>
     openAppOrFile(result.name, "directory", Path.dirname(result.path));

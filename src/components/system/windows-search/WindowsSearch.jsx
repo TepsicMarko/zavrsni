@@ -91,9 +91,10 @@ const WindowsSearch = ({
     );
   };
 
-  const openAppOrFile = (app, type, filePath) => {
-    if (searchIn === "Apps") startProcess(app);
-    else openWithDefaultApp(type, filePath, "", startProcess);
+  const openAppOrFile = (appOrFileName, fileType, filePath) => {
+    console.log(appOrFileName, fileType, filePath);
+    if (!fileType && !filePath) startProcess(appOrFileName);
+    else openWithDefaultApp(fileType, filePath, "", startProcess);
     closeWindowsSearch();
   };
 

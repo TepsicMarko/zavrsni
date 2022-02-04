@@ -19,15 +19,15 @@ const WindowsSearchBestMatch = ({
       ? openInBroswer(searchFor)
       : bestMatch.url 
         ? openInBroswer(searchFor)
-        : openAppOrFile(bestMatch.name, bestMatch.type, bestMatch.path);
+        : openAppOrFile(bestMatch.name, bestMatch.type !== "App" ? bestMatch.type: undefined, bestMatch.path);
 
   return (
     <>
-      <div className='best-match-container'>
+      <div className='best-match-container' onClick={handleClick}>
         <strong>Best match in {searchIn}</strong>
         {bestMatch ? (
           <>
-            <div className='best-match' onClick={handleClick}>
+            <div className='best-match'>
               <div className='best-match-icon'>
                 {cloneElement(bestMatch.icon ? bestMatch.icon : <VscSearch />, {
                   size: "30px",
@@ -64,15 +64,23 @@ const WindowsSearchBestMatch = ({
                           )
                         : null}
                       {results[resultCathegoryName].map((result, i) => {
-                        const openRelativeSearch = () => {
-                          openAppOrFile(result.name, result.type, result.path);
+                        const openRelativeSearch = (e) => {
+                          e.stopPropagation();
+                          openAppOrFile(
+                            result.name,
+                            result.type !== "App" ? result.type : undefined,
+                            result.path
+                          );
                         };
 
                         return resultCathegoryName === searchIn && i === 0
                           ? null
                           : (resultCathegoryName === searchIn ||
                               searchIn === "All") && (
-                              <div className='relavant-search'>
+                              <div
+                                className='relavant-search'
+                                onClick={openRelativeSearch}
+                              >
                                 <div className='relavant-search-icon'>
                                   {cloneElement(
                                     result.icon ? result.icon : <VscSearch />,
@@ -84,10 +92,7 @@ const WindowsSearchBestMatch = ({
                                     }
                                   )}
                                 </div>
-                                <div
-                                  className='relavant-search-name'
-                                  onClick={openRelativeSearch}
-                                >
+                                <div className='relavant-search-name'>
                                   {result.name}
                                 </div>
                               </div>
