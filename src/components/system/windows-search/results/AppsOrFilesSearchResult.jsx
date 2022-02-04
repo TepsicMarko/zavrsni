@@ -5,7 +5,12 @@ import { BsFolder2Open, BsPin } from "react-icons/bs";
 import { MdOutlineFileCopy } from "react-icons/md";
 import { path as Path } from "filer";
 
-const AppsOrFilesSearchResult = ({ result, searchIn, openAppOrFile }) => {
+const AppsOrFilesSearchResult = ({
+  result,
+  searchIn,
+  openAppOrFile,
+  focusedResult,
+}) => {
   const handleClick = () =>
     searchIn === "Apps"
       ? openAppOrFile(result.name)
@@ -18,6 +23,8 @@ const AppsOrFilesSearchResult = ({ result, searchIn, openAppOrFile }) => {
     const selection = window.getSelection();
     navigator.clipboard.writeText(result.path);
   };
+
+  result = Object.keys(focusedResult).length ? focusedResult : result;
 
   return result ? (
     <div className='apps-or-files-search-result'>
@@ -35,7 +42,7 @@ const AppsOrFilesSearchResult = ({ result, searchIn, openAppOrFile }) => {
         </div>
         <div className='app-or-file-type'>{result.type}</div>
       </div>
-      {searchIn === "Files" && (
+      {result.path && result.mtime && (
         <div className='aditional-file-info'>
           <div className='file-location'>
             <div>Location:</div>
@@ -58,7 +65,7 @@ const AppsOrFilesSearchResult = ({ result, searchIn, openAppOrFile }) => {
             Pin To Taskbar
           </div>
         )}
-        {searchIn === "Files" && (
+        {result.path && result.mtime && (
           <>
             <div onClick={openFileLocation}>
               <BsFolder2Open />

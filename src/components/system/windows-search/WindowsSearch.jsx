@@ -27,6 +27,7 @@ const WindowsSearch = ({
     Files: [],
   });
   const [webSearchResults, setWebSearchResults] = useState([]);
+  const [focusedResult, setFocusedResult] = useState({});
   const timeoutIdRef = useRef();
   const previousSearchForRef = useRef({});
   const windowsSearchRef = useClickOutside(closeWindowsSearch);
@@ -173,6 +174,8 @@ const WindowsSearch = ({
             searchFor={searchFor}
             openAppOrFile={openAppOrFile}
             openInBroswer={openInBroswer}
+            focusedResult={focusedResult}
+            setFocusedResult={setFocusedResult}
           />
           {(searchIn === "All" ||
             searchIn === "Apps" ||
@@ -185,6 +188,7 @@ const WindowsSearch = ({
               }
               searchIn={searchIn}
               openAppOrFile={openAppOrFile}
+              focusedResult={focusedResult}
             />
           )}
           {((searchIn === "All" &&
