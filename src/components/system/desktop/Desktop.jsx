@@ -9,15 +9,13 @@ import DesktopIcon from "./desktop-icon/DesktopIcon";
 import DesktopContextMenu from "../component-specific-context-menus/DesktopContextMenu";
 import useWatchFolder from "../../../hooks/useWatchFolder";
 import { path as Path } from "filer";
-import useExternalFileDrop from "../../../hooks/useExternalFileDrop";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
   const origin = "/C/users/admin/Desktop";
-  const { createFSO, watch, getFolder, moveFSO, createBlob } =
+  const { createFSO, watch, getFolder, moveFSO } =
     useContext(FileSystemContext);
   const [view, setView] = useState("Medium icons");
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
-  const [handleExternalFileDrop] = useExternalFileDrop(createFSO, createBlob);
   const folderName = "Desktop";
   const wallpaper = windowsDefault;
   const { renderOptions } = useContext(RightClickMenuContext);
@@ -75,7 +73,13 @@ const Desktop = ({ width, height, taskbarHeight }) => {
       } else {
         moveFSO(Path.join(path, name), Path.join(origin, name));
       }
-    } else handleExternalFileDrop(e, origin);
+    } else {
+      e.preventDefault();
+      startProcess("File Transfer Dialog", {
+        files: e.dataTransfer.files,
+        dropPath: origin,
+      });
+    }
   };
   const preventDefault = (e) => e.preventDefault();
 

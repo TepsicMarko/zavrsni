@@ -6,11 +6,12 @@ import useWatchFolder from "../../../../hooks/useWatchFolder";
 import remToPx from "../../../../utils/helpers/remToPx";
 import moment from "moment";
 import { FileSystemContext } from "../../../../contexts/FileSystemContext";
+import { ProcessesContext } from "../../../../contexts/ProcessesContext";
 import { WindowDimensionsContext } from "../../../../contexts/WindowDimensionsContext";
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import FolderContentsContextMenu from "../../../system/component-specific-context-menus/FolderContentsContextMenu";
 import { path as Path } from "filer";
-import useExternalFileDrop from "../../../../hooks/useExternalFileDrop";
+// import useExternalFileDrop from "../../../../hooks/useExternalFileDrop";
 
 const FileExplorerFolderContents = ({
   changePath,
@@ -34,6 +35,7 @@ const FileExplorerFolderContents = ({
     createBlob,
   } = useContext(FileSystemContext);
   const { windowDimensions } = useContext(WindowDimensionsContext);
+  const { startProcess } = useContext(ProcessesContext);
   const { renderOptions } = useContext(RightClickMenuContext);
 
   const windowWidthOnFirstRender = useRef(windowDimensions.width);
@@ -43,7 +45,7 @@ const FileExplorerFolderContents = ({
     getFolder,
     setItemCount
   );
-  const [handleExternalFileDrop] = useExternalFileDrop(createFSO, createBlob);
+  // const [handleExternalFileDrop] = useExternalFileDrop(createFSO, createBlob);
 
   const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
     Name: "4.5rem",
@@ -100,7 +102,13 @@ const FileExplorerFolderContents = ({
           Path.join(path, dragObject.name)
         );
       }
-    } else handleExternalFileDrop(e, path);
+    } else {
+      e.preventDefault();
+      startProcess("File Transfer Dialog", {
+        files: e.dataTransfer.files,
+        dropPath: path,
+      });
+    }
   };
 
   const calcWidth = () => {

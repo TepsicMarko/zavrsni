@@ -237,7 +237,7 @@ const Window = ({
         height,
         ...position,
         minWidth,
-        minWindowHeight,
+        minHeight,
         zIndex: zIndex
           ? zIndex
           : processes[parentProcess || process][pid] &&

@@ -1,7 +1,7 @@
 import "./UnsavedChanges.css";
-import Window from "../window/Window";
-import WindowContent from "../window/window-content/WindowContent";
-import StatusBar from "../window/status-bar/StatusBar";
+import Window from "../../window/Window";
+import WindowContent from "../../window/window-content/WindowContent";
+import StatusBar from "../../window/status-bar/StatusBar";
 
 const UnsavedChanges = ({
   icon,
@@ -22,7 +22,6 @@ const UnsavedChanges = ({
       minWindowHeight='9rem'
       titleBar={{ color: "black", backgroundColor: "white", title: "Notepad" }}
       onClose={handleCancel}
-      //in this case parent process isn't the right prop name for the job, but i think that it would be redundant to have two differently named props which do the same thing
       resizable={false}
       limitedWindowControls
     >

@@ -1,0 +1,66 @@
+.transfer-progress-container {
+  flex-grow: 1;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+}
+
+.transfer-progress-container > div {
+  flex-basis: 100%;
+}
+
+.file-transfer-info {
+  margin-left: 1.5rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.file-transfer-info > span {
+  color: hsl(214, 100%, 36%);
+}
+
+.file-transfer-progress {
+  margin-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+}
+
+.transfer-controls {
+  flex-grow: 1;
+  justify-content: flex-end;
+  padding-right: 1.5rem;
+}
+
+.pause-or-resume-transfer {
+  margin-right: 2rem;
+}
+
+.file-transfer-progress-bar {
+  width: calc(100% - 3rem);
+  margin: 0 1.5rem;
+  height: 1rem;
+  background-color: #e6e6e6;
+  border: 1px solid #bebebe;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+}
+
+.file-transfer-progress-bar > div {
+  background-color: #06b025;
+  height: 100%;
+}
+
+.file-transfer-show-more-details {
+  height: 2.5rem;
+  margin-left: 1.5rem;
+}
+
+.file-transfer-show-more-details > svg {
+  color: gray;
+  margin-right: 0.25rem;
+}
+
+.file-transfer-show-more-details > svg:hover {
+  color: black;
+}

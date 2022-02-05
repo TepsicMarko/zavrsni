@@ -13,7 +13,9 @@ import moviesAndTv from "../../assets/movies-and-tv.png";
 import CommandPrompt from "../../components/apps/command-prompt/CommandPrompt";
 import cmd from "../../assets/cmd.png";
 
-import UnsavedChanges from "../../components/system/dialogs/UnsavedChanges";
+import UnsavedChanges from "../../components/system/dialogs/unsaved-changes/UnsavedChanges";
+import FileTransfer from "../../components/system/dialogs/file-transfer/FileTransfer";
+import fileTransferProgress from "../../assets/fileTransferProgress.svg";
 
 const appConfigurations = {
   "File Explorer": {
@@ -64,6 +66,19 @@ const appConfigurations = {
 const dialogConfigurations = {
   "Unsaved Changes Dialog": {
     source: <UnsavedChanges />,
+  },
+  "File Transfer Dialog": {
+    source: (
+      <FileTransfer
+        icon={
+          <img
+            src={fileTransferProgress}
+            style={{ width: "15px", marginTop: "3px" }}
+          />
+        }
+      />
+    ),
+    icon: <img src={fileTransferProgress} />,
   },
 };
 
