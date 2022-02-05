@@ -4,9 +4,6 @@
   left: 0;
   width: 20rem;
   height: 0px;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   transition: height 0.2s ease-in, top 0.2s ease-in, visibility 0.05s linear;
   visibility: hidden;
 }
@@ -33,7 +30,9 @@
 .width-animation {
   transition: width 0.1s ease-in-out 0.5s, background 0.1s ease-in-out 0.5s;
   width: 15rem;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .sidebar-expanded .sidebar-list-item {
