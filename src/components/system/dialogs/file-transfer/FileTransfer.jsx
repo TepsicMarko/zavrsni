@@ -11,7 +11,7 @@ import { FileSystemContext } from "../../../../contexts/FileSystemContext";
 import { ProcessesContext } from "../../../../contexts/ProcessesContext";
 import handleExternalFileDrop from "../../../../utils/helpers/handleExternalFileDrop";
 
-const FileTransfer = ({ pid, icon, files, dropPath }) => {
+const FileTransfer = ({ pid, icon, entries, dropPath }) => {
   const fileReaderRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -27,7 +27,7 @@ const FileTransfer = ({ pid, icon, files, dropPath }) => {
 
   useEffect(() => {
     handleExternalFileDrop(
-      files,
+      entries,
       dropPath,
       setProgress,
       createFSO,

@@ -18,7 +18,7 @@ const FsoListItemContextMenu = ({
   // const handleClick = (name) => setOpenSubmenu(name);
 
   const deleteFolder = () => {
-    deleteFSO(path, name, type);
+    deleteFSO(path, name, type.toLowerCase());
   };
 
   const openFSO = () => {

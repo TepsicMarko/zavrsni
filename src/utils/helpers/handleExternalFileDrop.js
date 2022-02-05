@@ -1,64 +1,106 @@
 import { path as Path } from "filer";
+import getFileType from "./getFileType";
 
 const handleExternalFileDrop = (
-  files,
+  entries,
   dropzone,
   setProgress,
   createFSO,
   createBlob,
   fileReaderRef
 ) => {
+  const reader = new FileReader();
+  fileReaderRef.current = reader;
   const handleProgress = ({ loaded, total }) => {
     setProgress(Math.round((loaded / total) * 100));
   };
 
-  if (files.length === 1) {
-    const file = files[0];
-    const reader = new FileReader();
-    fileReaderRef.current = reader;
+  console.log(entries);
 
-    if (file.type.startsWith("text")) {
-      reader.onprogress = handleProgress;
+  if (entries.length === 1) {
+    const entry = entries[0];
+    console.log(entry, "test");
 
-      reader.onload = (e) => {
-        const content = e.target.result;
-        createFSO(
-          dropzone,
-          Path.basename(file.name, Path.extname(file.name)),
-          Path.extname(file.name).substring(1),
-          content
-        );
-      };
+    if (entry.isFile) {
+      const fileType = getFileType(Path.extname(entry.name));
 
-      reader.readAsText(file);
+      if (fileType === "text") {
+        entry.file((file) => {
+          reader.onprogress = handleProgress;
+
+          reader.onload = (e) => {
+            const content = e.target.result;
+            createFSO(
+              dropzone,
+              Path.basename(entry.name, Path.extname(entry.name)),
+              Path.extname(entry.name).substring(1),
+              content
+            );
+          };
+
+          reader.readAsText(file);
+        });
+      }
+
+      if (fileType === "image") {
+        entry.file((file) => {
+          reader.onprogress = handleProgress;
+
+          reader.onload = (e) => {
+            const content = e.target.result;
+            createFSO(
+              dropzone,
+              Path.basename(entry.name, Path.extname(entry.name)),
+              Path.extname(entry.name).substring(1),
+              content
+            );
+          };
+
+          reader.readAsDataURL(file);
+        });
+      }
+
+      if (fileType === "video") {
+        entry.file((file) => {
+          reader.onprogress = handleProgress;
+
+          reader.onload = (e) => {
+            const buffer = e.target.result;
+            createBlob(dropzone, entry.name, buffer);
+          };
+
+          reader.readAsArrayBuffer(file);
+        });
+      }
     }
 
-    if (file.type.startsWith("image")) {
-      reader.onprogress = handleProgress;
+    if (entry.isDirectory) {
+      const dirReader = entry.createReader();
 
-      reader.onload = (e) => {
-        const content = e.target.result;
-        createFSO(
-          dropzone,
-          Path.basename(file.name, Path.extname(file.name)),
-          Path.extname(file.name).substring(1),
-          content
-        );
+      createFSO(dropzone, entry.name, "directory", "");
+
+      const getEntries = () => {
+        dirReader.readEntries((results) => {
+          if (results.length) {
+            results.forEach((result) =>
+              handleExternalFileDrop(
+                [result],
+                Path.join(dropzone, entry.name),
+                setProgress,
+                createFSO,
+                createBlob,
+                fileReaderRef
+              )
+            );
+          }
+        });
       };
-
-      reader.readAsDataURL(file);
+      getEntries();
     }
+  }
 
-    if (file.type.startsWith("video")) {
-      reader.onprogress = handleProgress;
-
-      reader.onload = (e) => {
-        const buffer = e.target.result;
-        createBlob(dropzone, file.name, buffer);
-      };
-
-      reader.readAsArrayBuffer(file);
-    }
+  if (entries.length > 1) {
+    // to do
   }
 };
 

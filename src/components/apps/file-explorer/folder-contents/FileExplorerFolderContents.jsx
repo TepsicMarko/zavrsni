@@ -91,6 +91,16 @@ const FileExplorerFolderContents = ({
     );
 
   const preventDefault = (e) => e.preventDefault();
+
+  const getEntries = (items) => {
+    let entries = [];
+    for (let i = 0; i < items.length; i++) {
+      entries.push(items[i].webkitGetAsEntry());
+    }
+
+    return entries;
+  };
+
   const handleDrop = (e) => {
     if (!e.dataTransfer.files.length) {
       e.preventDefault();
@@ -105,7 +115,7 @@ const FileExplorerFolderContents = ({
     } else {
       e.preventDefault();
       startProcess("File Transfer Dialog", {
-        files: e.dataTransfer.files,
+        entries: getEntries(e.dataTransfer.items),
         dropPath: path,
       });
     }
