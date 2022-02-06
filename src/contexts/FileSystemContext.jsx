@@ -89,14 +89,18 @@ export const FileSystemProvider = ({ children }) => {
       fs.readdir(path, { withFileTypes: true }, (err, files) => {
         if (err) reject(err);
         else {
-          Promise.all(
-            files.map((file) => {
-              if (file.isDirectory()) rmdirRecursive(`${path}/${file.name}`);
-              else fs.unlink(`${path}/${file.name}`, (err) => console.log(err));
-            })
-          ).then(() =>
-            fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)))
-          );
+          if (files.length) {
+            Promise.all(
+              files.map((file) => {
+                if (file.isDirectory())
+                  return rmdirRecursive(`${path}/${file.name}`);
+                else
+                  fs.unlink(`${path}/${file.name}`, (err) => console.log(err));
+              })
+            ).then(() =>
+              fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)))
+            );
+          } else fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)));
         }
       });
     });
