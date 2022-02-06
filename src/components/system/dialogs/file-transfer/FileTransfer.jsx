@@ -15,6 +15,7 @@ const FileTransfer = ({ pid, icon, entries, dropPath }) => {
   const fileReaderRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [fileCount, setFileCount] = useState(1);
   const { createFSO, createBlob } = useContext(FileSystemContext);
   const { endProcess } = useContext(ProcessesContext);
 
@@ -32,7 +33,8 @@ const FileTransfer = ({ pid, icon, entries, dropPath }) => {
       setProgress,
       createFSO,
       createBlob,
-      fileReaderRef
+      fileReaderRef,
+      setFileCount
     );
   }, []);
 
@@ -59,7 +61,8 @@ const FileTransfer = ({ pid, icon, entries, dropPath }) => {
       <WindowContent backgroundColor='white' flex>
         <div className='transfer-progress-container'>
           <div className='file-transfer-info'>
-            Copying from <span>Your PC</span> to <span>{dropPath}</span>
+            Copying {fileCount} items from <span>Your PC</span> to{" "}
+            <span>{dropPath}</span>
           </div>
           <div className='file-transfer-progress'>
             {isPaused ? "Paused - " : ""} {progress}% complete
