@@ -34,12 +34,18 @@ const handleExternalFileDrop = async (
   const reader = new FileReader();
   fileReaderRef.current = reader;
 
+  const calcCombindedProgress = (loaded, total) => {
+    const progressSegmentSize = 100 / customProgress.total;
+    const childProgress = loaded / total;
+    const combinedProgress = progressSegmentSize * childProgress;
+    setProgress(
+      progressSegmentSize * customProgress.loaded + Math.round(combinedProgress)
+    );
+  };
+
   const handleProgress = ({ loaded, total }) => {
-    customProgress && console.log(customProgress, entries[0].isFile);
     isCalledInFolder || customProgress
-      ? setProgress(
-          Math.round((customProgress.loaded / customProgress.total) * 100)
-        )
+      ? calcCombindedProgress(loaded, total)
       : setProgress(Math.round((loaded / total) * 100));
   };
 
@@ -144,7 +150,7 @@ const handleExternalFileDrop = async (
             setFileCount,
             fileReaderRef,
             true,
-            { loaded: i, total: folderContent.length }
+            { loaded: i, total: folderContent.length - 1 }
           );
         }
       }
@@ -161,7 +167,7 @@ const handleExternalFileDrop = async (
         createBlob,
         setFileCount,
         fileReaderRef,
-        true,
+        false,
         { loaded: i, total: entries.length - 1 }
       );
     }
