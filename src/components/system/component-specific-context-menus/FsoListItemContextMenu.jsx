@@ -5,7 +5,7 @@ import openWithDefaultApp from "../../../utils/helpers/openWithDefaultApp";
 const FsoListItemContextMenu = ({
   name,
   path,
-  deleteFSO,
+  handleDelete,
   toggleOpen,
   closeMenu,
   focusInput,
@@ -16,10 +16,6 @@ const FsoListItemContextMenu = ({
 }) => {
   // const [openSubmenu, setOpenSubmenu] = useState("");
   // const handleClick = (name) => setOpenSubmenu(name);
-
-  const deleteFolder = () => {
-    deleteFSO(path, name, type.toLowerCase());
-  };
 
   const openFSO = () => {
     if (type === "DIRECTORY") {
@@ -37,7 +33,7 @@ const FsoListItemContextMenu = ({
       />
       <ContextMenuItem
         name='Delete'
-        onClick={deleteFolder}
+        onClick={handleDelete}
         closeMenu={closeMenu}
       />
       <ContextMenuItem

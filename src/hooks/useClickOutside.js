@@ -1,17 +1,17 @@
 import { useRef, useEffect } from "react";
 
-const useClickOutside = (onClickOutside) => {
+const useClickOutside = (targetEvent, handleEvent) => {
   const elRef = useRef();
   const handleClickOutside = (event) => {
     if (elRef.current && !elRef.current.contains(event.target)) {
-      onClickOutside();
+      handleEvent();
     }
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener(targetEvent, handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(targetEvent, handleClickOutside);
     };
   }, [handleClickOutside]);
 

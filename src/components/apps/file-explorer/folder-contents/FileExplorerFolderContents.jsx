@@ -11,7 +11,7 @@ import { WindowDimensionsContext } from "../../../../contexts/WindowDimensionsCo
 import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
 import FolderContentsContextMenu from "../../../system/component-specific-context-menus/FolderContentsContextMenu";
 import { path as Path } from "filer";
-// import useExternalFileDrop from "../../../../hooks/useExternalFileDrop";
+import useSelectionRectangle from "../../../../hooks/useSelectionRectangle";
 
 const FileExplorerFolderContents = ({
   changePath,
@@ -54,6 +54,16 @@ const FileExplorerFolderContents = ({
     Type: "4.5rem",
     Size: "4.5rem",
   });
+  const {
+    rectRef,
+    calcRectStyle,
+    enableSelection,
+    disableSelection,
+    handleSelection,
+    selectedElements,
+    setSelectedElements,
+    dimensions,
+  } = useSelectionRectangle();
   const [minWidth, setMinWidth] = useState(remToPx("6rem"));
 
   const folderContentsRef = useRef(null);
@@ -67,10 +77,12 @@ const FileExplorerFolderContents = ({
   );
 
   const handleResizeStart = (e) => {
+    e.stopPropagation();
     e.dataTransfer.setDragImage(new Image(), 0, 0);
   };
 
   const handleResize = (e) => {
+    e.stopPropagation();
     const { offsetX } = e.nativeEvent;
     const newWidth = width - offsetX;
     const maxWidth = windowDimensions.width - remToPx("3.5rem");
@@ -130,6 +142,11 @@ const FileExplorerFolderContents = ({
     return sum;
   };
 
+  const handleDragStart = (e) => {
+    enableSelection(e);
+    e.dataTransfer.setDragImage(new Image(), 0, 0);
+  };
+
   useEffect(() => {
     setWatcherPath(path);
   }, [path]);
@@ -153,6 +170,10 @@ const FileExplorerFolderContents = ({
 
   return (
     <div
+      draggable
+      onDragStart={handleDragStart}
+      onDrag={handleSelection}
+      onDragEnd={disableSelection}
       ref={folderContentsRef}
       className='fx-folder-contents'
       style={{ width }}
@@ -180,6 +201,7 @@ const FileExplorerFolderContents = ({
         style={{
           width: calcWidth(),
         }}
+        onDragEnter={(e) => e.stopPropagation()}
       >
         {[searchResults.length ? searchResults : folderContent][0].map(
           (fso, i) => {
@@ -201,6 +223,10 @@ const FileExplorerFolderContents = ({
                 openFile={openFile}
                 endProcess={endProcess}
                 ppid={ppid}
+                rectRef={rectRef}
+                selectedElements={selectedElements}
+                setSelectedElements={setSelectedElements}
+                dimensions={dimensions}
               />
             );
           }
@@ -212,6 +238,11 @@ const FileExplorerFolderContents = ({
         onDrag={handleResize}
         onDragEnd={handleResize}
         className='folder-contents-resize'
+      ></div>
+      <div
+        ref={rectRef}
+        className='rect-selection'
+        style={{ ...calcRectStyle() }}
       ></div>
     </div>
   );

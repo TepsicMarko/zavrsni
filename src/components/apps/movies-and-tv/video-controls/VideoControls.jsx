@@ -25,7 +25,7 @@ const VideoControls = ({
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [volumeSliderVisibility, setVolumeSiderVisibility] = useState(false);
-  const volumeSettingsRef = useClickOutside(() =>
+  const volumeSettingsRef = useClickOutside("mousedown", () =>
     setVolumeSiderVisibility(false)
   );
   const {

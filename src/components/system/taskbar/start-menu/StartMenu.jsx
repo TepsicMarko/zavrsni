@@ -14,7 +14,7 @@ import useClickOutside from "../../../../hooks/useClickOutside";
 
 const StartMenu = ({ isStartMenuVisible, colapseStartMenu }) => {
   const [isSidebarVisible, setSidebarVisibility] = useState(false);
-  const clickOutsideRef = useClickOutside(colapseStartMenu);
+  const clickOutsideRef = useClickOutside("mousedown", colapseStartMenu);
   const { startProcess } = useContext(ProcessesContext);
 
   const expandSidebar = () => setSidebarVisibility(true);

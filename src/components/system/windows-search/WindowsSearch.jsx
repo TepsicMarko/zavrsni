@@ -30,7 +30,7 @@ const WindowsSearch = ({
   const [focusedResult, setFocusedResult] = useState({});
   const timeoutIdRef = useRef();
   const previousSearchForRef = useRef({});
-  const windowsSearchRef = useClickOutside(closeWindowsSearch);
+  const windowsSearchRef = useClickOutside("mousedown", closeWindowsSearch);
   const { findFSO } = useContext(FileSystemContext);
 
   const searchInApps = () => {

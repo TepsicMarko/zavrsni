@@ -26,6 +26,8 @@ const Desktop = ({ width, height, taskbarHeight }) => {
     enableSelection,
     disableSelection,
     handleSelection,
+    selectedElements,
+    setSelectedElements,
   } = useSelectionRectangle();
 
   const evalTaskbarHeight = () =>
@@ -138,6 +140,8 @@ const Desktop = ({ width, height, taskbarHeight }) => {
           deleteFromGrid={deleteFromGrid}
           startProcess={startProcess}
           rectRef={rectRef}
+          selectedElements
+          setSelectedElements={setSelectedElements}
         />
       ))}
 

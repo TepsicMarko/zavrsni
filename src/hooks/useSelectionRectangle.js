@@ -4,11 +4,15 @@ const useSelectionRectangle = () => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isSelectionActive, setIsSelectionActive] = useState(false);
+  const [selectedElements, setSelectedElements] = useState({});
   const rectRef = useRef(null);
 
   const enableSelection = (e) => {
     setIsSelectionActive(true);
-    setPosition({ x: e.clientX, y: e.clientY });
+    setPosition({
+      x: e.clientX - e.target.getBoundingClientRect().left,
+      y: e.clientY - e.target.getBoundingClientRect().top,
+    });
   };
 
   const disableSelection = () => {
@@ -19,8 +23,8 @@ const useSelectionRectangle = () => {
 
   const handleSelection = (e) => {
     setDimensions({
-      width: position.x - e.clientX,
-      height: position.y - e.clientY,
+      width: position.x - e.clientX + e.target.getBoundingClientRect().left,
+      height: position.y - e.clientY + e.target.getBoundingClientRect().top,
     });
   };
 
@@ -38,6 +42,9 @@ const useSelectionRectangle = () => {
     enableSelection,
     disableSelection,
     handleSelection,
+    selectedElements,
+    setSelectedElements,
+    dimensions,
   };
 };
 

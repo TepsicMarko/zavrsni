@@ -57,6 +57,5 @@
 }
 
 .fso-list-item:hover {
-  background-color: gray;
   background-color: rgba(99, 99, 99, 0.75);
 }

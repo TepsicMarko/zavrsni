@@ -1,5 +1,5 @@
 import "./FsoListItem.css";
-import { memo, useRef, useContext } from "react";
+import { memo, useRef, useContext, useEffect, useState } from "react";
 import getFileTypeIcon from "../../../../../utils/helpers/getFileTypeIcon";
 import FsoListItemContextMenu from "../../../../system/component-specific-context-menus/FsoListItemContextMenu";
 import selectInputContent from "../../../../../utils/helpers/selectInputContent";
@@ -9,6 +9,8 @@ import { path as Path } from "filer";
 import useInput from "../../../../../hooks/useInput";
 import openWithDefaultApp from "../../../../../utils/helpers/openWithDefaultApp";
 import getFileType from "../../../../../utils/helpers/getFileType";
+import isInSelection from "../../../../../utils/helpers/isInSelection";
+import useClickOutside from "../../../../../hooks/useClickOutside";
 
 const FsoListItem = ({
   name,
@@ -26,6 +28,9 @@ const FsoListItem = ({
   openFile,
   endProcess,
   ppid,
+  rectRef,
+  selectedElements,
+  setSelectedElements,
 }) => {
   const {
     Name,
@@ -39,6 +44,8 @@ const FsoListItem = ({
   const { renderOptions } = useContext(RightClickMenuContext);
   const { startProcess } = useContext(ProcessesContext);
   const [inputValue, handleInputChange] = useInput(name);
+  const [isSelected, setIsSelected] = useState(false);
+  const fsoRef = useClickOutside("click", () => setIsSelected(false));
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -64,13 +71,21 @@ const FsoListItem = ({
       renameFSO(path, { old: name, new: inputValue });
   };
 
+  const handleDelete = () => {
+    if (Object.keys(selectedElements).length)
+      Object.values(selectedElements).forEach(({ path, name, type }) => {
+        deleteFSO(path, name, type.toLowerCase());
+      });
+    else deleteFSO(path, name, type.toLowerCase());
+  };
+
   const handleRightClick = (e) =>
     renderOptions(
       e,
       <FsoListItemContextMenu
         name={name}
         deletePath={path}
-        deleteFSO={deleteFSO}
+        handleDelete={handleDelete}
         focusInput={focusInput}
         path={path}
         changePath={changePath}
@@ -91,7 +106,9 @@ const FsoListItem = ({
     } else openWithDefaultApp(type, path, name, startProcess);
   };
 
-  const handleClick = (e) => {};
+  const handleClick = (e) => {
+    setIsSelected(true);
+  };
 
   const handleDragStart = (e) => {
     e.dataTransfer.setData(
@@ -121,8 +138,37 @@ const FsoListItem = ({
     }
   };
 
+  useEffect(() => {
+    if (rectRef) {
+      const selection = rectRef.current;
+      const fso = fsoRef.current;
+
+      console.log(isInSelection(fso, selection));
+
+      if (isInSelection(fso, selection)) {
+        setIsSelected(true);
+        !selectedElements[name] &&
+          setSelectedElements({
+            ...selectedElements,
+            [name]: { name, path, type },
+          });
+      } else {
+        setIsSelected(false);
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (!isSelected)
+      setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
+
+    return () =>
+      setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
+  }, [isSelected]);
+
   return (
     <div
+      ref={fsoRef}
       draggable
       onDragEnter={preventDefault}
       onDragOver={preventDefault}
@@ -130,6 +176,7 @@ const FsoListItem = ({
       className='fso-list-item'
       style={{
         maxWidth: "inherit",
+        backgroundColor: isSelected ? "gray" : "",
       }}
       onContextMenu={handleRightClick}
       onDoubleClick={handleDoubleClick}
@@ -138,7 +185,6 @@ const FsoListItem = ({
     >
       <div style={{ minWidth: Name, maxWidth: Name }}>
         <span className='fso-list-item-icon'>
-          {" "}
           {getFileTypeIcon(
             type === "FILE" ? getFileType(Path.extname(name)) : type
           )}

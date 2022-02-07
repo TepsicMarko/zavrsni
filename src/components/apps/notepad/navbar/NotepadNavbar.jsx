@@ -23,7 +23,7 @@ const NotepadNavbar = ({
 }) => {
   const [activeTab, setActiveTab] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const navRef = useClickOutside(() => {
+  const navRef = useClickOutside("mousedown", () => {
     setActiveTab("");
     setIsDropdownOpen(false);
   });

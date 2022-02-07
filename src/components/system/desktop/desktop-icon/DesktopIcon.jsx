@@ -11,6 +11,7 @@ import DesktopIconContextMenu from "../../component-specific-context-menus/Deskt
 import openWithDefaultApp from "../../../../utils/helpers/openWithDefaultApp";
 import { path as Path } from "filer";
 import getFileType from "../../../../utils/helpers/getFileType";
+import isInSelection from "../../../../utils/helpers/isInSelection";
 
 const DesktopIcon = ({
   name,
@@ -21,6 +22,8 @@ const DesktopIcon = ({
   deleteFromGrid,
   startProcess,
   rectRef,
+  selectedElements,
+  setSelectedElements,
 }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
@@ -88,18 +91,28 @@ const DesktopIcon = ({
     );
   };
 
+  const handleDelete = () => {
+    if (Object.keys(selectedElements).length)
+      Object.values(selectedElements).forEach(({ path, name, type }) => {
+        deleteFSO(path, name, type.toLowerCase());
+        deleteFromGrid(name);
+      });
+    else {
+      deleteFSO(path, name, type.toLowerCase());
+      deleteFromGrid(name);
+    }
+  };
+  const handleOpen = () => {
+    openWithDefaultApp(type, path, name, startProcess);
+  };
+
   const handleRightClick = (e) =>
     renderOptions(
       e,
       <DesktopIconContextMenu
-        name={name}
-        path={path}
-        type={type}
-        deleteFSO={deleteFSO}
-        deleteFromGrid={deleteFromGrid}
         inputRef={inputRef}
-        openWithDefaultApp={openWithDefaultApp}
-        startProcess={startProcess}
+        handleDelete={handleDelete}
+        handleOpen={handleOpen}
       />
     );
 
@@ -107,20 +120,6 @@ const DesktopIcon = ({
 
   const handleDoubleClick = (e) =>
     openWithDefaultApp(type, path, name, startProcess);
-
-  const isIconInSelection = (icon, selection) => {
-    icon.offsetBottom = icon.offsetTop + icon.offsetHeight;
-    icon.offsetRight = icon.offsetLeft + icon.offsetWidth;
-    selection.offsetBottom = selection.offsetTop + selection.offsetHeight;
-    selection.offsetRight = selection.offsetLeft + selection.offsetWidth;
-
-    return !(
-      icon.offsetBottom < selection.offsetTop ||
-      icon.offsetTop > selection.offsetBottom ||
-      icon.offsetRight < selection.offsetLeft ||
-      icon.offsetLeft > selection.offsetRight
-    );
-  };
 
   useEffect(() => {
     const eventHandler = (e) => setIsSelected(false);
@@ -135,13 +134,26 @@ const DesktopIcon = ({
       const selection = rectRef.current;
       const icon = iconRef.current;
 
-      if (isIconInSelection(icon, selection)) {
+      if (isInSelection(icon, selection)) {
         setIsSelected(true);
+        !selectedElements[name] &&
+          setSelectedElements({
+            ...selectedElements,
+            [name]: { name, path, type },
+          });
       } else {
         setIsSelected(false);
       }
     }
   });
+
+  useEffect(() => {
+    if (!isSelected)
+      setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
+
+    return () =>
+      setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
+  }, [isSelected]);
 
   return (
     <div
@@ -159,6 +171,7 @@ const DesktopIcon = ({
       <div
         ref={inputRef}
         contentEditable={isSelected}
+        suppressContentEditableWarning={true}
         className='desktop-icon-name'
         onClick={handleClick}
         onInput={handleInputChange}
