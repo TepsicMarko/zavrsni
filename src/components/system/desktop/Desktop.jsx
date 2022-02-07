@@ -9,17 +9,24 @@ import DesktopIcon from "./desktop-icon/DesktopIcon";
 import DesktopContextMenu from "../component-specific-context-menus/DesktopContextMenu";
 import useWatchFolder from "../../../hooks/useWatchFolder";
 import { path as Path } from "filer";
+import useSelectionRectangle from "../../../hooks/useSelectionRectangle";
 
 const Desktop = ({ width, height, taskbarHeight }) => {
+  const wallpaper = windowsDefault;
   const origin = "/C/users/admin/Desktop";
+  const { renderOptions } = useContext(RightClickMenuContext);
+  const { startProcess } = useContext(ProcessesContext);
   const { createFSO, watch, getFolder, moveFSO } =
     useContext(FileSystemContext);
   const [view, setView] = useState("Medium icons");
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
-  const folderName = "Desktop";
-  const wallpaper = windowsDefault;
-  const { renderOptions } = useContext(RightClickMenuContext);
-  const { startProcess } = useContext(ProcessesContext);
+  const {
+    rectRef,
+    calcRectStyle,
+    enableSelection,
+    disableSelection,
+    handleSelection,
+  } = useSelectionRectangle();
 
   const evalTaskbarHeight = () =>
     typeof taskbarHeight !== "number"
@@ -93,8 +100,17 @@ const Desktop = ({ width, height, taskbarHeight }) => {
   };
   const preventDefault = (e) => e.preventDefault();
 
+  const handleDragStart = (e) => {
+    enableSelection(e);
+    e.dataTransfer.setDragImage(new Image(), 0, 0);
+  };
+
   return (
     <div
+      draggable
+      onDragStart={handleDragStart}
+      onDrag={handleSelection}
+      onDragEnd={disableSelection}
       className='desktop'
       onContextMenu={handleRightClick}
       style={{
@@ -121,8 +137,15 @@ const Desktop = ({ width, height, taskbarHeight }) => {
           updateGridItemName={updateGridItemName}
           deleteFromGrid={deleteFromGrid}
           startProcess={startProcess}
+          rectRef={rectRef}
         />
       ))}
+
+      <div
+        ref={rectRef}
+        className='rect-selection'
+        style={{ ...calcRectStyle() }}
+      ></div>
     </div>
   );
 };

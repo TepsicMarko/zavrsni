@@ -7,4 +7,11 @@
   grid-column-gap: 1px;
   grid-row-gap: 0.5rem;
   background-size: cover;
+  position: relative;
+}
+
+.rect-selection {
+  position: absolute;
+  background-color: rgba(0, 118, 215, 0.466);
+  border: 1px solid #0078d7;
 }

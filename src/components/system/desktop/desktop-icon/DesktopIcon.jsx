@@ -20,6 +20,7 @@ const DesktopIcon = ({
   updateGridItemName,
   deleteFromGrid,
   startProcess,
+  rectRef,
 }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
@@ -28,6 +29,7 @@ const DesktopIcon = ({
     useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
+  const iconRef = useRef(null);
 
   const handleBlur = (e) => {
     if (name !== inputValue && inputValue.length && isSelected) {
@@ -78,11 +80,14 @@ const DesktopIcon = ({
     }
   };
 
-  const handleDragStart = (e) =>
+  const handleDragStart = (e) => {
+    e.stopPropagation();
     e.dataTransfer.setData(
       "json",
       JSON.stringify({ origin: "Desktop", dragObject: { name, path } })
     );
+  };
+
   const handleRightClick = (e) =>
     renderOptions(
       e,
@@ -98,8 +103,24 @@ const DesktopIcon = ({
       />
     );
 
+  const stopPropagation = (e) => e.stopPropagation();
+
   const handleDoubleClick = (e) =>
     openWithDefaultApp(type, path, name, startProcess);
+
+  const isIconInSelection = (icon, selection) => {
+    icon.offsetBottom = icon.offsetTop + icon.offsetHeight;
+    icon.offsetRight = icon.offsetLeft + icon.offsetWidth;
+    selection.offsetBottom = selection.offsetTop + selection.offsetHeight;
+    selection.offsetRight = selection.offsetLeft + selection.offsetWidth;
+
+    return !(
+      icon.offsetBottom < selection.offsetTop ||
+      icon.offsetTop > selection.offsetBottom ||
+      icon.offsetRight < selection.offsetLeft ||
+      icon.offsetLeft > selection.offsetRight
+    );
+  };
 
   useEffect(() => {
     const eventHandler = (e) => setIsSelected(false);
@@ -109,9 +130,24 @@ const DesktopIcon = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (rectRef) {
+      const selection = rectRef.current;
+      const icon = iconRef.current;
+
+      if (isIconInSelection(icon, selection)) {
+        setIsSelected(true);
+      } else {
+        setIsSelected(false);
+      }
+    }
+  });
+
   return (
     <div
+      ref={iconRef}
       className={`flex-center desktop-icon${isSelected ? "-selected" : ""}`}
+      onMouseDown={stopPropagation}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}
