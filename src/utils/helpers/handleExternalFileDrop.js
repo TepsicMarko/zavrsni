@@ -152,7 +152,19 @@ const handleExternalFileDrop = async (
   }
 
   if (entries.length > 1) {
-    // to do
+    for (let [i, entry] of entries.entries()) {
+      await handleExternalFileDrop(
+        [entry],
+        dropzone,
+        setProgress,
+        createFSO,
+        createBlob,
+        setFileCount,
+        fileReaderRef,
+        true,
+        { loaded: i, total: entries.length - 1 }
+      );
+    }
   }
 };
 
