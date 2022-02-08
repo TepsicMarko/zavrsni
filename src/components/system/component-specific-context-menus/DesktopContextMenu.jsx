@@ -45,12 +45,13 @@ const DesktopContextMenu = ({
           <ContextMenuItem
             name={name}
             onClick={() => {
-              createFSO(path, name, type);
-              addToGrid(
-                name,
-                calculateGridPosition(mousePosition),
-                false,
-                true
+              createFSO(path, name, type, undefined, (name) =>
+                addToGrid(
+                  [name],
+                  calculateGridPosition(mousePosition),
+                  false,
+                  true
+                )
               );
             }}
             closeMenu={closeMenu}

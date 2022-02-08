@@ -87,7 +87,19 @@ const DesktopIcon = ({
     e.stopPropagation();
     e.dataTransfer.setData(
       "json",
-      JSON.stringify({ origin: "Desktop", dragObject: { name, path } })
+      JSON.stringify({
+        origin: "Desktop",
+        dragObjects: [
+          ...(Object.keys(selectedElements).length
+            ? [
+                name,
+                ...Object.values(selectedElements)
+                  .map((el) => el.name)
+                  .filter((el) => el !== name),
+              ]
+            : [name]),
+        ],
+      })
     );
   };
 
@@ -95,6 +107,7 @@ const DesktopIcon = ({
     if (Object.keys(selectedElements).length)
       Object.values(selectedElements).forEach(({ path, name, type }) => {
         deleteFSO(path, name, type.toLowerCase());
+        console.log(name);
         deleteFromGrid(name);
       });
     else {
@@ -163,7 +176,11 @@ const DesktopIcon = ({
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}
-      style={{ gridArea: gridPosition }}
+      style={{
+        gridArea: `${gridPosition?.row || 1}/${gridPosition?.column || 1}/${
+          gridPosition?.row || 1
+        }/${gridPosition?.column || 1}`,
+      }}
       draggable
       onDragStart={handleDragStart}
       onDrag={stopPropagation}

@@ -78,19 +78,18 @@ const Desktop = ({ width, height, taskbarHeight }) => {
 
   const handleDrop = (e) => {
     if (!e.dataTransfer.files.length) {
-      e.preventDefault();
       const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
       console.log(dataTransfer);
-      const { name, type, path } = dataTransfer.dragObject;
-      if (dataTransfer.origin === "Desktop") {
+      if (dataTransfer.origin === "Desktop")
         addToGrid(
-          name,
+          dataTransfer.dragObjects,
           calculateGridPosition({ x: e.clientX, y: e.clientY }),
           true
         );
-      } else {
-        moveFSO(Path.join(path, name), Path.join(origin, name));
-      }
+      else
+        dataTransfer.dragObjects.forEach(({ path, name }) => {
+          moveFSO(Path.join(path, name), Path.join(origin, name));
+        });
     } else {
       e.preventDefault();
       console.log(e.dataTransfer.items);

@@ -5,19 +5,23 @@ export const FileSystemContext = createContext();
 
 export const FileSystemProvider = ({ children }) => {
   const mkdir = (path, name, i = 1) =>
-    fs.mkdir(`${path}/${name}`, (err) => {
-      console.log(err);
-      if (
-        err?.code === "EEXIST" &&
-        (name === "New Folder" ||
-          name.slice(0, name.indexOf("(") - 1) === "New Folder")
-      ) {
-        mkdir(
-          path,
-          (i > 1 ? name.slice(0, name.indexOf("(") - 1) : name) + ` (${i + 1})`,
-          i + 1
-        );
-      }
+    new Promise((resolve, reject) => {
+      fs.mkdir(`${path}/${name}`, (err) => {
+        if (
+          err?.code === "EEXIST" &&
+          (name === "New Folder" ||
+            name.slice(0, name.indexOf("(") - 1) === "New Folder")
+        ) {
+          resolve(
+            mkdir(
+              path,
+              (i > 1 ? name.slice(0, name.indexOf("(") - 1) : name) +
+                ` (${i + 1})`,
+              i + 1
+            )
+          );
+        } else resolve(name);
+      });
     });
 
   const mkdirAsync = (path) =>
@@ -108,10 +112,15 @@ export const FileSystemProvider = ({ children }) => {
   const unlink = (path, name) =>
     fs.unlink(Path.join(path, name), (err) => console.log(err));
 
-  const createFSO = (path, name, type, content) => {
-    if (type === "directory") {
-      mkdir(path, name);
-    } else if (type === "lnk") {
+  const createFSO = async (path, name, type, content, callback) => {
+    if (type === "directory")
+      if (callback) {
+        const folderName = await mkdir(path, name);
+        callback(folderName);
+      } else {
+        mkdir(path, name);
+      }
+    else if (type === "lnk") {
       link(Path.join(path, name));
     } else {
       writeFile(Path.join(path, name), type, true, content);
