@@ -166,6 +166,7 @@ const DesktopIcon = ({
       style={{ gridArea: gridPosition }}
       draggable
       onDragStart={handleDragStart}
+      onDrag={stopPropagation}
     >
       {renderIcon}
       <div

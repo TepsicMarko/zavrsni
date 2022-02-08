@@ -140,7 +140,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
           deleteFromGrid={deleteFromGrid}
           startProcess={startProcess}
           rectRef={rectRef}
-          selectedElements
+          selectedElements={selectedElements}
           setSelectedElements={setSelectedElements}
         />
       ))}

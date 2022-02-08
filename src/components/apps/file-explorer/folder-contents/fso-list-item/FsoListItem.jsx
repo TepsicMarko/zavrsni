@@ -143,8 +143,6 @@ const FsoListItem = ({
       const selection = rectRef.current;
       const fso = fsoRef.current;
 
-      console.log(isInSelection(fso, selection));
-
       if (isInSelection(fso, selection)) {
         setIsSelected(true);
         !selectedElements[name] &&
