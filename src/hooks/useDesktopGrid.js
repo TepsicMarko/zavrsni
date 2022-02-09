@@ -32,22 +32,25 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
 
   const makeSpace = async (cellPosition, occupiedCell, newGrid) =>
     new Promise(async (resolve, reject) => {
-      const newRowValue = cellPosition.row + 1;
-      const newColumnValue =
-        newRowValue > maxRows ? cellPosition.column + 1 : cellPosition.column;
-      const occupiedCellNewPosition = {
-        row: newRowValue > maxRows ? 1 : newRowValue,
-        column: newColumnValue,
-      };
-      const { isOccupied, occupiedCellName } = await checkIsOccupied(
-        occupiedCellNewPosition,
-        newGrid
+      const occupiedCellNewPosition = calcCellPosition(
+        cellPosition.column,
+        cellPosition.row + 1
       );
 
-      if (isOccupied) {
-        newGrid[occupiedCell] = occupiedCellNewPosition;
-        resolve(makeSpace(occupiedCellNewPosition, occupiedCellName, newGrid));
-      } else resolve((newGrid[occupiedCell] = occupiedCellNewPosition));
+      if (!occupiedCellNewPosition.isAtAndOfGrid) {
+        const { isOccupied, occupiedCellName } = await checkIsOccupied(
+          occupiedCell,
+          occupiedCellNewPosition,
+          newGrid
+        );
+
+        if (isOccupied) {
+          newGrid[occupiedCell] = occupiedCellNewPosition;
+          resolve(
+            makeSpace(occupiedCellNewPosition, occupiedCellName, newGrid)
+          );
+        } else resolve((newGrid[occupiedCell] = occupiedCellNewPosition));
+      }
     });
 
   const calculateGridPosition = ({ x, y }) => {
@@ -72,33 +75,42 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
   };
 
   const calcCellPosition = (newColumnValue, newRowValue) => {
+    let isAtAndOfGrid = false;
     if (newColumnValue <= 1) {
       // ako izalzi iz lijevog ruba ekrana
       newColumnValue = 1;
-    } else if (newColumnValue >= maxColumns) {
+    } else if (newColumnValue > maxColumns) {
       // ako izalzi iz desnog ruba ekrana
       newColumnValue = maxColumns;
     }
 
-    if (newRowValue <= 1) {
+    if (newRowValue === 1) {
       // ako izalzi iz gornjeg ruba ekrana
       newRowValue = 1;
-    } else if (newRowValue >= maxRows) {
-      // ako izlazi iz donjeg ruba ekrana
-      newRowValue = 1;
+    } else if (newRowValue < 1) {
       newColumnValue += 1;
+    } else if (newRowValue > maxRows) {
+      // ako izlazi iz donjeg ruba ekrana
+      if (newColumnValue + 1 <= maxColumns) {
+        // ako izlazi iz desnog ruba ekrana
+        newRowValue = 1;
+        newColumnValue += 1;
+      } else {
+        newRowValue -= 1;
+        isAtAndOfGrid = true;
+      }
     }
 
     return {
       column: newColumnValue,
       row: newRowValue,
+      isAtAndOfGrid,
     };
   };
 
   const findFirstFreeCell = (name, cellPosition, newGrid) =>
     new Promise(async (resolve, reject) => {
       const { isOccupied } = await checkIsOccupied(name, cellPosition, newGrid);
-      console.log(isOccupied);
       if (isOccupied) {
         resolve(
           findFirstFreeCell(
@@ -108,7 +120,6 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
           newGrid
         );
       } else {
-        console.log(cellPosition);
         resolve(cellPosition);
       }
     });
@@ -130,7 +141,6 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       for (let name of items) {
         const newColumnValue = newGrid[name].column + movedColumns;
         const newRowValue = newGrid[name].row + movedRows;
-        // console.log(name, newColumnValue, newRowValue);
         const cellPosition = calcCellPosition(newColumnValue, newRowValue);
 
         if (items.length > 1) newGrid[name] = cellPosition;
@@ -147,7 +157,6 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
             newGrid[name] = cellPosition;
           }
         }
-        // console.log(cellPosition, { ...newGrid });
       }
 
       for (let name of items) {
@@ -160,11 +169,10 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
           if (items.length > 1) {
             const freeCellPosition = await findFirstFreeCell(
               name,
-              { ...newGrid[name], row: newGrid[name].row + 1 },
+              calcCellPosition(newGrid[name].column, newGrid[name].row + 1),
               newGrid
             );
             newGrid[name] = freeCellPosition;
-            console.log(freeCellPosition);
           }
         }
       }
