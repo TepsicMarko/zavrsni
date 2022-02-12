@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 // const calcGridDimensions = () => ({
 //   maxRows: Math.floor(
@@ -30,26 +30,29 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       resolve({ isOccupied: false });
     });
 
-  const makeSpace = async (cellPosition, occupiedCell, newGrid) =>
+  const makeSpace = async (cellPosition, cellName, newGrid) =>
     new Promise(async (resolve, reject) => {
-      const occupiedCellNewPosition = calcCellPosition(
+      if (cellPosition.column === maxColumns && cellPosition.row + 1 > maxRows)
+        return resolve({ notEnoughSpace: true });
+
+      const occupiedCellNewPosition = returnToGridIfOutside(
         cellPosition.column,
-        cellPosition.row + 1
+        cellPosition.row + 1,
+        'item'
       );
 
-      if (!occupiedCellNewPosition.isAtAndOfGrid) {
-        const { isOccupied, occupiedCellName } = await checkIsOccupied(
-          occupiedCell,
-          occupiedCellNewPosition,
-          newGrid
-        );
+      const { isOccupied, occupiedCellName } = await checkIsOccupied(
+        cellName,
+        occupiedCellNewPosition,
+        newGrid
+      );
 
-        if (isOccupied) {
-          newGrid[occupiedCell] = occupiedCellNewPosition;
-          resolve(
-            makeSpace(occupiedCellNewPosition, occupiedCellName, newGrid)
-          );
-        } else resolve((newGrid[occupiedCell] = occupiedCellNewPosition));
+      if (isOccupied) {
+        newGrid[cellName] = occupiedCellNewPosition;
+        resolve(makeSpace(occupiedCellNewPosition, occupiedCellName, newGrid));
+      } else {
+        newGrid[cellName] = occupiedCellNewPosition;
+        resolve({ notEnoughSpace: false });
       }
     });
 
@@ -74,8 +77,7 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
     return { row, column };
   };
 
-  const calcCellPosition = (newColumnValue, newRowValue) => {
-    let isAtAndOfGrid = false;
+  const returnToGridIfOutside = (newColumnValue, newRowValue, returnItemOrSelection) => {
     if (newColumnValue <= 1) {
       // ako izalzi iz lijevog ruba ekrana
       newColumnValue = 1;
@@ -84,40 +86,82 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       newColumnValue = maxColumns;
     }
 
-    if (newRowValue === 1) {
+    if (newRowValue < 1) {
       // ako izalzi iz gornjeg ruba ekrana
       newRowValue = 1;
-    } else if (newRowValue < 1) {
-      newColumnValue += 1;
     } else if (newRowValue > maxRows) {
       // ako izlazi iz donjeg ruba ekrana
-      if (newColumnValue + 1 <= maxColumns) {
-        // ako izlazi iz desnog ruba ekrana
+      if (returnItemOrSelection === 'item') {
         newRowValue = 1;
         newColumnValue += 1;
       } else {
-        newRowValue -= 1;
-        isAtAndOfGrid = true;
+        newRowValue = maxRows;
       }
     }
 
     return {
-      column: newColumnValue,
       row: newRowValue,
-      isAtAndOfGrid,
+      column: newColumnValue,
     };
   };
 
-  const findFirstFreeCell = (name, cellPosition, newGrid) =>
+  const calcSearchDirection = (movedColumns, movedRows) => {
+    if (Math.abs(movedRows) > Math.abs(movedColumns)) {
+      return 'right';
+    } else if (Math.abs(movedRows) < Math.abs(movedColumns)) {
+      return 'down';
+    } else {
+      return Math.round(Math.random() * 1) > 0 ? 'right' : 'down';
+    }
+  };
+
+  const calcIsInCorner = (cellPosition) => ({
+    bottomRight: cellPosition.column === maxColumns && cellPosition.row === maxRows,
+    bottomLeft: cellPosition.column === 1 && cellPosition.row === maxRows,
+    topLeft: cellPosition.column === 1 && cellPosition.row === 1,
+    topRight: cellPosition.column === maxColumns && cellPosition.row === 1,
+  });
+
+  const findFirstFreeCell = (name, cellPosition, newGrid, searchDirection, isInCorner) =>
     new Promise(async (resolve, reject) => {
+      if (searchDirection === 'down') {
+        if (isInCorner.bottomLeft) {
+          cellPosition.column += 1;
+        } else if (isInCorner.bottomRight) {
+          cellPosition.column -= 1;
+        } else {
+          if (cellPosition.row + 1 <= maxRows) {
+            cellPosition.row += 1;
+          } else cellPosition.column += 1;
+        }
+      }
+
+      if (searchDirection === 'right') {
+        if (isInCorner.topRight) {
+          cellPosition.row += 1;
+        } else if (isInCorner.bottomRight) {
+          cellPosition.row -= 1;
+        } else {
+          if (cellPosition.column + 1 <= maxColumns) {
+            cellPosition.column += 1;
+          } else cellPosition.row += 1;
+        }
+      }
+
+      cellPosition = returnToGridIfOutside(cellPosition.column, cellPosition.row);
       const { isOccupied } = await checkIsOccupied(name, cellPosition, newGrid);
+
       if (isOccupied) {
         resolve(
           findFirstFreeCell(
             name,
-            calcCellPosition(cellPosition.column, cellPosition.row + 1)
-          ),
-          newGrid
+            cellPosition,
+            newGrid,
+            searchDirection,
+            Object.values(isInCorner).some((corner) => corner === true)
+              ? isInCorner
+              : calcIsInCorner(cellPosition)
+          )
         );
       } else {
         resolve(cellPosition);
@@ -131,6 +175,7 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       let newGrid = { ...grid };
       let movedColumns = 0;
       let movedRows = 0;
+
       if (newCellPosition.column !== grid[items[0]].column) {
         movedColumns = newCellPosition.column - grid[items[0]].column;
       }
@@ -141,18 +186,38 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       for (let name of items) {
         const newColumnValue = newGrid[name].column + movedColumns;
         const newRowValue = newGrid[name].row + movedRows;
-        const cellPosition = calcCellPosition(newColumnValue, newRowValue);
 
-        if (items.length > 1) newGrid[name] = cellPosition;
+        if (items.length > 1) {
+          newGrid[name] = { row: newRowValue, column: newColumnValue };
+        }
+
         if (items.length === 1) {
+          const cellPosition = returnToGridIfOutside(
+            newCellPosition.column,
+            newCellPosition.row,
+            'item'
+          );
           const { isOccupied, occupiedCellName } = await checkIsOccupied(
             name,
             cellPosition,
             newGrid
           );
+
           if (isOccupied) {
             newGrid[name] = cellPosition;
-            await makeSpace(cellPosition, occupiedCellName, newGrid);
+            const { notEnoughSpace } = await makeSpace(
+              cellPosition,
+              occupiedCellName,
+              newGrid,
+              grid
+            );
+            if (notEnoughSpace) {
+              newGrid = { ...grid };
+              if (Math.abs(movedColumns) <= 0) {
+                newGrid[name].row += movedRows;
+                newGrid[occupiedCellName].row -= movedRows;
+              }
+            }
           } else {
             newGrid[name] = cellPosition;
           }
@@ -160,20 +225,26 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       }
 
       for (let name of items) {
-        const { isOccupied } = await checkIsOccupied(
-          name,
-          newGrid[name],
-          newGrid
+        const cellPosition = returnToGridIfOutside(
+          newGrid[name].column,
+          newGrid[name].row
         );
+        const { isOccupied } = await checkIsOccupied(name, cellPosition, newGrid);
+
         if (isOccupied) {
           if (items.length > 1) {
             const freeCellPosition = await findFirstFreeCell(
               name,
-              calcCellPosition(newGrid[name].column, newGrid[name].row + 1),
-              newGrid
+              cellPosition,
+              newGrid,
+              calcSearchDirection(movedColumns, movedRows),
+              calcIsInCorner(cellPosition)
             );
+
             newGrid[name] = freeCellPosition;
           }
+        } else {
+          newGrid[name] = cellPosition;
         }
       }
 
@@ -188,8 +259,7 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
     setGrid(temp);
   };
 
-  const deleteFromGrid = (name) =>
-    setGrid(({ [name]: remove, ...rest }) => rest);
+  const deleteFromGrid = (name) => setGrid(({ [name]: remove, ...rest }) => rest);
 
   return {
     grid,
