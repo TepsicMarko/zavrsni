@@ -1,17 +1,10 @@
 import { useState, useEffect } from 'react';
 
-// const calcGridDimensions = () => ({
-//   maxRows: Math.floor(
-//     (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
-//   ),
-//   maxColumns: Math.floor(document.documentElement.clientWidth / 68),
-// });
+const getItem = (id) => JSON.parse(localStorage.getItem(id));
+const setItem = (id, value) => localStorage.setItem(id, JSON.stringify(value));
 
 const useDesktopGrid = ({ maxColumns, maxRows }) => {
-  const [grid, setGrid] = useState({});
-  // const [{ maxRows, maxColumns }, setGridDimensions] = useState(
-  //   calcGridDimensions()
-  // );
+  const [grid, setGrid] = useState(getItem('grid') || {});
 
   const checkIsOccupied = (cellName, cellPosition, newGrid) =>
     new Promise((resolve, reject) => {
@@ -260,6 +253,10 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
   };
 
   const deleteFromGrid = (name) => setGrid(({ [name]: remove, ...rest }) => rest);
+
+  useEffect(() => {
+    setItem('grid', grid);
+  }, [grid]);
 
   return {
     grid,

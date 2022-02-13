@@ -1,5 +1,5 @@
-import { createContext, useEffect } from "react";
-import { path as Path, fs, Buffer } from "filer";
+import { createContext, useEffect } from 'react';
+import { path as Path, fs, Buffer } from 'filer';
 
 export const FileSystemContext = createContext();
 
@@ -8,15 +8,13 @@ export const FileSystemProvider = ({ children }) => {
     new Promise((resolve, reject) => {
       fs.mkdir(`${path}/${name}`, (err) => {
         if (
-          err?.code === "EEXIST" &&
-          (name === "New Folder" ||
-            name.slice(0, name.indexOf("(") - 1) === "New Folder")
+          err?.code === 'EEXIST' &&
+          (name === 'New Folder' || name.slice(0, name.indexOf('(') - 1) === 'New Folder')
         ) {
           resolve(
             mkdir(
               path,
-              (i > 1 ? name.slice(0, name.indexOf("(") - 1) : name) +
-                ` (${i + 1})`,
+              (i > 1 ? name.slice(0, name.indexOf('(') - 1) : name) + ` (${i + 1})`,
               i + 1
             )
           );
@@ -31,31 +29,37 @@ export const FileSystemProvider = ({ children }) => {
 
   const writeFileAsync = (paht) =>
     new Promise((resolve, reject) => {
-      fs.writeFile(paht, "", (err) => (err ? reject(err) : resolve(true)));
+      fs.writeFile(paht, '', (err) => (err ? reject(err) : resolve(true)));
     });
 
-  const writeFile = (path, type, isNewFile, content = "", i = 1) => {
-    if (isNewFile) {
-      exists(`${path}.${type}`)
-        .then((exists) =>
-          writeFile(
-            (i > 1 ? path.slice(0, path.indexOf("(") - 1) : path) +
-              ` (${i + 1})`,
-            type,
-            isNewFile,
-            content || "",
-            i + 1
+  const writeFile = (path, type, isNewFile, content = '', i = 1) =>
+    new Promise((resolve, reject) => {
+      if (isNewFile) {
+        exists(`${path}.${type}`)
+          .then((exists) =>
+            resolve(
+              writeFile(
+                (i > 1 ? path.slice(0, path.indexOf('(') - 1) : path) + ` (${i + 1})`,
+                type,
+                isNewFile,
+                content || '',
+                i + 1
+              )
+            )
           )
-        )
-        .catch((doesntExist) =>
-          fs.writeFile(`${path}.${type}`, content, (err) => console.log(err))
-        );
-    } else fs.writeFile(path, content, (err) => console.log(err));
-  };
+          .catch((doesntExist) => {
+            fs.writeFile(`${path}.${type}`, content, (err) => console.log(err));
+            resolve(`${Path.basename(path)}.${type}`);
+          });
+      } else {
+        fs.writeFile(`${path}.${type}`, content, (err) => console.log(err));
+        resolve(`${Path.basename(path)}.${type}`);
+      }
+    });
   const link = (
     filePath,
     linkPath //hard coded for now
-  ) => fs.link(filePath, "/C/users/admin", (err) => console.log(err));
+  ) => fs.link(filePath, '/C/users/admin', (err) => console.log(err));
 
   const readdir = (path) =>
     new Promise((resolve, reject) => {
@@ -66,16 +70,12 @@ export const FileSystemProvider = ({ children }) => {
 
   const readFile = (path) =>
     new Promise((resolve, reject) => {
-      fs.readFile(path, "utf8", (err, content) =>
-        err ? reject(err) : resolve(content)
-      );
+      fs.readFile(path, 'utf8', (err, content) => (err ? reject(err) : resolve(content)));
     });
 
   const readBinaryFile = (path) =>
     new Promise((resolve, reject) => {
-      fs.readFile(path, (err, content) =>
-        err ? reject(err) : resolve(content)
-      );
+      fs.readFile(path, (err, content) => (err ? reject(err) : resolve(content)));
     });
 
   const exists = (path) =>
@@ -96,14 +96,10 @@ export const FileSystemProvider = ({ children }) => {
           if (files.length) {
             Promise.all(
               files.map((file) => {
-                if (file.isDirectory())
-                  return rmdirRecursive(`${path}/${file.name}`);
-                else
-                  fs.unlink(`${path}/${file.name}`, (err) => console.log(err));
+                if (file.isDirectory()) return rmdirRecursive(`${path}/${file.name}`);
+                else fs.unlink(`${path}/${file.name}`, (err) => console.log(err));
               })
-            ).then(() =>
-              fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)))
-            );
+            ).then(() => fs.rmdir(path, (err) => (err ? reject(err) : resolve(true))));
           } else fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)));
         }
       });
@@ -113,17 +109,14 @@ export const FileSystemProvider = ({ children }) => {
     fs.unlink(Path.join(path, name), (err) => console.log(err));
 
   const createFSO = async (path, name, type, content, callback) => {
-    if (type === "directory")
-      if (callback) {
-        const folderName = await mkdir(path, name);
-        callback(folderName);
-      } else {
-        mkdir(path, name);
-      }
-    else if (type === "lnk") {
+    if (type === 'directory') {
+      const folderName = await mkdir(path, name);
+      callback && callback(folderName);
+    } else if (type === 'lnk') {
       link(Path.join(path, name));
     } else {
-      writeFile(Path.join(path, name), type, true, content);
+      const fileName = await writeFile(Path.join(path, name), type, true, content);
+      callback && callback(fileName);
     }
   };
 
@@ -149,7 +142,7 @@ export const FileSystemProvider = ({ children }) => {
   const readBlob = (path, callback) => {
     readBinaryFile(path).then((buffer) => {
       const blob = new Blob([buffer], {
-        type: "video/mp4",
+        type: 'video/mp4',
       });
       callback(window.URL.createObjectURL(blob));
     });
@@ -163,18 +156,16 @@ export const FileSystemProvider = ({ children }) => {
     });
 
   const saveFile = (path, content) => {
-    writeFile(path, "", false, content);
+    writeFile(path, '', false, content);
   };
 
   const moveFSO = (currentPath, newPath) =>
     new Promise((resolve, reject) => {
-      fs.rename(currentPath, newPath, (err) =>
-        err ? reject(err) : resolve(true)
-      );
+      fs.rename(currentPath, newPath, (err) => (err ? reject(err) : resolve(true)));
     });
 
   const deleteFSO = (path, name, type, recusive = true) => {
-    if (type === "directory") {
+    if (type === 'directory') {
       return recusive
         ? rmdirRecursive(Path.join(path, name))
         : rmdir(Path.join(path, name));
@@ -189,15 +180,15 @@ export const FileSystemProvider = ({ children }) => {
     });
 
   const initilizeFileSystem = () => {
-    console.log("initializing file system");
-    mkdir("/", "C");
-    mkdir("/C", "users");
-    mkdir("/C/users", "admin");
-    mkdir("/C/users/admin", "Desktop");
-    mkdir("/C/users/admin", "Documents");
-    mkdir("/C/users/admin", "Downloads");
-    mkdir("/C/users/admin", "Pictures");
-    mkdir("/C/users/admin", "Videos");
+    console.log('initializing file system');
+    mkdir('/', 'C');
+    mkdir('/C', 'users');
+    mkdir('/C/users', 'admin');
+    mkdir('/C/users/admin', 'Desktop');
+    mkdir('/C/users/admin', 'Documents');
+    mkdir('/C/users/admin', 'Downloads');
+    mkdir('/C/users/admin', 'Pictures');
+    mkdir('/C/users/admin', 'Videos');
   };
 
   const watch = (path, callback) => {
@@ -235,7 +226,7 @@ export const FileSystemProvider = ({ children }) => {
               }
             }
 
-            fso.type === "DIRECTORY" &&
+            fso.type === 'DIRECTORY' &&
               (await findRecursive(
                 Path.join(root, fso.name),
                 exactMatch,
@@ -251,8 +242,8 @@ export const FileSystemProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    exists("/C/users/admin")
-      .then((exists) => console.log("file system already initialized"))
+    exists('/C/users/admin')
+      .then((exists) => console.log('file system already initialized'))
       .catch((err) => initilizeFileSystem());
   }, []);
 
