@@ -1,17 +1,17 @@
-import "./DesktopIcon.css";
-import { FcFolder } from "react-icons/fc";
-import { AiFillFileText } from "react-icons/ai";
-import { GoFileSymlinkFile } from "react-icons/go";
-import { BsFileEarmarkFill } from "react-icons/bs";
-import { useContext, useState, useEffect, useRef, useMemo } from "react";
-import { FileSystemContext } from "../../../../contexts/FileSystemContext";
-import { RightClickMenuContext } from "../../../../contexts/RightClickMenuContext";
-import useInput from "../../../../hooks/useInput";
-import DesktopIconContextMenu from "../../component-specific-context-menus/DesktopIconContextMenu";
-import openWithDefaultApp from "../../../../utils/helpers/openWithDefaultApp";
-import { path as Path } from "filer";
-import getFileType from "../../../../utils/helpers/getFileType";
-import isInSelection from "../../../../utils/helpers/isInSelection";
+import './DesktopIcon.css';
+import { FcFolder } from 'react-icons/fc';
+import { AiFillFileText } from 'react-icons/ai';
+import { GoFileSymlinkFile } from 'react-icons/go';
+import { BsFileEarmarkFill } from 'react-icons/bs';
+import { useContext, useState, useEffect, useRef, useMemo } from 'react';
+import { FileSystemContext } from '../../../../contexts/FileSystemContext';
+import { RightClickMenuContext } from '../../../../contexts/RightClickMenuContext';
+import useInput from '../../../../hooks/useInput';
+import DesktopIconContextMenu from '../../component-specific-context-menus/DesktopIconContextMenu';
+import openWithDefaultApp from '../../../../utils/helpers/openWithDefaultApp';
+import { path as Path } from 'filer';
+import getFileType from '../../../../utils/helpers/getFileType';
+import isInSelection from '../../../../utils/helpers/isInSelection';
 
 const DesktopIcon = ({
   name,
@@ -27,7 +27,7 @@ const DesktopIcon = ({
 }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
-  const [imgSrc, setImgSrc] = useState("");
+  const [imgSrc, setImgSrc] = useState('');
   const { renameFSO, deleteFSO, readFileContent, readBlob } =
     useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
@@ -46,28 +46,24 @@ const DesktopIcon = ({
   };
 
   const renderIcon = useMemo(() => {
-    if (type === "file") {
+    if (type === 'file') {
       const fileType = getFileType(Path.extname(name));
 
-      if (fileType === "text")
-        return <AiFillFileText size='2.5rem' color='white' />;
+      if (fileType === 'text') return <AiFillFileText size='2.5rem' color='white' />;
 
-      if (fileType === "image") {
+      if (fileType === 'image') {
         readFileContent(Path.join(path, name), setImageSource);
         return <img src={imgSrc} width='70%' height='100%' draggable={false} />;
       }
 
-      if (fileType === "video") {
+      if (fileType === 'video') {
         readBlob(Path.join(path, name), setImageSource);
-        return (
-          <video src={imgSrc} width='70%' height='100%' draggable={false} />
-        );
+        return <video src={imgSrc} width='70%' height='100%' draggable={false} />;
       }
 
       if (fileType === undefined)
         return <BsFileEarmarkFill size='2.5rem' color='white' />;
-    } else if (type === "link")
-      return <GoFileSymlinkFile size='2.5rem' color='white' />;
+    } else if (type === 'link') return <GoFileSymlinkFile size='2.5rem' color='white' />;
     else return <FcFolder size='2.5rem' />;
   }, [imgSrc]);
 
@@ -77,7 +73,7 @@ const DesktopIcon = ({
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       inputRef.current.blur();
     }
@@ -86,9 +82,9 @@ const DesktopIcon = ({
   const handleDragStart = (e) => {
     e.stopPropagation();
     e.dataTransfer.setData(
-      "json",
+      'json',
       JSON.stringify({
-        origin: "Desktop",
+        origin: 'Desktop',
         dragObjects: [
           ...(Object.keys(selectedElements).length
             ? [
@@ -131,14 +127,13 @@ const DesktopIcon = ({
 
   const stopPropagation = (e) => e.stopPropagation();
 
-  const handleDoubleClick = (e) =>
-    openWithDefaultApp(type, path, name, startProcess);
+  const handleDoubleClick = (e) => openWithDefaultApp(type, path, name, startProcess);
 
   useEffect(() => {
     const eventHandler = (e) => setIsSelected(false);
-    document.addEventListener("click", eventHandler);
+    document.addEventListener('click', eventHandler);
     return () => {
-      document.removeEventListener("click", eventHandler);
+      document.removeEventListener('click', eventHandler);
     };
   }, []);
 
@@ -161,25 +156,21 @@ const DesktopIcon = ({
   });
 
   useEffect(() => {
-    if (!isSelected)
-      setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
+    if (!isSelected) setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
 
-    return () =>
-      setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
+    return () => setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
   }, [isSelected]);
 
   return (
     <div
       ref={iconRef}
-      className={`flex-center desktop-icon${isSelected ? "-selected" : ""}`}
+      className={`flex-center desktop-icon${isSelected ? '-selected' : ''}`}
       onMouseDown={stopPropagation}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}
       style={{
-        gridArea: `${gridPosition?.row || 1}/${gridPosition?.column || 1}/${
-          gridPosition?.row || 1
-        }/${gridPosition?.column || 1}`,
+        gridArea: `${gridPosition?.row}/${gridPosition?.column}/${gridPosition?.row}/${gridPosition?.column}`,
       }}
       draggable
       onDragStart={handleDragStart}

@@ -1,5 +1,5 @@
-import { path as Path } from "filer";
-import getFileType from "./getFileType";
+import { path as Path } from 'filer';
+import getFileType from './getFileType';
 
 const getFolderContent = async (dirReader) => {
   let results = await readEntriesPromise(dirReader);
@@ -16,9 +16,7 @@ const getFolderContent = async (dirReader) => {
 };
 
 const readEntriesPromise = async (dirReader) =>
-  await new Promise((resolve, reject) =>
-    dirReader.readEntries(resolve, reject)
-  );
+  await new Promise((resolve, reject) => dirReader.readEntries(resolve, reject));
 
 const handleExternalFileDrop = async (
   entries,
@@ -36,10 +34,11 @@ const handleExternalFileDrop = async (
 
   const calcCombindedProgress = (loaded, total) => {
     const progressSegmentSize = 100 / customProgress.total;
-    const childProgress = loaded / total;
-    const combinedProgress = progressSegmentSize * childProgress;
+    const childProgress = (loaded || 1) / (total || 1);
+    const combinedProgress = Math.round(progressSegmentSize * childProgress);
+
     setProgress(
-      progressSegmentSize * customProgress.loaded + Math.round(combinedProgress)
+      Math.round(progressSegmentSize * customProgress.loaded + combinedProgress)
     );
   };
 
@@ -75,7 +74,7 @@ const handleExternalFileDrop = async (
           });
         }
 
-        if (fileType === "text")
+        if (fileType === 'text')
           entry.file((file) => {
             reader.onprogress = handleProgress;
 
@@ -93,7 +92,7 @@ const handleExternalFileDrop = async (
             reader.readAsText(file);
           });
 
-        if (fileType === "image")
+        if (fileType === 'image')
           entry.file((file) => {
             reader.onprogress = handleProgress;
 
@@ -111,7 +110,7 @@ const handleExternalFileDrop = async (
             reader.readAsDataURL(file);
           });
 
-        if (fileType === "video")
+        if (fileType === 'video')
           entry.file((file) => {
             reader.onprogress = handleProgress;
 
@@ -129,7 +128,7 @@ const handleExternalFileDrop = async (
     if (entry.isDirectory) {
       const dirReader = entry.createReader();
 
-      createFSO(dropzone, entry.fullPath, "directory", "");
+      createFSO(dropzone, entry.fullPath, 'directory', '');
       handleProgress({});
 
       if (!isCalledInFolder) {
@@ -141,16 +140,14 @@ const handleExternalFileDrop = async (
         for (let [i, item] of folderContent.entries()) {
           await handleExternalFileDrop(
             [item],
-            item.isFile
-              ? Path.join(dropzone, Path.dirname(item.fullPath))
-              : dropzone,
+            item.isFile ? Path.join(dropzone, Path.dirname(item.fullPath)) : dropzone,
             setProgress,
             createFSO,
             createBlob,
             setFileCount,
             fileReaderRef,
             true,
-            { loaded: i, total: folderContent.length - 1 }
+            { loaded: i, total: folderContent.length }
           );
         }
       }
@@ -168,7 +165,7 @@ const handleExternalFileDrop = async (
         setFileCount,
         fileReaderRef,
         false,
-        { loaded: i, total: entries.length - 1 }
+        { loaded: i, total: entries.length }
       );
     }
   }

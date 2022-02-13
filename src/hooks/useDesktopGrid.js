@@ -162,18 +162,25 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
     });
 
   const addToGrid = async (items, newCellPosition) => {
-    if (!Object.keys(grid).length || !grid[items[0]]) {
+    if (items.length === 1 && !grid[items[0]]) {
       setGrid({ ...grid, [items[0]]: newCellPosition });
     } else {
       let newGrid = { ...grid };
       let movedColumns = 0;
       let movedRows = 0;
 
-      if (newCellPosition.column !== grid[items[0]].column) {
-        movedColumns = newCellPosition.column - grid[items[0]].column;
+      if (!grid[items[0]]) {
+        console.log('adding to grid');
+        items.forEach((item) => {
+          newGrid[item] = newCellPosition;
+        });
       }
-      if (newCellPosition.row !== grid[items[0]].row) {
-        movedRows = newCellPosition.row - grid[items[0]].row;
+
+      if (newCellPosition.column !== newGrid[items[0]].column) {
+        movedColumns = newCellPosition.column - newGrid[items[0]].column;
+      }
+      if (newCellPosition.row !== newGrid[items[0]].row) {
+        movedRows = newCellPosition.row - newGrid[items[0]].row;
       }
 
       for (let name of items) {

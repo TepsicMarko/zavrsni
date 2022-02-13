@@ -1,24 +1,23 @@
-import "./Desktop.css";
-import { useContext, useState } from "react";
-import windowsDefault from "../../../assets/windowsDefault.jpg";
-import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
-import { FileSystemContext } from "../../../contexts/FileSystemContext";
-import { ProcessesContext } from "../../../contexts/ProcessesContext";
-import useDesktopGrid from "../../../hooks/useDesktopGrid";
-import DesktopIcon from "./desktop-icon/DesktopIcon";
-import DesktopContextMenu from "../component-specific-context-menus/DesktopContextMenu";
-import useWatchFolder from "../../../hooks/useWatchFolder";
-import { path as Path } from "filer";
-import useSelectionRectangle from "../../../hooks/useSelectionRectangle";
+import './Desktop.css';
+import { useContext, useState } from 'react';
+import windowsDefault from '../../../assets/windowsDefault.jpg';
+import { RightClickMenuContext } from '../../../contexts/RightClickMenuContext';
+import { FileSystemContext } from '../../../contexts/FileSystemContext';
+import { ProcessesContext } from '../../../contexts/ProcessesContext';
+import useDesktopGrid from '../../../hooks/useDesktopGrid';
+import DesktopIcon from './desktop-icon/DesktopIcon';
+import DesktopContextMenu from '../component-specific-context-menus/DesktopContextMenu';
+import useWatchFolder from '../../../hooks/useWatchFolder';
+import { path as Path } from 'filer';
+import useSelectionRectangle from '../../../hooks/useSelectionRectangle';
 
 const Desktop = ({ width, height, taskbarHeight }) => {
   const wallpaper = windowsDefault;
-  const origin = "/C/users/admin/Desktop";
+  const origin = '/C/users/admin/Desktop';
   const { renderOptions } = useContext(RightClickMenuContext);
   const { startProcess } = useContext(ProcessesContext);
-  const { createFSO, watch, getFolder, moveFSO } =
-    useContext(FileSystemContext);
-  const [view, setView] = useState("Medium icons");
+  const { createFSO, watch, getFolder, moveFSO } = useContext(FileSystemContext);
+  const [view, setView] = useState('Medium icons');
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
   const {
     rectRef,
@@ -31,24 +30,19 @@ const Desktop = ({ width, height, taskbarHeight }) => {
   } = useSelectionRectangle();
 
   const evalTaskbarHeight = () =>
-    typeof taskbarHeight !== "number"
+    typeof taskbarHeight !== 'number'
       ? parseInt(taskbarHeight) * 16
       : taskbarHeight < 48
       ? 48
       : taskbarHeight;
 
-  const {
-    grid,
-    addToGrid,
-    updateGridItemName,
-    deleteFromGrid,
-    calculateGridPosition,
-  } = useDesktopGrid({
-    maxRows: Math.floor(
-      (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
-    ),
-    maxColumns: Math.floor(document.documentElement.clientWidth / 68),
-  });
+  const { grid, addToGrid, updateGridItemName, deleteFromGrid, calculateGridPosition } =
+    useDesktopGrid({
+      maxRows: Math.floor(
+        (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
+      ),
+      maxColumns: Math.floor(document.documentElement.clientWidth / 68),
+    });
 
   const handleRightClick = (e) => {
     const { clientX, clientY } = e;
@@ -78,13 +72,12 @@ const Desktop = ({ width, height, taskbarHeight }) => {
 
   const handleDrop = (e) => {
     if (!e.dataTransfer.files.length) {
-      const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
+      const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
       console.log(dataTransfer);
-      if (dataTransfer.origin === "Desktop")
+      if (dataTransfer.origin === 'Desktop')
         addToGrid(
           dataTransfer.dragObjects,
-          calculateGridPosition({ x: e.clientX, y: e.clientY }),
-          true
+          calculateGridPosition({ x: e.clientX, y: e.clientY })
         );
       else
         dataTransfer.dragObjects.forEach(({ path, name }) => {
@@ -92,11 +85,14 @@ const Desktop = ({ width, height, taskbarHeight }) => {
         });
     } else {
       e.preventDefault();
-      console.log(e.dataTransfer.items);
-      startProcess("File Transfer Dialog", {
+      startProcess('File Transfer Dialog', {
         entries: getEntries(e.dataTransfer.items),
         dropPath: origin,
       });
+      addToGrid(
+        Object.values(e.dataTransfer.files).map((file) => file.name),
+        calculateGridPosition({ x: e.clientX, y: e.clientY })
+      );
     }
   };
   const preventDefault = (e) => e.preventDefault();
@@ -131,6 +127,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
     >
       {folderContent.map(({ name, type }) => (
         <DesktopIcon
+          key={name}
           name={name}
           path={origin}
           type={type.toLowerCase()}
@@ -144,11 +141,7 @@ const Desktop = ({ width, height, taskbarHeight }) => {
         />
       ))}
 
-      <div
-        ref={rectRef}
-        className='rect-selection'
-        style={{ ...calcRectStyle() }}
-      ></div>
+      <div ref={rectRef} className='rect-selection' style={{ ...calcRectStyle() }}></div>
     </div>
   );
 };
