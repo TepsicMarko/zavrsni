@@ -1,18 +1,19 @@
-import "./Taskbar.css";
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { BsWindows } from "react-icons/bs";
-import { VscSearch } from "react-icons/vsc";
-import { MdOutlineKeyboardArrowUp, MdMessage } from "react-icons/md";
-import { AiOutlineWifi } from "react-icons/ai";
-import { GiSpeaker } from "react-icons/gi";
-import remToPx from "../../../utils/helpers/remToPx";
-import moment from "moment";
-import { ProcessesContext } from "../../../contexts/ProcessesContext";
-import useToggle from "../../../hooks/useToggle";
-import useInput from "../../../hooks/useInput";
-import processConfigurations from "../../../utils/constants/processConfigurations";
-import StartMenu from "./start-menu/StartMenu";
-import WindowsSearch from "../windows-search/WindowsSearch";
+import './Taskbar.css';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { BsWindows } from 'react-icons/bs';
+import { VscSearch } from 'react-icons/vsc';
+import { MdOutlineKeyboardArrowUp, MdMessage } from 'react-icons/md';
+import { AiOutlineWifi } from 'react-icons/ai';
+import { GiSpeaker } from 'react-icons/gi';
+import remToPx from '../../../utils/helpers/remToPx';
+import moment from 'moment';
+import { ProcessesContext } from '../../../contexts/ProcessesContext';
+import useToggle from '../../../hooks/useToggle';
+import useInput from '../../../hooks/useInput';
+import processConfigurations from '../../../utils/constants/processConfigurations';
+import StartMenu from './start-menu/StartMenu';
+import WindowsSearch from '../windows-search/WindowsSearch';
+import TaskbarIcon from './taskbar-icon/TaskbarIcon';
 
 const Taskbar = ({
   width,
@@ -26,20 +27,17 @@ const Taskbar = ({
   setTaskbarDimensions,
 }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [time, setTime] = useState(moment().format("h:mm a"));
+  const [time, setTime] = useState(moment().format('h:mm a'));
   const [isResizing, toggleResizing] = useToggle();
   const [isStartMenuVisible, setStartMenuVisibility] = useState(false);
   const [isWindowsSearchOpen, setIsWindowsSearchOpen] = useState(false);
   const [searchVal, handleSearchChange] = useInput();
   const verticalWidthRef = useRef(0);
   const horizontalHeightRef = useRef(0);
-  const { processes, startProcess, focusProcess } =
-    useContext(ProcessesContext);
+  const { processes, startProcess, focusProcess } = useContext(ProcessesContext);
 
   const isVerticalClassName = (className) => {
-    return `${className}${
-      taskbarOrientation === "vertical" ? "-vertical" : ""
-    }`;
+    return `${className}${taskbarOrientation === 'vertical' ? '-vertical' : ''}`;
   };
 
   const colapseStartMenu = () => setStartMenuVisibility(false);
@@ -51,14 +49,14 @@ const Taskbar = ({
 
   const determineRotaion = () => {
     switch (Object.keys(taskbarPosition)[0]) {
-      case "top":
-        return "180deg";
-      case "right":
-        return "270deg";
-      case "bottom":
-        return "0deg";
-      case "left":
-        return "90deg";
+      case 'top':
+        return '180deg';
+      case 'right':
+        return '270deg';
+      case 'bottom':
+        return '0deg';
+      case 'left':
+        return '90deg';
     }
   };
 
@@ -72,32 +70,32 @@ const Taskbar = ({
 
     const newHeight =
       e.clientY < maxHeight
-        ? position === "bottom"
+        ? position === 'bottom'
           ? maxHeight
           : e.clientY
-        : position === "top"
+        : position === 'top'
         ? maxHeight
         : clientHeight - e.clientY;
 
     const maxWidth = clientWidth * 0.5;
     const newWidth =
       e.clientX < maxWidth
-        ? position === "right"
+        ? position === 'right'
           ? maxWidth
           : e.clientX
-        : position === "left"
+        : position === 'left'
         ? maxWidth
         : clientWidth - e.clientX;
 
     const newTaskbarDimensions = {
       width:
-        taskbarOrientation === "horizontal"
+        taskbarOrientation === 'horizontal'
           ? width
           : newWidth <= maxWidth
           ? newWidth
           : maxWidth,
       height:
-        taskbarOrientation === "vertical"
+        taskbarOrientation === 'vertical'
           ? height
           : newHeight <= maxHeight
           ? newHeight
@@ -105,9 +103,9 @@ const Taskbar = ({
     };
 
     setTaskbarDimensions(newTaskbarDimensions);
-    taskbarOrientation === "vertical" &&
+    taskbarOrientation === 'vertical' &&
       (verticalWidthRef.current = newTaskbarDimensions.width);
-    taskbarOrientation === "horizontal" &&
+    taskbarOrientation === 'horizontal' &&
       (horizontalHeightRef.current = newTaskbarDimensions.height);
   };
   const handleResizeEnd = (e) => {
@@ -117,45 +115,15 @@ const Taskbar = ({
 
   const calcResizePosition = () => {
     switch (Object.keys(taskbarPosition)[0]) {
-      case "top":
-        return { bottom: 0, height: "0.35rem ", width: "100%" };
-      case "right":
-        return { left: 0, width: "0.35rem ", height: "100%" };
-      case "bottom":
-        return { top: 0, height: "0.35rem ", width: "100%" };
-      case "left":
-        return { right: 0, width: "0.35rem ", height: "100%" };
+      case 'top':
+        return { bottom: 0, height: '0.35rem ', width: '100%' };
+      case 'right':
+        return { left: 0, width: '0.35rem ', height: '100%' };
+      case 'bottom':
+        return { top: 0, height: '0.35rem ', width: '100%' };
+      case 'left':
+        return { right: 0, width: '0.35rem ', height: '100%' };
     }
-  };
-
-  const renderTaskbarIcons = () => {
-    const taskbarIcons = [];
-
-    for (let process in processConfigurations) {
-      const app = processConfigurations[process];
-      app.pinnedToTaskbar && taskbarIcons.push({ ...app, name: process });
-    }
-
-    return taskbarIcons.map((app) => {
-      const handleClick = () => {
-        if (Object.keys(processes[app.name] || {}).length === 1) {
-          focusProcess(app.name);
-        }
-
-        if (!processes[app.name] || !Object.keys(processes[app.name]).length)
-          startProcess(app.name);
-
-        colapseStartMenu();
-        closeWindowsSearch();
-      };
-
-      return (
-        <div className='flex-center taskbar-icon' onClick={handleClick}>
-          {React.cloneElement(app.icon, { size: "1.5rem" })}
-          {Object.keys(processes[app.name] || {}).length ? <span></span> : null}
-        </div>
-      );
-    });
   };
 
   const toggleStartMenu = () => {
@@ -165,8 +133,8 @@ const Taskbar = ({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log("updating time");
-      setTime(moment().format("h:mm a"));
+      console.log('updating time');
+      setTime(moment().format('h:mm a'));
     }, 60000);
 
     return () => clearInterval(interval);
@@ -177,18 +145,17 @@ const Taskbar = ({
       style={{
         backgroundColor: accentColor,
         width:
-          verticalWidthRef.current > remToPx(width) &&
-          taskbarOrientation === "vertical"
+          verticalWidthRef.current > remToPx(width) && taskbarOrientation === 'vertical'
             ? verticalWidthRef.current
             : width,
         height:
           horizontalHeightRef.current > remToPx(height) &&
-          taskbarOrientation === "horizontal"
+          taskbarOrientation === 'horizontal'
             ? horizontalHeightRef.current
             : height,
         ...taskbarPosition,
       }}
-      className={isVerticalClassName("taskbar")}
+      className={isVerticalClassName('taskbar')}
       draggable={!isStartMenuVisible && !isWindowsSearchOpen}
       onDragStart={!isResizing ? handleDragStart : null}
       onDrag={!isResizing ? handleDrag : null}
@@ -199,14 +166,14 @@ const Taskbar = ({
         className='taskbar-resize'
         style={{
           ...calcResizePosition(),
-          cursor: taskbarOrientation === "vertical" ? "w-resize" : "s-resize",
+          cursor: taskbarOrientation === 'vertical' ? 'w-resize' : 's-resize',
         }}
         draggable
         onDragStart={handleResizeStart}
         onDrag={handleResize}
         onDragEnd={handleResizeEnd}
       ></div>
-      <div className={isVerticalClassName("start-and-search")}>
+      <div className={isVerticalClassName('start-and-search')}>
         <div
           className='flex-center start'
           onClick={toggleStartMenu}
@@ -216,10 +183,10 @@ const Taskbar = ({
         </div>
         <div className='flex-center windows-search-bar'>
           <VscSearch
-            className={isVerticalClassName("search-icon")}
-            color={isSearchFocused ? "black" : "white"}
+            className={isVerticalClassName('search-icon')}
+            color={isSearchFocused ? 'black' : 'white'}
           />
-          {taskbarOrientation !== "vertical" && (
+          {taskbarOrientation !== 'vertical' && (
             <input
               value={searchVal}
               onChange={handleSearchChange}
@@ -242,12 +209,23 @@ const Taskbar = ({
           />
         </div>
       </div>
-      <div className='app-shortcuts'>{renderTaskbarIcons()}</div>
-      <div className={isVerticalClassName("system-tray")}>
-        <div
-          className='open-apps'
-          style={{ transform: `rotate(${determineRotaion()})` }}
-        >
+      <div className='app-shortcuts'>
+        {Object.entries(processConfigurations)
+          .filter(([name, appConfig]) => appConfig.pinnedToTaskbar)
+          .map(([name, appConfig]) => (
+            <TaskbarIcon
+              name={name}
+              icon={appConfig.icon}
+              focusProcess={focusProcess}
+              startProcess={startProcess}
+              processes={processes}
+              colapseStartMenu={colapseStartMenu}
+              closeWindowsSearch={closeWindowsSearch}
+            />
+          ))}
+      </div>
+      <div className={isVerticalClassName('system-tray')}>
+        <div className='open-apps' style={{ transform: `rotate(${determineRotaion()})` }}>
           <MdOutlineKeyboardArrowUp size='2rem' />
         </div>
         <div className='network'>
@@ -256,14 +234,12 @@ const Taskbar = ({
         <div className='sound'>
           <GiSpeaker size='1.5rem' />
         </div>
-        <div className='language'>
-          {navigator.language || navigator.userLanguage}
+        <div className='language'>{navigator.language || navigator.userLanguage}</div>
+        <div className={isVerticalClassName('current-date')}>
+          {time} <br /> {height >= 96 && [moment().format('dddd'), <br />]}
+          {moment().format('DD/MM/yyyy')}
         </div>
-        <div className={isVerticalClassName("current-date")}>
-          {time} <br /> {height >= 96 && [moment().format("dddd"), <br />]}
-          {moment().format("DD/MM/yyyy")}
-        </div>
-        <div className={isVerticalClassName("windows-notifications")}>
+        <div className={isVerticalClassName('windows-notifications')}>
           <MdMessage size='1.35rem' />
         </div>
       </div>

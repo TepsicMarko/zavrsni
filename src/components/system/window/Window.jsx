@@ -1,15 +1,9 @@
-import "./Window.css";
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useRef,
-  useCallback,
-} from "react";
-import remToPx from "../../../utils/helpers/remToPx";
-import { ProcessesContext } from "../../../contexts/ProcessesContext";
-import { WindowDimensionsContext } from "../../../contexts/WindowDimensionsContext";
-import TitleBar from "./title-bar/TitleBar";
+import './Window.css';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import remToPx from '../../../utils/helpers/remToPx';
+import { ProcessesContext } from '../../../contexts/ProcessesContext';
+import { WindowDimensionsContext } from '../../../contexts/WindowDimensionsContext';
+import TitleBar from './title-bar/TitleBar';
 
 const Window = ({
   children,
@@ -103,30 +97,30 @@ const Window = ({
   const resize = (e) => {
     e.stopPropagation();
     const { offsetX, offsetY } = e.nativeEvent;
-    const className = e.target.getAttribute("class");
-    const handlePosition = className.slice(className.indexOf("-") + 1);
+    const className = e.target.getAttribute('class');
+    const handlePosition = className.slice(className.indexOf('-') + 1);
 
-    if (handlePosition === "l" || handlePosition === "r") {
+    if (handlePosition === 'l' || handlePosition === 'r') {
       let newWidth = width + offsetX;
-      if (handlePosition === "l") {
+      if (handlePosition === 'l') {
         handleLeftResizeHandle(offsetX);
       } else setWidth(newWidth > minWidth ? newWidth : width);
     }
 
-    if (handlePosition === "t" || handlePosition === "b") {
+    if (handlePosition === 't' || handlePosition === 'b') {
       let newHeight = height + offsetY;
-      if (handlePosition === "t") {
+      if (handlePosition === 't') {
         handleTopResizeHandle(offsetY);
       } else setHeight(newHeight > minHeight ? newHeight : height);
     }
 
-    if (handlePosition === "bl") {
+    if (handlePosition === 'bl') {
       let newHeight = height + offsetY;
       handleLeftResizeHandle(offsetX);
       setHeight(newHeight > minHeight ? newHeight : height);
     }
 
-    if (handlePosition === "tl") {
+    if (handlePosition === 'tl') {
       const newPosition = {};
       const top = handleTopResizeHandle(offsetY, true);
       const left = handleLeftResizeHandle(offsetX, true);
@@ -135,13 +129,13 @@ const Window = ({
       setPosition(newPosition);
     }
 
-    if (handlePosition === "tr") {
+    if (handlePosition === 'tr') {
       const newWidth = width + offsetX;
       handleTopResizeHandle(offsetY);
       setWidth(newWidth > minWidth ? newWidth : width);
     }
 
-    if (handlePosition === "br") {
+    if (handlePosition === 'br') {
       const newWidth = width + offsetX;
       const newHeight = height + offsetY;
       setWidth(newWidth > minWidth ? newWidth : width);
@@ -174,8 +168,7 @@ const Window = ({
   const maximiseWindow = useCallback(() => {
     const { clientWidth, clientHeight } = document.documentElement;
     if (height >= clientHeight && width >= clientWidth) {
-      const { width, height, position } =
-        previousDimensionsAndPositionRef.current;
+      const { width, height, position } = previousDimensionsAndPositionRef.current;
       setHeight(height);
       setWidth(width);
       setPosition(position);
@@ -197,8 +190,7 @@ const Window = ({
         dialog || process,
         JSON.stringify({
           ...appDataRef.current,
-          previousDimensionsAndPosition:
-            previousDimensionsAndPositionRef.current,
+          previousDimensionsAndPosition: previousDimensionsAndPositionRef.current,
         })
       );
     };
@@ -211,8 +203,7 @@ const Window = ({
         setWidth(width);
         setHeight(height);
         setPosition(position);
-        previousDimensionsAndPositionRef.current =
-          previousDimensionsAndPosition;
+        previousDimensionsAndPositionRef.current = previousDimensionsAndPosition;
       }
     };
 
@@ -232,6 +223,7 @@ const Window = ({
   return (
     <div
       className='window'
+      id={pid}
       style={{
         width,
         height,
@@ -241,26 +233,25 @@ const Window = ({
         zIndex: zIndex
           ? zIndex
           : processes[parentProcess || process][pid] &&
-            processes[parentProcess || process][pid].focusLevel +
-              (parentProcess ? 1 : 0),
+            processes[parentProcess || process][pid].focusLevel + (parentProcess ? 1 : 0),
         visibility: processes[parentProcess || process][pid]
           ? !processes[parentProcess || process][pid].minimised
-            ? "visible"
-            : "hidden"
-          : "",
+            ? 'visible'
+            : 'hidden'
+          : '',
       }}
       onClick={resizable && setFocus}
     >
       {resizable &&
         [
-          "resize-l",
-          "resize-t",
-          "resize-r",
-          "resize-b",
-          "resize-bl",
-          "resize-tl",
-          "resize-tr",
-          "resize-br",
+          'resize-l',
+          'resize-t',
+          'resize-r',
+          'resize-b',
+          'resize-bl',
+          'resize-tl',
+          'resize-tr',
+          'resize-br',
         ].map((el) => (
           <div
             draggable
@@ -279,7 +270,7 @@ const Window = ({
         handleDragStart={handleDragStart}
         handleDrag={handleDrag}
         handleDragEnd={handleDragEnd}
-        title={displayTitle ? titleBar.title || process : ""}
+        title={displayTitle ? titleBar.title || process : ''}
         icon={icon}
         limitedWindowControls={limitedWindowControls}
         overlay={titleBar.overlay}
