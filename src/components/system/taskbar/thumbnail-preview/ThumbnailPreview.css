@@ -1,0 +1,45 @@
+.thumbnail-previews {
+  position: absolute;
+  bottom: 2.75rem;
+  width: fit-content;
+  z-index: 1000;
+  display: flex;
+}
+
+.thumbnail-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  align-content: flex-start;
+  background-color: hsla(0, 0%, 20%, 0.8);
+  padding: 0.5rem;
+  padding-top: 0;
+  box-sizing: border-box;
+}
+
+.thumbnail-title {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  height: 2.5rem;
+  color: white;
+  font-weight: 100;
+  font-size: 0.8rem;
+}
+
+.thumbnail-title > :first-child {
+  margin: 0 0.5rem;
+}
+
+.thumbnail-content {
+  flex-basis: 100%;
+  height: calc(100% - 2.5rem);
+}
+
+.thumbnail-content > img {
+  max-width: 13rem;
+  max-height: 10rem;
+  height: 100%;
+  object-fit: contain;
+}

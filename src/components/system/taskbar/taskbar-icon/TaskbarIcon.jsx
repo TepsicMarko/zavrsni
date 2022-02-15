@@ -28,22 +28,15 @@ const TaskbarIcon = ({
     <div
       className='flex-center taskbar-icon'
       onClick={handleClick}
-      onMouseEnter={
-        handleMouseOver
-        // if (processes[name]) {
-        //   for (let pid of Object.keys(processes[name])) {
-        //     console.log(document.getElementById(pid), pid);
-        //   }
-        // }
-      }
+      onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
     >
       {cloneElement(icon, { size: '1.5rem' })}
       {Object.keys(processes[name] || {}).length ? <span></span> : null}
       {isMouseOver &&
         processes[name] &&
-        Object.keys(processes[name]).map((pid) => (
-          <ThumbnailPreview id={pid} icon={icon} name={name} />
+        Object.keys(processes).map((name, i) => (
+          <ThumbnailPreview processes={processes[name]} name={name} />
         ))}
     </div>
   );
