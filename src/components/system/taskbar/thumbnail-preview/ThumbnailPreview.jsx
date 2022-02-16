@@ -1,16 +1,27 @@
 import './ThumbnailPreview.css';
 import { useState, useEffect, useRef, cloneElement } from 'react';
 import domtoimage from 'dom-to-image';
+import { MdClose } from 'react-icons/md';
 
-const ThumbnailPreview = ({ processes, name }) => {
+const ThumbnailPreview = ({ processes, name, endProcess }) => {
   const [thumbnails, setThubmnails] = useState({});
   const animationRef = useRef(null);
 
   const animation = (elements) => {
     Object.keys(processes).forEach((id, i) =>
-      domtoimage.toPng(elements[i]).then((imgUrl) => {
-        setThubmnails((thumbnails) => ({ ...thumbnails, [id]: imgUrl }));
-      })
+      domtoimage
+        .toPng(elements[i], {
+          style: {
+            left: '0',
+            right: '0',
+            bottom: '0',
+            top: '0',
+            visibility: 'visible',
+          },
+        })
+        .then((imgUrl) => {
+          setThubmnails((thumbnails) => ({ ...thumbnails, [id]: imgUrl }));
+        })
     );
     animationRef.current = window.requestAnimationFrame(() => animation(elements));
   };
@@ -20,7 +31,7 @@ const ThumbnailPreview = ({ processes, name }) => {
     animationRef.current = window.requestAnimationFrame(() => animation(elements));
 
     return () => window.cancelAnimationFrame(animationRef.current);
-  }, []);
+  }, [processes]);
 
   return Object.keys(thumbnails).length ? (
     <div className='thumbnail-previews'>
@@ -29,6 +40,16 @@ const ThumbnailPreview = ({ processes, name }) => {
           <div className='thumbnail-title'>
             {cloneElement(process.icon, { width: '15px', height: '15px' })}
             {name}
+          </div>
+          <div
+            className='flex-center thumbnail-close'
+            onClick={(e) => {
+              e.stopPropagation();
+              setThubmnails(({ [id]: remove, ...rest }) => ({ ...rest }));
+              endProcess(name, id);
+            }}
+          >
+            <MdClose color='white' />
           </div>
           <div className='flex-center thumbnail-content'>
             <img src={thumbnails[id]} />

@@ -34,7 +34,8 @@ const Taskbar = ({
   const [searchVal, handleSearchChange] = useInput();
   const verticalWidthRef = useRef(0);
   const horizontalHeightRef = useRef(0);
-  const { processes, startProcess, focusProcess } = useContext(ProcessesContext);
+  const { processes, startProcess, focusProcess, endProcess } =
+    useContext(ProcessesContext);
 
   const isVerticalClassName = (className) => {
     return `${className}${taskbarOrientation === 'vertical' ? '-vertical' : ''}`;
@@ -218,6 +219,7 @@ const Taskbar = ({
               icon={appConfig.icon}
               focusProcess={focusProcess}
               startProcess={startProcess}
+              endProcess={endProcess}
               processes={processes}
               colapseStartMenu={colapseStartMenu}
               closeWindowsSearch={closeWindowsSearch}

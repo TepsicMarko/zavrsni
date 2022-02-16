@@ -1,5 +1,5 @@
 import './TaskbarIcon.css';
-import { cloneElement, useState } from 'react';
+import { cloneElement, useState, useRef } from 'react';
 import ThumbnailPreview from '../thumbnail-preview/ThumbnailPreview';
 
 const TaskbarIcon = ({
@@ -7,10 +7,12 @@ const TaskbarIcon = ({
   icon,
   focusProcess,
   startProcess,
+  endProcess,
   processes,
   colapseStartMenu,
   closeWindowsSearch,
 }) => {
+  const timeoutIdRef = useRef(null);
   const [isMouseOver, setIsMouseOver] = useState(false);
 
   const handleClick = () => {
@@ -21,8 +23,12 @@ const TaskbarIcon = ({
     closeWindowsSearch();
   };
 
-  const handleMouseOver = () => setIsMouseOver(true);
-  const handleMouseLeave = () => setIsMouseOver(false);
+  const handleMouseOver = () => {
+    clearInterval(timeoutIdRef.current);
+    setIsMouseOver(true);
+  };
+  const handleMouseLeave = () =>
+    (timeoutIdRef.current = setTimeout(() => setIsMouseOver(false), 250));
 
   return (
     <div
@@ -36,7 +42,11 @@ const TaskbarIcon = ({
       {isMouseOver &&
         processes[name] &&
         Object.keys(processes).map((name, i) => (
-          <ThumbnailPreview processes={processes[name]} name={name} />
+          <ThumbnailPreview
+            processes={processes[name]}
+            name={name}
+            endProcess={endProcess}
+          />
         ))}
     </div>
   );
