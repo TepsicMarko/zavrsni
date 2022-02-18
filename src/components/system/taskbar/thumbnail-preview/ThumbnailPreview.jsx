@@ -1,14 +1,16 @@
 import './ThumbnailPreview.css';
-import { useState, useEffect, useRef, cloneElement } from 'react';
+import { useState, useEffect, useRef, cloneElement, useContext } from 'react';
 import domtoimage from 'dom-to-image';
 import { MdClose } from 'react-icons/md';
+import { ThumbnailPreviewsContext } from '../../../../contexts/ThumbnailPreviewsContext';
 
-const ThumbnailPreview = ({ processes, name, endProcess }) => {
+const ThumbnailPreview = ({ process, endProcess }) => {
   const [thumbnails, setThubmnails] = useState({});
+  const { thumbnailPreviews } = useContext(ThumbnailPreviewsContext);
   const animationRef = useRef(null);
 
   const animation = (elements) => {
-    Object.keys(processes).forEach((id, i) =>
+    (thumbnailPreviews[process] || []).forEach(({ pid }, i) =>
       domtoimage
         .toPng(elements[i], {
           style: {
@@ -20,44 +22,46 @@ const ThumbnailPreview = ({ processes, name, endProcess }) => {
           },
         })
         .then((imgUrl) => {
-          setThubmnails((thumbnails) => ({ ...thumbnails, [id]: imgUrl }));
+          setThubmnails((thumbnails) => ({ ...thumbnails, [pid]: imgUrl }));
         })
     );
     animationRef.current = window.requestAnimationFrame(() => animation(elements));
   };
 
   useEffect(() => {
-    const elements = Object.keys(processes).map((id) => document.getElementById(id));
+    const elements = (thumbnailPreviews[process] || []).map(({ pid }) =>
+      document.getElementById(pid)
+    );
     animationRef.current = window.requestAnimationFrame(() => animation(elements));
 
     return () => window.cancelAnimationFrame(animationRef.current);
-  }, [processes]);
+  }, [thumbnailPreviews[process]]);
 
-  return Object.keys(thumbnails).length ? (
+  return (
     <div className='thumbnail-previews'>
-      {Object.entries(processes).map(([id, process]) => (
+      {(thumbnailPreviews[process] || []).map(({ appTitle, icon, pid }) => (
         <div className='thumbnail-preview'>
           <div className='thumbnail-title'>
-            {cloneElement(process.icon, { width: '15px', height: '15px' })}
-            {name}
+            {cloneElement(icon, { width: '15px', height: '15px' })}
+            {appTitle}
           </div>
           <div
             className='flex-center thumbnail-close'
             onClick={(e) => {
               e.stopPropagation();
-              setThubmnails(({ [id]: remove, ...rest }) => ({ ...rest }));
-              endProcess(name, id);
+              setThubmnails(({ [pid]: remove, ...rest }) => ({ ...rest }));
+              endProcess(process, pid);
             }}
           >
             <MdClose color='white' />
           </div>
           <div className='flex-center thumbnail-content'>
-            <img src={thumbnails[id]} />
+            <img src={thumbnails[pid]} />
           </div>
         </div>
       ))}
     </div>
-  ) : null;
+  );
 };
 
 export default ThumbnailPreview;

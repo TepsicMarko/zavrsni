@@ -1,5 +1,5 @@
 import './TaskbarIcon.css';
-import { cloneElement, useState, useRef } from 'react';
+import { cloneElement, useState, useRef, useContext } from 'react';
 import ThumbnailPreview from '../thumbnail-preview/ThumbnailPreview';
 
 const TaskbarIcon = ({
@@ -39,15 +39,7 @@ const TaskbarIcon = ({
     >
       {cloneElement(icon, { size: '1.5rem' })}
       {Object.keys(processes[name] || {}).length ? <span></span> : null}
-      {isMouseOver &&
-        processes[name] &&
-        Object.keys(processes).map((name, i) => (
-          <ThumbnailPreview
-            processes={processes[name]}
-            name={name}
-            endProcess={endProcess}
-          />
-        ))}
+      {isMouseOver && <ThumbnailPreview process={name} endProcess={endProcess} />}
     </div>
   );
 };

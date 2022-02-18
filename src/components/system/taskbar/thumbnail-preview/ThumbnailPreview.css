@@ -17,13 +17,19 @@
 }
 
 .thumbnail-title {
+  min-width: 0rem;
+  width: 0px;
   flex-grow: 1;
+  max-width: calc(100% - 2.5rem);
   display: flex;
   align-items: center;
   height: 2.25rem;
   color: white;
   font-weight: 100;
   font-size: 0.8rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .thumbnail-close {

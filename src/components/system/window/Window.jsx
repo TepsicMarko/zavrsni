@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext, useRef, useCallback } from 'rea
 import remToPx from '../../../utils/helpers/remToPx';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
 import { WindowDimensionsContext } from '../../../contexts/WindowDimensionsContext';
+import { ThumbnailPreviewsContext } from '../../../contexts/ThumbnailPreviewsContext';
 import TitleBar from './title-bar/TitleBar';
 
 const Window = ({
@@ -36,6 +37,9 @@ const Window = ({
 
   const { endProcess, minimiseToTaskbar, processes, focusProcess } =
     useContext(ProcessesContext);
+  const { addThumbnailPreview, removeThumbnailPreview } = useContext(
+    ThumbnailPreviewsContext
+  );
   const optionalWindowDimensionsContext = useContext(WindowDimensionsContext);
 
   const appDataRef = useRef({ width, height, position });
@@ -211,6 +215,12 @@ const Window = ({
 
     return saveAppData;
   }, []);
+
+  useEffect(() => {
+    addThumbnailPreview(process, titleBar.title || process, icon, pid);
+
+    return () => removeThumbnailPreview(process, pid);
+  }, [process, pid, titleBar.title]);
 
   useEffect(() => {
     optionalWindowDimensionsContext &&
