@@ -1,70 +1,194 @@
-# Getting Started with Create React App
+# Windows 10 clone
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Windows 10 clone is a web app built with React that tries to replicate core features, behavior and design of Windows 10 as closely as possible in the browser.
 
-## Available Scripts
+This project is my highschool final paper, and it was inspired by a [portfolio based on Linux](https://vivek9patel.github.io/)
 
-In the project directory, you can run:
+<br>
 
-### `npm start`
+## System Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+<br>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Desktop
 
-### `npm test`
+- Grid layout that's responsive to browser size
+- Create files and folders with context menu at the location in the grid in which the context menu was opened
+- Drag and drop of desktop icons
+- Drag and drop of multiple desktop icons selected with rectange selection
+- Automatic rearrangement of icons if the dragged icon, or group of icons is dropped onto an occupied position in desktop grid
+- Drag and drop files from your PC to the desktop
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<br>
 
-### `npm run build`
+### Desktop Icon
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Represents File System entry under /Desktop folder
+- Edit icon (file) name
+- Delete icon (file)
+- Open icon (file) with default app
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<br>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Taskbar
 
-### `npm run eject`
+- Resizable and draggable
+- Shows date and country
+- #### Start Menu
+  - Lists all apps alphabetically
+  - Provides shortcuts for /Documents and /Pictures folders
+- #### Windows Search
+  - Navbar for switching between search areas (all, apps, files, web)
+  - Empty search string screen for every search area
+  - Best match and relevant search results section for each search area
+  - Selected search result information and actions section for each search area
+- #### Taskbar icon
+  - Represents a pinned app
+  - Opens app on click
+  - Shows app State (opened, closed, <span style="color:gray">minimized</span>, <span style="color:gray">in focus</span>)
+- #### Thumbnail preview
+  - Shows a preview of open app or app instances
+  - Shows the window title of open app or app instances
+  - close app or app instance
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+<br>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Window
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- Resizable and draggable
+- Open, close, minimize, maximize, focus
+- Saves last position and size
+- Window title displays app's icon and name or custom title
+- Optional status bar
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<br>
 
-## Learn More
+### Dialogs
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Uses window with limited window controls (no minimize, maximize and resize)
+- #### Unsaved Changes
+  - Opened by apps that modify files
+  - Specifies the unsaved file
+  - Options to save or discards changes, or cancel the action that opened it
+- #### File Transfer
+  - Opened when drag and dropping files from users PC to the web app
+  - Specifies the drop location and file count
+  - Shows transfer progress
+  - End transfer (only closes the dialog, but doesn't actually stop file transfer)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+<br>
 
-### Code Splitting
+### Context Menu
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Showed where the user pressed right click
+- Specific to the part of the app in which it was opened
+- Supports submenus
 
-### Analyzing the Bundle Size
+<br>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### File system
 
-### Making a Progressive Web App
+- Uses [filerjs](https://github.com/filerjs/filer) which saves to IndexedDb
+- Create, read, update, delete
+- Default folder structure (likely to change)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+C
+└─ users
+   └─ admin
+      └─ Desktop
+      └─ Documents
+      └─ Downloads
+      └─ Pictures
+      └─ Videos
+```
 
-### Advanced Configuration
+<br>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Processes
 
-### Deployment
+- Apps can have multiple instances
+- Apps can have child processes
+- App instances can be opened and closed independently
+- Each process has a focus level that determines it's z-index on the desktop
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+<br></br>
 
-### `npm run build` fails to minify
+<br>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Apps & Features
+
+<br>
+
+### File Explorer
+
+- #### Address Bar
+  - Back, forth and up navigation
+  - Displays current location
+  - Navigation via changing address bar url
+  - Search current folder and all its children via the search bar
+- #### Navigation Pane
+  - Displays file system tree
+  - When navigating to nested folders, all parent folders expand
+  - Add, rename, expand or collapse, and delete folders with context menu
+- #### Folder Contents
+  - Shows all items inside a folder
+  - Resizable column headings allow for layout adjustment
+  - Create, rename, open and delete files and folders with context menu
+  - On double click open files with default app or navigate to folders
+  - Select multiple files or folders with selection rectangle
+- #### Status Bar
+  - Shows number of items in a directory
+
+<br>
+
+### Notepad
+
+- File name displayed in window title bar
+- Create, read, update and delete files
+- Basic text manipulation: undo, redo, cut, copy, paste, delete
+- Zoom text in/out
+- Status bar displays number of lines and characters
+
+<br>
+
+### Chrome
+
+- Navigation via back and forth buttons, or the url bar
+- Uses iframe for showing google search results
+- Iframe is in sync with url bar
+
+<br>
+
+### Task Manager
+
+- Shows all running apps
+- End selected app
+
+<br>
+
+### Photos
+
+- Zoom image in or out with buttons
+- Pan and zoom implemented via [panzoom](https://github.com/timmywil/panzoom)
+- Delete open image
+- FullScreen mode
+
+<br>
+
+### Movies And TV
+
+- Play and pause video
+- Skip forward, skip backward and skip to a certain point of the video
+- Shows played and total time
+- Adjust audio volume and mute
+- Fullscreen mode
+- Miniplayer mode
+
+<br>
+
+### Command Prompt
+
+- Terminal UI and command history comes from [react console emulator](https://github.com/linuswillner/react-console-emulator), but I implemented all the commands
+- Support basic windows commands and their linux alternatives like: mk/mkdir, cd/chdir, ls/dir, rm/rmdir, move/move...
+- Can manipulate the file system and processes
