@@ -106,7 +106,9 @@ export const FileSystemProvider = ({ children }) => {
     });
 
   const unlink = (path, name) =>
-    fs.unlink(Path.join(path, name), (err) => console.log(err));
+    new Promise((resolve, reject) =>
+      fs.unlink(Path.join(path, name), (err) => resolve())
+    );
 
   const createFSO = async (path, name, type, content, callback) => {
     if (type === 'directory') {
@@ -164,13 +166,13 @@ export const FileSystemProvider = ({ children }) => {
       fs.rename(currentPath, newPath, (err) => (err ? reject(err) : resolve(true)));
     });
 
-  const deleteFSO = (path, name, type, recusive = true) => {
+  const deleteFSO = async (path, name, type, recusive = true) => {
     if (type === 'directory') {
       return recusive
-        ? rmdirRecursive(Path.join(path, name))
+        ? await rmdirRecursive(Path.join(path, name))
         : rmdir(Path.join(path, name));
     } else {
-      unlink(Path.addTrailing(path), name);
+      await unlink(Path.addTrailing(path), name);
     }
   };
 

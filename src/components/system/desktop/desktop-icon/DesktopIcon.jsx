@@ -99,15 +99,14 @@ const DesktopIcon = ({
     );
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (Object.keys(selectedElements).length)
-      Object.values(selectedElements).forEach(({ path, name, type }) => {
-        deleteFSO(path, name, type.toLowerCase());
-        console.log(name);
+      Object.values(selectedElements).forEach(async ({ path, name, type }) => {
+        await deleteFSO(path, name, type.toLowerCase());
         deleteFromGrid(name);
       });
     else {
-      deleteFSO(path, name, type.toLowerCase());
+      await deleteFSO(path, name, type.toLowerCase());
       deleteFromGrid(name);
     }
   };
