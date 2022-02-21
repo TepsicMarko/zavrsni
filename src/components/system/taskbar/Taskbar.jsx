@@ -119,10 +119,12 @@ const Taskbar = ({
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      console.log('updating time');
+    let interval = null;
+
+    setTimeout(() => {
       setTime(moment().format('h:mm a'));
-    }, 60000);
+      interval = setInterval(() => setTime(moment().format('h:mm a')), 60000);
+    }, Math.abs(new Date().getSeconds() * 100 - 6000) * 10);
 
     return () => clearInterval(interval);
   }, []);
