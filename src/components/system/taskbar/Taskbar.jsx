@@ -5,7 +5,6 @@ import { VscSearch } from 'react-icons/vsc';
 import { MdOutlineKeyboardArrowUp, MdMessage } from 'react-icons/md';
 import { AiOutlineWifi } from 'react-icons/ai';
 import { GiSpeaker } from 'react-icons/gi';
-import remToPx from '../../../utils/helpers/remToPx';
 import moment from 'moment';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
 import useToggle from '../../../hooks/useToggle';
@@ -48,59 +47,46 @@ const Taskbar = ({
     setIsWindowsSearchOpen(true);
   };
 
-  const determineRotaion = () => {
-    switch (Object.keys(taskbarPosition)[0]) {
-      case 'top':
-        return '180deg';
-      case 'right':
-        return '270deg';
-      case 'bottom':
-        return '0deg';
-      case 'left':
-        return '90deg';
-    }
-  };
-
-  const handleResizeStart = () => {
-    toggleResizing();
-  };
   const handleResize = (e) => {
-    const position = Object.keys(taskbarPosition)[0];
+    const position = taskbarPosition;
     const { clientHeight, clientWidth } = document.documentElement;
     const maxHeight = clientHeight * 0.5;
+    const maxWidth = clientWidth * 0.5;
 
+    // prettier-ignore
     const newHeight =
       e.clientY < maxHeight
         ? position === 'bottom'
           ? maxHeight
           : e.clientY
         : position === 'top'
-        ? maxHeight
-        : clientHeight - e.clientY;
+          ? maxHeight
+          : clientHeight - e.clientY;
 
-    const maxWidth = clientWidth * 0.5;
+    // prettier-ignore
     const newWidth =
       e.clientX < maxWidth
         ? position === 'right'
           ? maxWidth
           : e.clientX
         : position === 'left'
-        ? maxWidth
-        : clientWidth - e.clientX;
+          ? maxWidth
+          : clientWidth - e.clientX;
 
+    // prettier-ignore
     const newTaskbarDimensions = {
       width:
         taskbarOrientation === 'horizontal'
           ? width
           : newWidth <= maxWidth
-          ? newWidth
-          : maxWidth,
+            ? newWidth
+            : maxWidth,
       height:
         taskbarOrientation === 'vertical'
           ? height
           : newHeight <= maxHeight
-          ? newHeight
-          : maxHeight,
+            ? newHeight
+            : maxHeight,
     };
 
     setTaskbarDimensions(newTaskbarDimensions);
@@ -115,7 +101,7 @@ const Taskbar = ({
   };
 
   const calcResizePosition = () => {
-    switch (Object.keys(taskbarPosition)[0]) {
+    switch (taskbarPosition) {
       case 'top':
         return { bottom: 0, height: '0.35rem ', width: '100%' };
       case 'right':
@@ -141,20 +127,26 @@ const Taskbar = ({
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (taskbarOrientation === 'horizontal')
+      setTaskbarDimensions({
+        height: horizontalHeightRef.current || '2.75rem',
+        width: '100vw',
+      });
+
+    if (taskbarOrientation === 'vertical')
+      setTaskbarDimensions({
+        height: '100vh',
+        width: verticalWidthRef.current || '4.25rem',
+      });
+  }, [taskbarPosition]);
+
   return (
     <div
       style={{
         backgroundColor: accentColor,
-        width:
-          verticalWidthRef.current > remToPx(width) && taskbarOrientation === 'vertical'
-            ? verticalWidthRef.current
-            : width,
-        height:
-          horizontalHeightRef.current > remToPx(height) &&
-          taskbarOrientation === 'horizontal'
-            ? horizontalHeightRef.current
-            : height,
-        ...taskbarPosition,
+        width,
+        height,
       }}
       className={isVerticalClassName('taskbar')}
       draggable={!isStartMenuVisible && !isWindowsSearchOpen}
@@ -170,7 +162,7 @@ const Taskbar = ({
           cursor: taskbarOrientation === 'vertical' ? 'w-resize' : 's-resize',
         }}
         draggable
-        onDragStart={handleResizeStart}
+        onDragStart={toggleResizing}
         onDrag={handleResize}
         onDragEnd={handleResizeEnd}
       ></div>
@@ -227,7 +219,7 @@ const Taskbar = ({
           ))}
       </div>
       <div className={isVerticalClassName('system-tray')}>
-        <div className='open-apps' style={{ transform: `rotate(${determineRotaion()})` }}>
+        <div className='open-apps'>
           <MdOutlineKeyboardArrowUp size='2rem' />
         </div>
         <div className='network'>

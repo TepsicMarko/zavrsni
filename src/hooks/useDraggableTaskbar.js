@@ -1,20 +1,14 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 const useDraggableTaskbar = () => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [taskbarPosition, setTaskbarPosition] = useState({ bottom: 0 });
-  const [taskbarOrientation, setTaskbarOrientation] = useState("horizontal");
+  const [taskbarPosition, setTaskbarPosition] = useState('bottom');
+  const [taskbarOrientation, setTaskbarOrientation] = useState('horizontal');
 
   const handleDragStart = (e) => {
     var img = new Image();
-    img.src =
-      "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=";
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
     e.dataTransfer.setDragImage(img, 0, 0);
-    setIsDragging(true);
   };
-  const updateStateIfNeeded = (position) =>
-    Object.keys(taskbarPosition)[0] !== Object.keys(position)[0] &&
-    setTaskbarPosition(position);
 
   const calcTaskbarPosition = (e) => {
     const { clientWidth, clientHeight } = document.documentElement;
@@ -22,53 +16,45 @@ const useDraggableTaskbar = () => {
     // prvi kvadrant
     if (pageY <= clientHeight / 2 && pageX >= clientWidth / 2) {
       if (clientWidth - pageX < pageY) {
-        updateStateIfNeeded({
-          right: 0,
-        });
-        setTaskbarOrientation("vertical");
+        setTaskbarPosition('right');
+        setTaskbarOrientation('vertical');
       }
       if (clientWidth - pageX > pageY) {
-        updateStateIfNeeded({ top: 0 });
-        setTaskbarOrientation("horizontal");
+        setTaskbarPosition('top');
+        setTaskbarOrientation('horizontal');
       }
     }
     // drugi kvadrant
     if (pageY <= clientHeight / 2 && pageX <= clientWidth / 2) {
       if (pageX < pageY) {
-        updateStateIfNeeded({
-          left: 0,
-        });
-        setTaskbarOrientation("vertical");
+        setTaskbarPosition('left');
+        setTaskbarOrientation('vertical');
       }
       if (pageX > pageY) {
-        updateStateIfNeeded({ top: 0 });
-        setTaskbarOrientation("horizontal");
+        setTaskbarPosition('top');
+        setTaskbarOrientation('horizontal');
       }
     }
     // treci kvadrant
     if (pageY >= clientHeight / 2 && pageX <= clientWidth / 2) {
       if (pageX < clientHeight - pageY) {
-        updateStateIfNeeded({
-          left: 0,
-        });
-        setTaskbarOrientation("vertical");
+        setTaskbarPosition('left');
+        setTaskbarOrientation('vertical');
       }
       if (pageX > clientHeight - pageY) {
-        updateStateIfNeeded({ bottom: 0 });
-        setTaskbarOrientation("horizontal");
+        setTaskbarPosition('bottom');
+        setTaskbarOrientation('horizontal');
       }
     }
     // cetvrti kvadrant
     if (pageY >= clientHeight / 2 && pageX >= clientWidth / 2) {
       if (clientWidth - pageX < clientHeight - pageY) {
-        updateStateIfNeeded({
-          right: 0,
-        });
-        setTaskbarOrientation("vertical");
+        setTaskbarPosition('right');
+        setTaskbarOrientation('vertical');
       }
       if (clientWidth - pageX > clientHeight - pageY) {
-        updateStateIfNeeded({ bottom: 0 });
-        setTaskbarOrientation("horizontal");
+        setTaskbarPosition('bottom');
+        setTaskbarOrientation('horizontal');
       }
     }
   };
@@ -77,7 +63,6 @@ const useDraggableTaskbar = () => {
   const handleDragEnd = (e) => calcTaskbarPosition(e);
 
   return {
-    isDragging,
     taskbarPosition,
     taskbarOrientation,
     handleDragStart,

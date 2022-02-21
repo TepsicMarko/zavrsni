@@ -1,6 +1,6 @@
-import { useState, createContext, cloneElement } from "react";
-import processConfigurations from "../utils/constants/processConfigurations";
-import { nanoid } from "nanoid";
+import { useState, createContext, cloneElement } from 'react';
+import processConfigurations from '../utils/constants/processConfigurations';
+import { nanoid } from 'nanoid';
 export const ProcessesContext = createContext();
 
 export const ProcessesProvider = ({ children }) => {
@@ -40,7 +40,7 @@ export const ProcessesProvider = ({ children }) => {
 
   const startChildProcess = (parent, ppid, child, props) => {
     // ppid => parent pid
-    console.log("Starting child process" + child);
+    console.log('Starting child process' + child);
     // setTimeout(() => {}, 500);
     const hasProps = Object.keys(props).length;
     setProcesses({
@@ -70,10 +70,7 @@ export const ProcessesProvider = ({ children }) => {
     if (parentProcess) newProcessesState[parentProcess][pid].childProcess = {};
     else {
       delete newProcessesState[name][pid];
-      newProcessesFocusLevel = adjustProcessesFocusLevel(
-        pid,
-        newProcessesFocusLevel
-      );
+      newProcessesFocusLevel = adjustProcessesFocusLevel(pid, newProcessesFocusLevel);
 
       setProcessesFocusLevel(newProcessesFocusLevel);
     }
@@ -97,10 +94,7 @@ export const ProcessesProvider = ({ children }) => {
       let newProcessesFocusLevel = [...processesFocusLevel];
       let newProcessesState = { ...processes };
 
-      newProcessesFocusLevel = adjustProcessesFocusLevel(
-        pid,
-        newProcessesFocusLevel
-      );
+      newProcessesFocusLevel = adjustProcessesFocusLevel(pid, newProcessesFocusLevel);
       newProcessesFocusLevel.push({
         name: parentProcess || name,
         pid,
@@ -109,8 +103,7 @@ export const ProcessesProvider = ({ children }) => {
 
       newProcessesFocusLevel.forEach(
         ({ name, pid, focusLevel }) =>
-          (newProcessesState[parentProcess || name][pid].focusLevel =
-            focusLevel)
+          (newProcessesState[parentProcess || name][pid].focusLevel = focusLevel)
       );
 
       newProcessesState[parentProcess || name][pid].minimised = false;
@@ -132,30 +125,6 @@ export const ProcessesProvider = ({ children }) => {
       }}
     >
       {children}
-      {Object.keys(processes).flatMap((process) => {
-        return Object.keys(processes[process]).map((processInstance) => {
-          const appInstance = processes[process][processInstance];
-
-          return appInstance.childProcess ? (
-            <>
-              {cloneElement(appInstance.source, {
-                key: processInstance,
-                pid: processInstance,
-              })}
-              {Object.keys(appInstance.childProcess).length
-                ? cloneElement(appInstance.childProcess.source, {
-                    key: processInstance + "-" + appInstance.childProcess.name,
-                  })
-                : null}
-            </>
-          ) : (
-            cloneElement(appInstance.source, {
-              key: processInstance,
-              pid: processInstance,
-            })
-          );
-        });
-      })}
     </ProcessesContext.Provider>
   );
 };

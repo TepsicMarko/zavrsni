@@ -1,6 +1,5 @@
 import './Desktop.css';
-import { useContext, useState } from 'react';
-import windowsDefault from '../../../assets/windowsDefault.jpg';
+import { useContext, useState, cloneElement } from 'react';
 import { RightClickMenuContext } from '../../../contexts/RightClickMenuContext';
 import { FileSystemContext } from '../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
@@ -11,11 +10,10 @@ import useWatchFolder from '../../../hooks/useWatchFolder';
 import { path as Path } from 'filer';
 import useSelectionRectangle from '../../../hooks/useSelectionRectangle';
 
-const Desktop = ({ width, height, taskbarHeight }) => {
-  const wallpaper = windowsDefault;
+const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
   const origin = '/C/users/admin/Desktop';
   const { renderOptions } = useContext(RightClickMenuContext);
-  const { startProcess } = useContext(ProcessesContext);
+  const { processes, startProcess } = useContext(ProcessesContext);
   const { createFSO, watch, getFolder, moveFSO } = useContext(FileSystemContext);
   const [view, setView] = useState('Medium icons');
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
@@ -102,6 +100,49 @@ const Desktop = ({ width, height, taskbarHeight }) => {
     e.dataTransfer.setDragImage(new Image(), 0, 0);
   };
 
+  const renderProcesses = () =>
+    Object.keys(processes).flatMap((process) => {
+      return Object.keys(processes[process]).map((processInstance) => {
+        const appInstance = processes[process][processInstance];
+
+        return appInstance.childProcess ? (
+          <>
+            {cloneElement(appInstance.source, {
+              key: processInstance,
+              pid: processInstance,
+            })}
+            {Object.keys(appInstance.childProcess).length
+              ? cloneElement(appInstance.childProcess.source, {
+                  key: processInstance + '-' + appInstance.childProcess.name,
+                })
+              : null}
+          </>
+        ) : (
+          cloneElement(appInstance.source, {
+            key: processInstance,
+            pid: processInstance,
+          })
+        );
+      });
+    });
+
+  const renderDesktopIcons = () =>
+    folderContent.map(({ name, type }) => (
+      <DesktopIcon
+        key={name}
+        name={name}
+        path={origin}
+        type={type.toLowerCase()}
+        gridPosition={grid[name]}
+        updateGridItemName={updateGridItemName}
+        deleteFromGrid={deleteFromGrid}
+        startProcess={startProcess}
+        rectRef={rectRef}
+        selectedElements={selectedElements}
+        setSelectedElements={setSelectedElements}
+      />
+    ));
+
   return (
     <div
       draggable
@@ -111,9 +152,8 @@ const Desktop = ({ width, height, taskbarHeight }) => {
       className='desktop'
       onContextMenu={handleRightClick}
       style={{
-        backgroundImage: `url(${wallpaper})`,
-        width: `calc(${width})`,
-        height: `calc(${height})`,
+        maxWidth,
+        maxHeight,
         gridTemplateColumns: `repeat(${Math.floor(
           document.documentElement.clientWidth / 68
         )}, 4.25rem)`,
@@ -125,22 +165,8 @@ const Desktop = ({ width, height, taskbarHeight }) => {
       onDragOver={preventDefault}
       onDrop={handleDrop}
     >
-      {folderContent.map(({ name, type }) => (
-        <DesktopIcon
-          key={name}
-          name={name}
-          path={origin}
-          type={type.toLowerCase()}
-          gridPosition={grid[name]}
-          updateGridItemName={updateGridItemName}
-          deleteFromGrid={deleteFromGrid}
-          startProcess={startProcess}
-          rectRef={rectRef}
-          selectedElements={selectedElements}
-          setSelectedElements={setSelectedElements}
-        />
-      ))}
-
+      {renderDesktopIcons()}
+      {renderProcesses()}
       <div ref={rectRef} className='rect-selection' style={{ ...calcRectStyle() }}></div>
     </div>
   );

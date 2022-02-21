@@ -4,8 +4,10 @@ import Desktop from './components/system/desktop/Desktop';
 import Taskbar from './components/system/taskbar/Taskbar';
 import ContextMenu from './components/system/context-menu/ContextMenu';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useDraggableTaskbar from './hooks/useDraggableTaskbar';
+import remToPx from './utils/helpers/remToPx';
+import windowsDefault from './assets/windowsDefault.jpg';
 import { FileSystemProvider } from './contexts/FileSystemContext';
 import { RightClickMenuProvider } from './contexts/RightClickMenuContext';
 import { ProcessesProvider } from './contexts/ProcessesContext';
@@ -13,7 +15,6 @@ import { ThumbnailPreviewsProvider } from './contexts/ThumbnailPreviewsContext';
 
 const App = () => {
   const {
-    isDragging,
     taskbarPosition,
     taskbarOrientation,
     handleDragStart,
@@ -25,27 +26,39 @@ const App = () => {
     width: '100vw',
     height: '2.75rem',
   });
-  const [dekstopDimensions, setDekstopDimensions] = useState({
-    width: '100vw',
-    height: '100vh',
-  });
 
-  useEffect(() => {
-    taskbarOrientation === 'horizontal' &&
-      taskbarDimensions.width !== '100vw' &&
-      setTaskbarDimensions({ width: '100vw', height: '2.75rem' });
-    taskbarOrientation === 'vertical' &&
-      taskbarDimensions.width !== '4.25rem' &&
-      setTaskbarDimensions({ width: '4.25rem', height: '100vh' });
-  }, [taskbarOrientation]);
+  const calcFlexDirection = () => {
+    if (taskbarPosition === 'top') return 'column-reverse';
+    if (taskbarPosition === 'right') return 'row';
+    if (taskbarPosition === 'bottom') return 'column';
+    if (taskbarPosition === 'left') return 'row-reverse';
+  };
 
   return (
     <FileSystemProvider>
       <RightClickMenuProvider>
         <ThumbnailPreviewsProvider>
           <ProcessesProvider>
-            <div className='App'>
-              <Desktop {...dekstopDimensions} taskbarHeight={taskbarDimensions.height} />
+            <div
+              className='App'
+              style={{
+                flexDirection: calcFlexDirection(),
+                backgroundImage: `url(${windowsDefault})`,
+              }}
+            >
+              <Desktop
+                taskbarHeight={taskbarDimensions.height}
+                maxWidth={
+                  taskbarOrientation === 'vertical'
+                    ? `calc(100% - ${remToPx(taskbarDimensions.width) + 'px'})`
+                    : '100%'
+                }
+                maxHeight={
+                  taskbarOrientation === 'horizontal'
+                    ? `calc(100% - ${remToPx(taskbarDimensions.height) + 'px'})`
+                    : '100%'
+                }
+              />
               <Taskbar
                 {...taskbarDimensions}
                 handleDragStart={handleDragStart}

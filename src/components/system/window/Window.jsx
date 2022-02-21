@@ -170,7 +170,7 @@ const Window = ({
   );
 
   const maximiseWindow = useCallback(() => {
-    const { clientWidth, clientHeight } = document.documentElement;
+    const { clientWidth, clientHeight } = document.getElementsByClassName('desktop')[0];
     if (height >= clientHeight && width >= clientWidth) {
       const { width, height, position } = previousDimensionsAndPositionRef.current;
       setHeight(height);
