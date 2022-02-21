@@ -12,6 +12,7 @@ import openWithDefaultApp from '../../../../utils/helpers/openWithDefaultApp';
 import { path as Path } from 'filer';
 import getFileType from '../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../utils/helpers/isInSelection';
+import useClickOutside from '../../../../hooks/useClickOutside';
 
 const DesktopIcon = ({
   name,
@@ -26,18 +27,35 @@ const DesktopIcon = ({
   setSelectedElements,
 }) => {
   const [isSelected, setIsSelected] = useState(false);
+  const [isInputTexSelected, setIsInputTextSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
   const [imgSrc, setImgSrc] = useState('');
   const { renameFSO, deleteFSO, readFileContent, readBlob } =
     useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
-  const iconRef = useRef(null);
+  const iconRef = useClickOutside('mousedown', () => {
+    setIsSelected(false);
+    setIsInputTextSelected(false);
+  });
 
   const handleBlur = (e) => {
     if (name !== inputValue && inputValue.length && isSelected) {
       renameFSO(path, { old: name, new: inputValue });
       updateGridItemName({ old: name, new: inputValue });
+    }
+
+    if (window.getSelection) {
+      if (window.getSelection().empty) {
+        // Chrome
+        window.getSelection().empty();
+      } else if (window.getSelection().removeAllRanges) {
+        // Firefox
+        window.getSelection().removeAllRanges();
+      }
+    } else if (document.selection) {
+      // IE?
+      document.selection.empty();
     }
   };
 
@@ -114,27 +132,52 @@ const DesktopIcon = ({
     openWithDefaultApp(type, path, name, startProcess);
   };
 
-  const handleRightClick = (e) =>
+  const selectDivText = (el) => {
+    if (document.body.createTextRange) {
+      let range = document.body.createTextRange();
+      range.setStart(el.firstChild, 0);
+      range.setEnd(
+        el.firstChild,
+        Path.basename(el.textContent, Path.extname(el.textContent)).length
+      );
+      range.select();
+      setIsInputTextSelected(true);
+    } else if (window.getSelection) {
+      let selection = window.getSelection();
+      let range = document.createRange();
+      selection.removeAllRanges();
+      range.setStart(el.firstChild, 0);
+      range.setEnd(
+        el.firstChild,
+        Path.basename(el.textContent, Path.extname(el.textContent)).length
+      );
+      selection.addRange(range);
+      setIsInputTextSelected(true);
+    }
+  };
+
+  const handleFocus = (e) => {
+    handleClick(e);
+    isSelected && !isInputTexSelected && selectDivText(inputRef.current);
+  };
+
+  const handleRightClick = (e) => {
+    handleClick(e);
     renderOptions(
       e,
       <DesktopIconContextMenu
         inputRef={inputRef}
         handleDelete={handleDelete}
         handleOpen={handleOpen}
+        selectDivText={selectDivText}
+        handleFocus={handleFocus}
       />
     );
+  };
 
   const stopPropagation = (e) => e.stopPropagation();
 
   const handleDoubleClick = (e) => openWithDefaultApp(type, path, name, startProcess);
-
-  useEffect(() => {
-    const eventHandler = (e) => setIsSelected(false);
-    document.addEventListener('click', eventHandler);
-    return () => {
-      document.removeEventListener('click', eventHandler);
-    };
-  }, []);
 
   useEffect(() => {
     if (rectRef) {
@@ -164,7 +207,6 @@ const DesktopIcon = ({
     <div
       ref={iconRef}
       className={`flex-center desktop-icon${isSelected ? '-selected' : ''}`}
-      onMouseDown={stopPropagation}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}
@@ -181,10 +223,11 @@ const DesktopIcon = ({
         contentEditable={isSelected}
         suppressContentEditableWarning={true}
         className='desktop-icon-name'
-        onClick={handleClick}
+        onClick={handleFocus}
         onInput={handleInputChange}
         onBlur={handleBlur}
         onKeyPress={handleKeyPress}
+        onDoubleClick={stopPropagation}
       >
         {name}
       </div>

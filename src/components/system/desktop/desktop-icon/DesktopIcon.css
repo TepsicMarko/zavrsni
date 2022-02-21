@@ -11,10 +11,13 @@
   align-content: flex-start;
 }
 
-.desktop-icon:hover,
+.desktop-icon:hover {
+  border: 1px solid rgba(255, 255, 255, 0.267);
+  background-color: rgba(255, 255, 255, 0.1);
+}
 .desktop-icon-selected {
   border: 1px solid rgba(255, 255, 255, 0.267);
-  background-color: rgba(255, 255, 255, 0.116);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .desktop-icon > svg,
