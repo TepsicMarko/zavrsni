@@ -35,7 +35,7 @@ const Window = ({
     resizable ? document.documentElement.clientHeight * 0.7 : minHeight
   );
 
-  const { endProcess, minimiseToTaskbar, processes, focusProcess } =
+  const { endProcess, minimizeToTaskbar, processes, focusProcess } =
     useContext(ProcessesContext);
   const { addThumbnailPreview, removeThumbnailPreview } = useContext(
     ThumbnailPreviewsContext
@@ -161,12 +161,12 @@ const Window = ({
     [process, endProcess, parentProcess, onClose]
   );
 
-  const minimiseWindow = useCallback(
+  const minimizeWindow = useCallback(
     (e) => {
       e.stopPropagation();
-      minimiseToTaskbar(process, pid);
+      minimizeToTaskbar(process, pid);
     },
-    [process, minimiseToTaskbar]
+    [process, minimizeToTaskbar]
   );
 
   const maximiseWindow = useCallback(() => {
@@ -245,7 +245,7 @@ const Window = ({
           : processes[parentProcess || process][pid] &&
             processes[parentProcess || process][pid].focusLevel + (parentProcess ? 1 : 0),
         visibility: processes[parentProcess || process][pid]
-          ? !processes[parentProcess || process][pid].minimised
+          ? !processes[parentProcess || process][pid].minimized
             ? 'visible'
             : 'hidden'
           : '',
@@ -276,7 +276,7 @@ const Window = ({
         color={titleBar.color}
         maximiseWindow={maximiseWindow}
         closeWindow={closeWindow}
-        minimiseWindow={minimiseWindow}
+        minimizeWindow={minimizeWindow}
         handleDragStart={handleDragStart}
         handleDrag={handleDrag}
         handleDragEnd={handleDragEnd}

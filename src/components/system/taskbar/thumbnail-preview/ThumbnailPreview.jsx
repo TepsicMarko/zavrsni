@@ -4,13 +4,13 @@ import domtoimage from 'dom-to-image';
 import { MdClose } from 'react-icons/md';
 import { ThumbnailPreviewsContext } from '../../../../contexts/ThumbnailPreviewsContext';
 
-const ThumbnailPreview = ({ process, endProcess }) => {
+const ThumbnailPreview = ({ name, endProcess, focusProcess }) => {
   const [thumbnails, setThubmnails] = useState({});
   const { thumbnailPreviews } = useContext(ThumbnailPreviewsContext);
   const animationRef = useRef(null);
 
   const animation = (elements) => {
-    (thumbnailPreviews[process] || []).forEach(({ pid }, i) =>
+    (thumbnailPreviews[name] || []).forEach(({ pid }, i) =>
       domtoimage
         .toPng(elements[i], {
           style: {
@@ -29,18 +29,18 @@ const ThumbnailPreview = ({ process, endProcess }) => {
   };
 
   useEffect(() => {
-    const elements = (thumbnailPreviews[process] || []).map(({ pid }) =>
+    const elements = (thumbnailPreviews[name] || []).map(({ pid }) =>
       document.getElementById(pid)
     );
     animationRef.current = window.requestAnimationFrame(() => animation(elements));
 
     return () => window.cancelAnimationFrame(animationRef.current);
-  }, [thumbnailPreviews[process]]);
+  }, [thumbnailPreviews[name]]);
 
-  return (
+  return Object.keys(thumbnails).length ? (
     <div className='thumbnail-previews'>
-      {(thumbnailPreviews[process] || []).map(({ appTitle, icon, pid }) => (
-        <div className='thumbnail-preview'>
+      {(thumbnailPreviews[name] || []).map(({ appTitle, icon, pid }) => (
+        <div className='thumbnail-preview' onClick={() => focusProcess(name, pid)}>
           <div className='thumbnail-title'>
             {cloneElement(icon, { width: '15px', height: '15px' })}
             {appTitle}
@@ -50,7 +50,7 @@ const ThumbnailPreview = ({ process, endProcess }) => {
             onClick={(e) => {
               e.stopPropagation();
               setThubmnails(({ [pid]: remove, ...rest }) => ({ ...rest }));
-              endProcess(process, pid);
+              endProcess(name, pid);
             }}
           >
             <MdClose color='white' />
@@ -61,7 +61,7 @@ const ThumbnailPreview = ({ process, endProcess }) => {
         </div>
       ))}
     </div>
-  );
+  ) : null;
 };
 
 export default ThumbnailPreview;

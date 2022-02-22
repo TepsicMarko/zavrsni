@@ -1,0 +1,25 @@
+.taskbar-icon {
+  position: relative;
+  width: 2.75rem;
+  height: 100%;
+  box-sizing: border-box;
+  transition: background 0.02s linear 0.01s;
+}
+
+.taskbar-icon > span {
+  position: absolute;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 80%;
+  border: 1px solid rgb(127, 255, 202);
+  transition: width 0.025s linear;
+  z-index: 1;
+}
+
+.taskbar-icon:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.taskbar-icon:hover > span {
+  width: 100%;
+}

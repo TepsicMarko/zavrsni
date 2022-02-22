@@ -26,14 +26,14 @@ const Taskbar = ({
   setTaskbarDimensions,
 }) => {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [time, setTime] = useState(moment().format('h:mm a'));
+  const [time, setTime] = useState(moment().format('h:mm A'));
   const [isResizing, toggleResizing] = useToggle();
   const [isStartMenuVisible, setStartMenuVisibility] = useState(false);
   const [isWindowsSearchOpen, setIsWindowsSearchOpen] = useState(false);
   const [searchVal, handleSearchChange] = useInput();
   const verticalWidthRef = useRef(0);
   const horizontalHeightRef = useRef(0);
-  const { processes, startProcess, focusProcess, endProcess } =
+  const { processes, startProcess, focusProcess, endProcess, minimizeToTaskbar } =
     useContext(ProcessesContext);
 
   const isVerticalClassName = (className) => {
@@ -122,8 +122,8 @@ const Taskbar = ({
     let interval = null;
 
     setTimeout(() => {
-      setTime(moment().format('h:mm a'));
-      interval = setInterval(() => setTime(moment().format('h:mm a')), 60000);
+      setTime(moment().format('h:mm A'));
+      interval = setInterval(() => setTime(moment().format('h:mm A')), 60000);
     }, Math.abs(new Date().getSeconds() * 100 - 6000) * 10);
 
     return () => clearInterval(interval);
@@ -217,9 +217,11 @@ const Taskbar = ({
               processes={processes}
               colapseStartMenu={colapseStartMenu}
               closeWindowsSearch={closeWindowsSearch}
+              minimizeToTaskbar={minimizeToTaskbar}
             />
           ))}
       </div>
+
       <div className={isVerticalClassName('system-tray')}>
         <div className='open-apps'>
           <MdOutlineKeyboardArrowUp size='2rem' />
@@ -233,7 +235,7 @@ const Taskbar = ({
         <div className='language'>{navigator.language || navigator.userLanguage}</div>
         <div className={isVerticalClassName('current-date')}>
           {time} <br /> {height >= 96 && [moment().format('dddd'), <br />]}
-          {moment().format('DD/MM/yyyy')}
+          {moment().format('M/DD/yyyy')}
         </div>
         <div className={isVerticalClassName('windows-notifications')}>
           <MdMessage size='1.35rem' />

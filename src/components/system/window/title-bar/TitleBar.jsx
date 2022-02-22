@@ -1,11 +1,7 @@
-import "./TitleBar.css";
-import {
-  VscChromeMinimize,
-  VscChromeMaximize,
-  VscChromeClose,
-} from "react-icons/vsc";
+import './TitleBar.css';
+import { VscChromeMinimize, VscChromeMaximize, VscChromeClose } from 'react-icons/vsc';
 
-import { memo } from "react";
+import { memo } from 'react';
 
 const TitleBar = ({
   icon,
@@ -14,7 +10,7 @@ const TitleBar = ({
   color,
   maximiseWindow,
   closeWindow,
-  minimiseWindow,
+  minimizeWindow,
   handleDragStart,
   handleDrag,
   handleDragEnd,
@@ -26,9 +22,9 @@ const TitleBar = ({
       draggable
       className='title-bar'
       style={{
-        backgroundColor: overlay ? "transparent" : backgroundColor,
+        backgroundColor: overlay ? 'transparent' : backgroundColor,
         color,
-        position: overlay ? "absolute" : "",
+        position: overlay ? 'absolute' : '',
       }}
       onDragStart={handleDragStart}
       onDrag={handleDrag}
@@ -39,7 +35,7 @@ const TitleBar = ({
       <div className='window-controls' style={{ backgroundColor }}>
         {!limitedWindowControls && (
           <>
-            <div className='flex-center' onClick={minimiseWindow}>
+            <div className='flex-center' onClick={minimizeWindow}>
               <VscChromeMinimize color={color} size='0.85rem' />
             </div>
             <div className='flex-center' onClick={maximiseWindow}>
@@ -50,7 +46,7 @@ const TitleBar = ({
         <div
           className='flex-center'
           style={{
-            maxWidth: limitedWindowControls ? "41px" : "",
+            maxWidth: limitedWindowControls ? '41px' : '',
           }}
           onClick={closeWindow}
         >
