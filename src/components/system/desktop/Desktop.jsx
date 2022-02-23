@@ -15,7 +15,6 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
   const { renderOptions } = useContext(RightClickMenuContext);
   const { processes, startProcess } = useContext(ProcessesContext);
   const { createFSO, watch, getFolder, moveFSO } = useContext(FileSystemContext);
-  const [view, setView] = useState('Medium icons');
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
   const {
     rectRef,
@@ -34,13 +33,19 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
       ? 48
       : taskbarHeight;
 
-  const { grid, addToGrid, updateGridItemName, deleteFromGrid, calculateGridPosition } =
-    useDesktopGrid({
-      maxRows: Math.floor(
-        (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
-      ),
-      maxColumns: Math.floor(document.documentElement.clientWidth / 68),
-    });
+  const {
+    grid,
+    addToGrid,
+    updateGridItemName,
+    deleteFromGrid,
+    calculateGridPosition,
+    sortGrid,
+  } = useDesktopGrid({
+    maxRows: Math.floor(
+      (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
+    ),
+    maxColumns: Math.floor(document.documentElement.clientWidth / 68),
+  });
 
   const handleRightClick = (e) => {
     const { clientX, clientY } = e;
@@ -53,8 +58,7 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
         addToGrid={addToGrid}
         calculateGridPosition={calculateGridPosition}
         mousePosition={mousePosition}
-        view={view}
-        setView={setView}
+        sortGrid={(sortBy) => sortGrid(sortBy, folderContent)}
       />
     );
   };

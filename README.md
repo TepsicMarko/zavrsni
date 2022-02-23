@@ -13,6 +13,7 @@ This project is my highschool final paper, and it was inspired by a [portfolio b
 ### Desktop
 
 - Grid layout that's responsive to browser size
+- Sort desktop icons by name, size, type and date modified
 - Create files and folders with context menu at the location in the grid in which the context menu was opened
 - Drag and drop of desktop icons
 - Drag and drop of multiple desktop icons selected with rectange selection

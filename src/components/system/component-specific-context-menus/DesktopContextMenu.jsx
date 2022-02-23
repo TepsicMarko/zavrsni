@@ -1,5 +1,5 @@
-import ContextMenuItem from "../context-menu/context-menu-item/ContextMenuItem";
-import { useState } from "react";
+import ContextMenuItem from '../context-menu/context-menu-item/ContextMenuItem';
+import { useState } from 'react';
 
 const DesktopContextMenu = ({
   path,
@@ -8,50 +8,47 @@ const DesktopContextMenu = ({
   calculateGridPosition,
   mousePosition,
   closeMenu,
-  view,
-  setView,
+  sortGrid,
 }) => {
-  const [openSubmenu, setOpenSubmenu] = useState("");
+  const [openSubmenu, setOpenSubmenu] = useState('');
   const handleClick = (name) => setOpenSubmenu(name);
   return (
     <>
       <ContextMenuItem
-        name='View'
-        openSubmenu={openSubmenu === "View"}
+        name='Sort'
+        openSubmenu={openSubmenu === 'Sort'}
         onClick={handleClick}
       >
-        {["Large", "Medium", "Small"].map((el) => (
+        {[
+          ['Name'],
+          ['Size', 'size'],
+          ['Item Type', 'type'],
+          ['Date Modified', 'mtimeMs'],
+        ].map(([name, alt]) => (
           <ContextMenuItem
-            name={el + " icons"}
+            name={name}
             onClick={() => {
-              setView(el + " icons");
+              sortGrid(alt || name);
             }}
-            radio
-            active={view === el + " icons"}
             closeMenu={closeMenu}
           />
         ))}
       </ContextMenuItem>
       <ContextMenuItem
         name='New'
-        openSubmenu={openSubmenu === "New"}
+        openSubmenu={openSubmenu === 'New'}
         onClick={handleClick}
       >
         {[
-          { name: "New Folder", type: "directory" },
-          { name: "New Shortcut", type: "lnk" },
-          { name: "New Text Document", type: "txt" },
+          { name: 'New Folder', type: 'directory' },
+          { name: 'New Shortcut', type: 'lnk' },
+          { name: 'New Text Document', type: 'txt' },
         ].map(({ name, type }) => (
           <ContextMenuItem
             name={name}
             onClick={() => {
               createFSO(path, name, type, undefined, (name) =>
-                addToGrid(
-                  [name],
-                  calculateGridPosition(mousePosition),
-                  false,
-                  true
-                )
+                addToGrid([name], calculateGridPosition(mousePosition), false, true)
               );
             }}
             closeMenu={closeMenu}
