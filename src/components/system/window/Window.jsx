@@ -1,5 +1,12 @@
 import './Window.css';
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from 'react';
 import remToPx from '../../../utils/helpers/remToPx';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
 import { WindowDimensionsContext } from '../../../contexts/WindowDimensionsContext';
@@ -46,18 +53,23 @@ const Window = ({
   const previousDimensionsAndPositionRef = useRef({});
 
   const updateWindowPosition = (e) => {
+    e.stopPropagation();
     const { clientX, clientY } = e;
     setPosition({ top: clientY - offset.y, left: clientX - offset.x });
   };
 
   const setFocus = () => focusProcess(process, pid, parentProcess);
 
-  const handleDragStart = (e) => {
-    resizable && setFocus();
-    const { offsetX, offsetY } = e.nativeEvent;
-    e.dataTransfer.setDragImage(new Image(), 0, 0);
-    setOffset({ x: offsetX, y: offsetY });
-  };
+  const handleDragStart = useCallback(
+    (e) => {
+      e.stopPropagation();
+      resizable && setFocus();
+      const { offsetX, offsetY } = e.nativeEvent;
+      e.dataTransfer.setDragImage(new Image(), 0, 0);
+      setOffset({ x: offsetX, y: offsetY });
+    },
+    [process, pid, parentProcess]
+  );
 
   const handleDrag = useCallback((e) => updateWindowPosition(e), [offset]);
   const handleDragEnd = useCallback((e) => updateWindowPosition(e), [offset]);
@@ -188,7 +200,7 @@ const Window = ({
     appDataRef.current = { width, height, position };
   }, [width, height, position]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const saveAppData = () => {
       sessionStorage.setItem(
         dialog || process,
