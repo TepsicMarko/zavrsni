@@ -1,19 +1,19 @@
-import "./WindowsSearch.css";
-import { useState, useEffect, useContext, useRef } from "react";
-import useClickOutside from "../../../hooks/useClickOutside";
-import WindowsSearchNavbar from "./navbar/WindowsSearchNavbar";
-import QuickSearch from "./quick-search/QuickSearch";
-import WindowsSearchBestMatch from "./best-match/WindowsSearchBestMatch";
-import AppsOrFilesSearchResult from "./results/AppsOrFilesSearchResult";
-import WebSearchResults from "./results/WebSearchResults";
-import { appConfigurations } from "../../../utils/constants/processConfigurations";
-import { FileSystemContext } from "../../../contexts/FileSystemContext";
-import getFileType from "../../../utils/helpers/getFileType";
-import getFileTypeIcon from "../../../utils/helpers/getFileTypeIcon";
-import { path as Path } from "filer";
-import openWithDefaultApp from "../../../utils/helpers/openWithDefaultApp";
-import moment from "moment";
-import axios from "axios";
+import './WindowsSearch.css';
+import { useState, useEffect, useContext, useRef } from 'react';
+import useClickOutside from '../../../hooks/useClickOutside';
+import WindowsSearchNavbar from './navbar/WindowsSearchNavbar';
+import QuickSearch from './quick-search/QuickSearch';
+import WindowsSearchBestMatch from './best-match/WindowsSearchBestMatch';
+import AppsOrFilesSearchResult from './results/AppsOrFilesSearchResult';
+import WebSearchResults from './results/WebSearchResults';
+import { appConfigurations } from '../../../utils/constants/processConfigurations';
+import { FileSystemContext } from '../../../contexts/FileSystemContext';
+import getFileType from '../../../utils/helpers/getFileType';
+import getFileTypeIcon from '../../../utils/helpers/getFileTypeIcon';
+import { path as Path } from 'filer';
+import openWithDefaultApp from '../../../utils/helpers/openWithDefaultApp';
+import moment from 'moment';
+import axios from 'axios';
 
 const WindowsSearch = ({
   searchFor,
@@ -21,7 +21,7 @@ const WindowsSearch = ({
   closeWindowsSearch,
   startProcess,
 }) => {
-  const [searchIn, setSearchIn] = useState("All");
+  const [searchIn, setSearchIn] = useState('All');
   const [appsOrFilesSearchResults, setAppsOrFilesSearchResults] = useState({
     Apps: [],
     Files: [],
@@ -30,7 +30,7 @@ const WindowsSearch = ({
   const [focusedResult, setFocusedResult] = useState({});
   const timeoutIdRef = useRef();
   const previousSearchForRef = useRef({});
-  const windowsSearchRef = useClickOutside("mousedown", closeWindowsSearch);
+  const windowsSearchRef = useClickOutside('mousedown', closeWindowsSearch);
   const { findFSO } = useContext(FileSystemContext);
 
   const searchInApps = () => {
@@ -41,21 +41,23 @@ const WindowsSearch = ({
         results.push({
           name: app,
           icon: appConfigurations[app].icon,
-          type: "App",
+          type: 'App',
         })
     );
 
     return results;
   };
   const searchInFiles = async () => {
-    let found = await findFSO("/C/users/admin", false, searchFor);
+    let found = await findFSO('/C/users/admin', false, searchFor);
 
     return found.map((fso) => ({
       name: fso.name,
       path: fso.path,
       type: fso.type.toLowerCase(),
-      icon: getFileTypeIcon(getFileType(Path.extname(fso.name))),
-      mtime: moment(fso.mtime).format("DD/MM/YYYY h:mm A"),
+      icon: getFileTypeIcon(
+        fso.type === 'DIRECTORY' ? 'directory' : getFileType(Path.extname(fso.name))
+      ),
+      mtime: moment(fso.mtime).format('DD/MM/YYYY h:mm A'),
     }));
   };
 
@@ -66,11 +68,11 @@ const WindowsSearch = ({
         axios
           .get(
             `https://www.googleapis.com/customsearch/v1?key=${
-              process.env.REACT_APP_EVIRONMENT === "dev"
+              process.env.REACT_APP_EVIRONMENT === 'dev'
                 ? process.env.REACT_APP_DEV_API_KEY
                 : process.env.REACT_APP_PROD_API_KEY
             }&cx=${
-              process.env.REACT_APP_EVIRONMENT === "dev"
+              process.env.REACT_APP_EVIRONMENT === 'dev'
                 ? process.env.REACT_APP_DEV_CX_KEY
                 : process.env.REACT_APP_PROD_CX_KEY
             }&q=${searchFor}`
@@ -95,20 +97,18 @@ const WindowsSearch = ({
   const openAppOrFile = (appOrFileName, fileType, filePath) => {
     console.log(appOrFileName, fileType, filePath);
     if (!fileType && !filePath) startProcess(appOrFileName);
-    else openWithDefaultApp(fileType, filePath, "", startProcess);
+    else openWithDefaultApp(fileType, filePath, '', startProcess);
     closeWindowsSearch();
   };
 
   const openInBroswer = (url) => {
-    startProcess("Chrome", { initialQuery: url || searchFor });
+    startProcess('Chrome', { initialQuery: url || searchFor });
     closeWindowsSearch();
   };
 
   const returnMostRelevantResults = (includeWebResults = true) => {
-    if (appsOrFilesSearchResults.Apps.length)
-      return appsOrFilesSearchResults.Apps;
-    if (appsOrFilesSearchResults.Files.length)
-      return appsOrFilesSearchResults.Files;
+    if (appsOrFilesSearchResults.Apps.length) return appsOrFilesSearchResults.Apps;
+    if (appsOrFilesSearchResults.Files.length) return appsOrFilesSearchResults.Files;
     if (includeWebResults && webSearchResults.length) return webSearchResults;
 
     return [];
@@ -118,22 +118,20 @@ const WindowsSearch = ({
     if (searchFor.length) {
       let newAppsOfRilesSearchResults = {
         Apps:
-          searchIn === "All" ||
-          (searchIn === "Apps" &&
-            searchFor !== previousSearchForRef.current.Apps)
+          searchIn === 'All' ||
+          (searchIn === 'Apps' && searchFor !== previousSearchForRef.current.Apps)
             ? searchInApps()
             : appsOrFilesSearchResults.Apps,
         Files:
-          searchIn === "All" ||
-          (searchIn === "Files" &&
-            searchFor !== previousSearchForRef.current.Files)
+          searchIn === 'All' ||
+          (searchIn === 'Files' && searchFor !== previousSearchForRef.current.Files)
             ? await searchInFiles()
             : appsOrFilesSearchResults.Files,
       };
       setAppsOrFilesSearchResults(newAppsOfRilesSearchResults);
 
       if (
-        (searchIn === "All" || searchIn === "Web") &&
+        (searchIn === 'All' || searchIn === 'Web') &&
         searchFor !== previousSearchForRef.current.Web
       ) {
         setWebSearchResults([]);
@@ -141,7 +139,7 @@ const WindowsSearch = ({
       }
     }
 
-    if (searchIn === "All")
+    if (searchIn === 'All')
       previousSearchForRef.current = {
         Apps: searchFor,
         Files: searchFor,
@@ -155,8 +153,8 @@ const WindowsSearch = ({
       ref={windowsSearchRef}
       className={`windows-search ${
         isWindowsSearchOpen
-          ? "windows-search-open-animation"
-          : "windows-search-close-animation"
+          ? 'windows-search-open-animation'
+          : 'windows-search-close-animation'
       }`}
     >
       <WindowsSearchNavbar
@@ -177,12 +175,10 @@ const WindowsSearch = ({
             focusedResult={focusedResult}
             setFocusedResult={setFocusedResult}
           />
-          {(searchIn === "All" ||
-            searchIn === "Apps" ||
-            searchIn === "Files") && (
+          {(searchIn === 'All' || searchIn === 'Apps' || searchIn === 'Files') && (
             <AppsOrFilesSearchResult
               result={
-                searchIn === "All"
+                searchIn === 'All'
                   ? returnMostRelevantResults(false)[0]
                   : appsOrFilesSearchResults[searchIn][0]
               }
@@ -191,14 +187,11 @@ const WindowsSearch = ({
               focusedResult={focusedResult}
             />
           )}
-          {((searchIn === "All" &&
+          {((searchIn === 'All' &&
             !appsOrFilesSearchResults.Apps.length &&
             !appsOrFilesSearchResults.Files.length) ||
-            searchIn === "Web") && (
-            <WebSearchResults
-              results={webSearchResults}
-              openInBroswer={openInBroswer}
-            />
+            searchIn === 'Web') && (
+            <WebSearchResults results={webSearchResults} openInBroswer={openInBroswer} />
           )}
         </div>
       ) : (

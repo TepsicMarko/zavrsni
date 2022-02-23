@@ -1,8 +1,8 @@
-import "./WindowsSearchBestMatch.css";
-import { cloneElement } from "react";
-import { VscSearch } from "react-icons/vsc";
-import { MdOutlineArrowForwardIos } from "react-icons/md";
-import { useEffect } from "react";
+import './WindowsSearchBestMatch.css';
+import { cloneElement } from 'react';
+import { VscSearch } from 'react-icons/vsc';
+import { MdOutlineArrowForwardIos } from 'react-icons/md';
+import { useEffect } from 'react';
 
 const WindowsSearchBestMatch = ({
   results,
@@ -47,23 +47,20 @@ const WindowsSearchBestMatch = ({
             <div className='best-match'>
               <div className='best-match-name-and-icon-hover-container'>
                 <div className='best-match-icon'>
-                  {cloneElement(
-                    bestMatch.icon ? bestMatch.icon : <VscSearch />,
-                    {
-                      size: "30px",
-                      width: "30px",
-                      height: "30px",
-                      color: "white",
-                    }
-                  )}
+                  {cloneElement(bestMatch.icon ? bestMatch.icon : <VscSearch />, {
+                    size: '30px',
+                    width: '30px',
+                    height: '30px',
+                    color: 'white',
+                  })}
                 </div>
                 <div className='best-match-name'>
                   {bestMatch.name || searchFor}
                   <div
                     className='best-match-type'
-                    style={{ textTransform: !bestMatch.type ? "none" : "" }}
+                    style={{ textTransform: !bestMatch.type ? 'none' : '' }}
                   >
-                    {bestMatch.type || "See web results"}
+                    {bestMatch.type || 'See web results'}
                     {bestMatch.mtime && (
                       <div className='best-match-last-modified'>
                         Last modified: {bestMatch.mtime}
@@ -72,24 +69,20 @@ const WindowsSearchBestMatch = ({
                   </div>
                 </div>
               </div>
-              {Object.keys(focusedResult).length && searchIn !== "Web" ? (
-                <div
-                  className='flex-center show-more-info'
-                  onClick={focusBestMatch}
-                >
+              {Object.keys(focusedResult).length && searchIn !== 'Web' ? (
+                <div className='flex-center show-more-info' onClick={focusBestMatch}>
                   <MdOutlineArrowForwardIos size='0.9rem' color='white' />
                 </div>
               ) : null}
             </div>
-            {searchIn !== "Web" && (
+            {searchIn !== 'Web' && (
               <div className='relavant-searches'>
                 {Object.keys(results).map((resultCathegoryName, j) => {
-                  if (searchIn === "All" && j === 2) return null;
+                  if (searchIn === 'All' && j === 2) return null;
                   return (
                     <>
                       {results[resultCathegoryName].length
-                        ? (resultCathegoryName === searchIn ||
-                            searchIn === "All") && (
+                        ? (resultCathegoryName === searchIn || searchIn === 'All') && (
                             <strong>{resultCathegoryName}</strong>
                           )
                         : null}
@@ -98,7 +91,7 @@ const WindowsSearchBestMatch = ({
                           e.stopPropagation();
                           openAppOrFile(
                             result.name,
-                            result.type !== "App" ? result.type : undefined,
+                            result.type !== 'App' ? result.type : undefined,
                             result.path
                           );
                         };
@@ -109,27 +102,22 @@ const WindowsSearchBestMatch = ({
                         };
 
                         return (resultCathegoryName === searchIn ||
-                          bestMatch.searchResultCategory ===
-                            resultCathegoryName) &&
+                          bestMatch.searchResultCategory === resultCathegoryName) &&
                           i === 0
                           ? null
-                          : (resultCathegoryName === searchIn ||
-                              searchIn === "All") && (
+                          : (resultCathegoryName === searchIn || searchIn === 'All') && (
                               <div
                                 className='relavant-search'
                                 onClick={openRelativeSearch}
                               >
                                 <div className='name-and-icon-hover-container'>
                                   <div className='flex-center relavant-search-icon'>
-                                    {cloneElement(
-                                      result.icon ? result.icon : <VscSearch />,
-                                      {
-                                        size: "15px",
-                                        width: "15px",
-                                        height: "15px",
-                                        color: "white",
-                                      }
-                                    )}
+                                    {cloneElement(result.icon, {
+                                      size: '15px',
+                                      width: '15px',
+                                      height: '15px',
+                                      color: 'white',
+                                    })}
                                   </div>
                                   <div className='relavant-search-name'>
                                     {result.name}
