@@ -32,15 +32,15 @@ export const FileSystemProvider = ({ children }) => {
       fs.writeFile(paht, '', (err) => (err ? reject(err) : resolve(true)));
     });
 
-  const writeFile = (path, type, isNewFile, content = '', i = 1) =>
+  const writeFile = (path, extName, isNewFile, content = '', i = 1) =>
     new Promise((resolve, reject) => {
       if (isNewFile) {
-        exists(`${path}.${type}`)
+        exists(path + extName)
           .then((exists) =>
             resolve(
               writeFile(
                 (i > 1 ? path.slice(0, path.indexOf('(') - 1) : path) + ` (${i + 1})`,
-                type,
+                extName,
                 isNewFile,
                 content || '',
                 i + 1
@@ -48,12 +48,12 @@ export const FileSystemProvider = ({ children }) => {
             )
           )
           .catch((doesntExist) => {
-            fs.writeFile(`${path}.${type}`, content, (err) => console.log(err));
-            resolve(`${Path.basename(path)}.${type}`);
+            fs.writeFile(path + extName, content, (err) => console.log(err));
+            resolve(Path.basename(path) + extName);
           });
       } else {
-        fs.writeFile(`${path}.${type}`, content, (err) => console.log(err));
-        resolve(`${Path.basename(path)}.${type}`);
+        fs.writeFile(path + extName, content, (err) => console.log(err));
+        resolve(Path.basename(path) + extName);
       }
     });
   const link = (
@@ -157,8 +157,8 @@ export const FileSystemProvider = ({ children }) => {
       );
     });
 
-  const saveFile = (path, content) => {
-    writeFile(path, '', false, content);
+  const saveFile = (path, extName, content) => {
+    writeFile(path, extName, false, content);
   };
 
   const moveFSO = (currentPath, newPath) =>

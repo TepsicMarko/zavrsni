@@ -64,7 +64,7 @@ const handleExternalFileDrop = async (
               createFSO(
                 dropzone,
                 Path.basename(entry.name, Path.extname(entry.name)),
-                Path.extname(entry.name).substring(1),
+                Path.extname(entry.name),
                 content
               );
               resolve();
@@ -83,7 +83,7 @@ const handleExternalFileDrop = async (
               createFSO(
                 dropzone,
                 Path.basename(entry.name, Path.extname(entry.name)),
-                Path.extname(entry.name).substring(1),
+                Path.extname(entry.name),
                 content
               );
               resolve();
@@ -101,7 +101,7 @@ const handleExternalFileDrop = async (
               createFSO(
                 dropzone,
                 Path.basename(entry.name, Path.extname(entry.name)),
-                Path.extname(entry.name).substring(1),
+                Path.extname(entry.name),
                 content
               );
               resolve();

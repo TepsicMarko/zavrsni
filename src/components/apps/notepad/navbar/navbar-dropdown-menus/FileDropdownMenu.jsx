@@ -1,8 +1,8 @@
-import ContextMenuItem from "../../../../system/context-menu/context-menu-item/ContextMenuItem";
-import { useState, useContext } from "react";
-import { ProcessesContext } from "../../../../../contexts/ProcessesContext";
-import { FileSystemContext } from "../../../../../contexts/FileSystemContext";
-import { path as Path } from "filer";
+import ContextMenuItem from '../../../../system/context-menu/context-menu-item/ContextMenuItem';
+import { useState, useContext } from 'react';
+import { ProcessesContext } from '../../../../../contexts/ProcessesContext';
+import { FileSystemContext } from '../../../../../contexts/FileSystemContext';
+import { path as Path } from 'filer';
 
 const FileDropdownMenu = ({
   textContent,
@@ -13,11 +13,10 @@ const FileDropdownMenu = ({
   pid,
 }) => {
   const { startChildProcess, endProcess } = useContext(ProcessesContext);
-  const { createFSO, saveFile, readFileContent } =
-    useContext(FileSystemContext);
+  const { createFSO, saveFile, readFileContent } = useContext(FileSystemContext);
 
   const createFile = (path, name) => {
-    createFSO(path, name, "txt", textContent);
+    createFSO(path, name, 'txt', textContent);
     setFilePath(Path.join(path, name));
   };
 
@@ -27,34 +26,33 @@ const FileDropdownMenu = ({
   };
 
   const saveChanges = () => {
-    if (filePath) saveFile(filePath, textContent);
-    else {
-      saveAs();
-    }
+    if (filePath)
+      saveFile(filePath.replace(/\.[^/.]+$/, ''), Path.extname(filePath), textContent);
+    else saveAs();
   };
 
   const saveAs = (e) => {
-    startChildProcess("Notepad", pid, "File Explorer", {
-      customPath: "/C/users/admin/Documents",
-      mode: "w",
-      parentProcess: "Notepad",
+    startChildProcess('Notepad', pid, 'File Explorer', {
+      customPath: '/C/users/admin/Documents',
+      mode: 'w',
+      parentProcess: 'Notepad',
       endProcess,
       createFile,
-      minWidth: "31rem",
-      minHeight: "17rem",
+      minWidth: '31rem',
+      minHeight: '17rem',
       ppid: pid,
     });
   };
 
   const openFileSelection = () => {
-    startChildProcess("Notepad", pid, "File Explorer", {
-      customPath: "/C/users/admin/Documents",
-      mode: "r",
-      parentProcess: "Notepad",
+    startChildProcess('Notepad', pid, 'File Explorer', {
+      customPath: '/C/users/admin/Documents',
+      mode: 'r',
+      parentProcess: 'Notepad',
       endProcess,
       openFile: openSelectedFile,
-      minWidth: "31rem",
-      minHeight: "17rem",
+      minWidth: '31rem',
+      minHeight: '17rem',
       ppid: pid,
     });
   };
@@ -74,9 +72,7 @@ const FileDropdownMenu = ({
         isContentSame(fileContent, openFileSelection)
       );
     } else {
-      textContent
-        ? openUnsavedChangesDialog(openFileSelection)
-        : openFileSelection();
+      textContent ? openUnsavedChangesDialog(openFileSelection) : openFileSelection();
     }
   };
 
@@ -98,11 +94,7 @@ const FileDropdownMenu = ({
         hoverColor='#91c9f7'
         onClick={createBlankFile}
       />
-      <ContextMenuItem
-        fontWeight='400'
-        name='New Window'
-        hoverColor='#91c9f7'
-      />
+      <ContextMenuItem fontWeight='400' name='New Window' hoverColor='#91c9f7' />
       <ContextMenuItem
         fontWeight='400'
         name='Open...'
