@@ -12,7 +12,6 @@ import openWithDefaultApp from '../../../../utils/helpers/openWithDefaultApp';
 import { path as Path } from 'filer';
 import getFileType from '../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../utils/helpers/isInSelection';
-import useClickOutside from '../../../../hooks/useClickOutside';
 
 const DesktopIcon = ({
   name,
@@ -34,10 +33,7 @@ const DesktopIcon = ({
     useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
-  const iconRef = useClickOutside('mousedown', () => {
-    setIsSelected(false);
-    setIsInputTextSelected(false);
-  });
+  const iconRef = useRef(null);
 
   const handleBlur = (e) => {
     if (name !== inputValue && inputValue.length && isSelected) {
@@ -87,7 +83,7 @@ const DesktopIcon = ({
 
   const handleClick = (e) => {
     e.stopPropagation();
-    setIsSelected(true);
+    !isSelected && setIsSelected(true);
   };
 
   const handleKeyPress = (e) => {
@@ -187,10 +183,10 @@ const DesktopIcon = ({
       if (isInSelection(icon, selection)) {
         setIsSelected(true);
         !selectedElements[name] &&
-          setSelectedElements({
-            ...selectedElements,
+          setSelectedElements((currState) => ({
+            ...currState,
             [name]: { name, path, type },
-          });
+          }));
       } else {
         setIsSelected(false);
       }
@@ -198,10 +194,24 @@ const DesktopIcon = ({
   });
 
   useEffect(() => {
-    if (!isSelected) setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
+    !selectedElements[name] && isSelected && setIsSelected(false);
+  }, [selectedElements]);
 
-    return () => setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
-  }, [isSelected]);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (e.which === 1 && iconRef.current && !iconRef.current.contains(e.target)) {
+        if (!Object.keys(selectedElements).length) {
+          setIsSelected(false);
+          setIsInputTextSelected(false);
+        } else setSelectedElements({});
+      }
+    };
+
+    document.addEventListener('mouseup', handleClickOutside);
+    return () => {
+      document.removeEventListener('mouseup', handleClickOutside);
+    };
+  }, [selectedElements]);
 
   return (
     <div
