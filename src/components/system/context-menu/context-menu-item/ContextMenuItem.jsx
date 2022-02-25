@@ -2,7 +2,7 @@ import './ContextMenuItem.css';
 import { VscCircleFilled } from 'react-icons/vsc';
 import { MdArrowForwardIos } from 'react-icons/md';
 import { FiCheck } from 'react-icons/fi';
-import { useState, cloneElement } from 'react';
+import { useState, cloneElement, useRef, useLayoutEffect } from 'react';
 
 const ContextMenuItem = ({
   name,
@@ -20,6 +20,8 @@ const ContextMenuItem = ({
   hoverColor,
 }) => {
   const [isMouseOver, setIsMouseOver] = useState(false);
+  const [submenuPosition, setSubmenuPosition] = useState({ left: '', bottom: '' });
+  const submenuRef = useRef(null);
 
   const handleMouseEnter = () => setIsMouseOver(true);
   const handleMouseLeve = () => setIsMouseOver(false);
@@ -29,6 +31,29 @@ const ContextMenuItem = ({
     onClick(returnName ? name : e);
     closeMenu && closeMenu();
   };
+
+  useLayoutEffect(() => {
+    if (openSubmenu && onMouseOver) {
+      const newSubmenuPosition = { ...submenuPosition };
+      const menu = submenuRef.current.parentElement.parentElement;
+      const maxWidth = menu.parentElement.offsetWidth;
+      const maxHeight = menu.parentElement.offsetHeight;
+      const menuPosition = menu.getBoundingClientRect();
+
+      if (menuPosition.right + menu.offsetWidth >= maxWidth) {
+        newSubmenuPosition.left = '-13rem';
+      }
+
+      if (menuPosition.bottom + menu.offsetHeight >= maxHeight) {
+        newSubmenuPosition.top =
+          -submenuRef.current.offsetHeight +
+          submenuRef.current.parentElement.offsetHeight +
+          3.9;
+      }
+
+      setSubmenuPosition(newSubmenuPosition);
+    }
+  }, [openSubmenu]);
 
   return (
     <div
@@ -62,7 +87,11 @@ const ContextMenuItem = ({
         </div>
       )}
       {children ? (
-        <div className={'submenu ' + (openSubmenu ? 'open-submenu' : '')}>
+        <div
+          ref={submenuRef}
+          className={'submenu ' + (openSubmenu ? 'open-submenu' : '')}
+          style={submenuPosition}
+        >
           {children.length
             ? children.map((child) => cloneElement(child, { hoverColor }))
             : cloneElement(children, { hoverColor })}

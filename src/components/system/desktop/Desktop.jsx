@@ -9,6 +9,7 @@ import DesktopContextMenu from '../component-specific-context-menus/DesktopConte
 import useWatchFolder from '../../../hooks/useWatchFolder';
 import { path as Path } from 'filer';
 import useSelectionRectangle from '../../../hooks/useSelectionRectangle';
+import ContextMenu from '../context-menu/ContextMenu';
 
 const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
   const origin = '/C/users/admin/Desktop';
@@ -172,6 +173,7 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
       {renderDesktopIcons()}
       {renderProcesses()}
       <div ref={rectRef} className='rect-selection' style={{ ...calcRectStyle() }}></div>
+      <ContextMenu />
     </div>
   );
 };

@@ -42,14 +42,14 @@ const DesktopContextMenu = ({
         hoverColor='rgba(255, 255, 255, 0.15)'
       >
         {[
-          { name: 'New Folder', type: 'directory' },
-          { name: 'New Shortcut', type: 'lnk' },
-          { name: 'New Text Document', type: '.txt' },
+          { name: 'Folder', type: 'directory' },
+          { name: 'Shortcut', type: 'lnk' },
+          { name: 'Text Document', type: '.txt' },
         ].map(({ name, type }) => (
           <ContextMenuItem
             name={name}
             onClick={() => {
-              createFSO(path, name, type, undefined, (name) =>
+              createFSO(path, 'New ' + name, type, undefined, (name) =>
                 addToGrid([name], calculateGridPosition(mousePosition), false, true)
               );
             }}

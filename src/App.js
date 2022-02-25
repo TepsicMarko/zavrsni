@@ -2,7 +2,6 @@ import './App.css';
 import './global.css';
 import Desktop from './components/system/desktop/Desktop';
 import Taskbar from './components/system/taskbar/Taskbar';
-import ContextMenu from './components/system/context-menu/ContextMenu';
 
 import { useState } from 'react';
 import useDraggableTaskbar from './hooks/useDraggableTaskbar';
@@ -69,7 +68,6 @@ const App = () => {
                 setTaskbarDimensions={setTaskbarDimensions}
               />
             </div>
-            <ContextMenu />
           </ProcessesProvider>
         </ThumbnailPreviewsProvider>
       </RightClickMenuProvider>
