@@ -1,13 +1,14 @@
-import "./ContextMenuItem.css";
-import { VscCircleFilled } from "react-icons/vsc";
-import { MdArrowForwardIos } from "react-icons/md";
-import { FiCheck } from "react-icons/fi";
-import { useState, cloneElement } from "react";
+import './ContextMenuItem.css';
+import { VscCircleFilled } from 'react-icons/vsc';
+import { MdArrowForwardIos } from 'react-icons/md';
+import { FiCheck } from 'react-icons/fi';
+import { useState, cloneElement } from 'react';
 
 const ContextMenuItem = ({
   name,
   openSubmenu,
-  onClick,
+  onClick = () => undefined,
+  onMouseOver,
   children,
   divider,
   radio,
@@ -35,17 +36,16 @@ const ContextMenuItem = ({
       onClick={children ? (e) => onClick(name, e) : handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeve}
+      onMouseOver={onMouseOver ? () => onMouseOver(name) : undefined}
     >
       <div
-        className={"cm-item-name"}
-        style={{ fontWeight, backgroundColor: isMouseOver ? hoverColor : "" }}
+        className={'cm-item-name'}
+        style={{ fontWeight, backgroundColor: isMouseOver ? hoverColor : '' }}
       >
         <div
           className={
-            "cm-item-icon" +
-            (checkBox
-              ? ` flex-center cm-checkbox${active ? "-checked " : ""}`
-              : "")
+            'cm-item-icon' +
+            (checkBox ? ` flex-center cm-checkbox${active ? '-checked ' : ''}` : '')
           }
         >
           {checkBox && <FiCheck />}
@@ -56,13 +56,13 @@ const ContextMenuItem = ({
       {children && (
         <div
           className='flex-center cm-item-expand'
-          style={{ backgroundColor: isMouseOver ? hoverColor : "" }}
+          style={{ backgroundColor: isMouseOver ? hoverColor : '' }}
         >
           <MdArrowForwardIos />
         </div>
       )}
-      {children && openSubmenu ? (
-        <div className='submenu'>
+      {children ? (
+        <div className={'submenu ' + (openSubmenu ? 'open-submenu' : '')}>
           {children.length
             ? children.map((child) => cloneElement(child, { hoverColor }))
             : cloneElement(children, { hoverColor })}

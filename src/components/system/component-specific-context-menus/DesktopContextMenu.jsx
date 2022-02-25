@@ -11,13 +11,14 @@ const DesktopContextMenu = ({
   sortGrid,
 }) => {
   const [openSubmenu, setOpenSubmenu] = useState('');
-  const handleClick = (name) => setOpenSubmenu(name);
+  const handleMouseOver = (name) => setOpenSubmenu(name);
   return (
     <>
       <ContextMenuItem
         name='Sort'
         openSubmenu={openSubmenu === 'Sort'}
-        onClick={handleClick}
+        onMouseOver={handleMouseOver}
+        hoverColor='rgba(255, 255, 255, 0.15)'
       >
         {[
           ['Name'],
@@ -37,7 +38,8 @@ const DesktopContextMenu = ({
       <ContextMenuItem
         name='New'
         openSubmenu={openSubmenu === 'New'}
-        onClick={handleClick}
+        onMouseOver={handleMouseOver}
+        hoverColor='rgba(255, 255, 255, 0.15)'
       >
         {[
           { name: 'New Folder', type: 'directory' },

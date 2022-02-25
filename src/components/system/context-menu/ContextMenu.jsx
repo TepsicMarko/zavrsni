@@ -1,27 +1,20 @@
-import "./ContextMenu.css";
-import { useContext, useEffect } from "react";
-import { RightClickMenuContext } from "../../../contexts/RightClickMenuContext";
-import { cloneElement } from "react";
+import './ContextMenu.css';
+import { useContext } from 'react';
+import { RightClickMenuContext } from '../../../contexts/RightClickMenuContext';
+import { cloneElement } from 'react';
+import useClickOutside from '../../../hooks/useClickOutside';
 
-const ContextMenu = ({ width, height }) => {
-  const { menuPosition, menuOptions, isMenuOpen, closeMenu } = useContext(
-    RightClickMenuContext
-  );
-  const { x, y } = menuPosition;
-  const stopPropagation = (e) => e.stopPropagation();
-
-  useEffect(() => {
-    const eventHandler = () => closeMenu();
-    document.addEventListener("mousedown", eventHandler);
-    return () => document.removeEventListener("mousedown", eventHandler);
-  }, []);
+const ContextMenu = () => {
+  const { menuPosition, menuOptions, isMenuOpen, closeMenu } =
+    useContext(RightClickMenuContext);
+  const menuRef = useClickOutside('mousedown', closeMenu);
 
   return (
     isMenuOpen && (
       <div
+        ref={menuRef}
         className='context-menu'
-        style={{ top: y, left: x }}
-        onMouseDown={stopPropagation}
+        style={{ top: menuPosition.y, left: menuPosition.x }}
       >
         {cloneElement(menuOptions, { closeMenu })}
       </div>
