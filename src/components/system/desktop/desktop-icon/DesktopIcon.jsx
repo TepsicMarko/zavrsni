@@ -29,7 +29,7 @@ const DesktopIcon = ({
   const [isInputTexSelected, setIsInputTextSelected] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
   const [imgSrc, setImgSrc] = useState('');
-  const { renameFSO, deleteFSO, readFileContent, readBlob } =
+  const { renameFSO, deleteFSO, readFileContent, readBlob, moveFSO } =
     useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
@@ -175,6 +175,23 @@ const DesktopIcon = ({
 
   const handleDoubleClick = (e) => openWithDefaultApp(type, path, name, startProcess);
 
+  const handleDrop = (e) => {
+    const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
+
+    if (
+      dataTransfer.origin === 'Desktop' &&
+      type === 'directory' &&
+      !selectedElements[name]
+    ) {
+      e.stopPropagation();
+
+      dataTransfer.dragObjects.forEach((dragObject) => {
+        moveFSO(Path.join(path, dragObject), Path.join(path, name, dragObject));
+        deleteFromGrid(dragObject);
+      });
+    }
+  };
+
   useEffect(() => {
     if (rectRef) {
       const selection = rectRef.current;
@@ -226,6 +243,7 @@ const DesktopIcon = ({
       draggable
       onDragStart={handleDragStart}
       onDrag={stopPropagation}
+      onDrop={handleDrop}
     >
       {renderIcon}
       <div
