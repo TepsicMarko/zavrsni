@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef } from 'react';
 
 const useSelectionRectangle = () => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -22,6 +22,7 @@ const useSelectionRectangle = () => {
   };
 
   const handleSelection = (e) => {
+    e.stopPropagation();
     setDimensions({
       width: position.x - e.clientX + e.target.getBoundingClientRect().left,
       height: position.y - e.clientY + e.target.getBoundingClientRect().top,
@@ -33,7 +34,13 @@ const useSelectionRectangle = () => {
     const top = height < 0 ? position.y : position.y - height;
     const left = width < 0 ? position.x : position.x - width;
 
-    return { width: Math.abs(width), height: Math.abs(height), top, left };
+    return {
+      width: Math.abs(width),
+      height: Math.abs(height),
+      top,
+      left,
+      display: isSelectionActive ? 'block' : 'none',
+    };
   };
 
   return {

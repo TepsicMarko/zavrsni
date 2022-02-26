@@ -1,16 +1,16 @@
-import "./FsoListItem.css";
-import { memo, useRef, useContext, useEffect, useState } from "react";
-import getFileTypeIcon from "../../../../../utils/helpers/getFileTypeIcon";
-import FsoListItemContextMenu from "../../../../system/component-specific-context-menus/FsoListItemContextMenu";
-import selectInputContent from "../../../../../utils/helpers/selectInputContent";
-import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuContext";
-import { ProcessesContext } from "../../../../../contexts/ProcessesContext";
-import { path as Path } from "filer";
-import useInput from "../../../../../hooks/useInput";
-import openWithDefaultApp from "../../../../../utils/helpers/openWithDefaultApp";
-import getFileType from "../../../../../utils/helpers/getFileType";
-import isInSelection from "../../../../../utils/helpers/isInSelection";
-import useClickOutside from "../../../../../hooks/useClickOutside";
+import './FsoListItem.css';
+import { memo, useRef, useContext, useEffect, useState } from 'react';
+import getFileTypeIcon from '../../../../../utils/helpers/getFileTypeIcon';
+import FsoListItemContextMenu from '../../../../system/component-specific-context-menus/FsoListItemContextMenu';
+import selectInputContent from '../../../../../utils/helpers/selectInputContent';
+import { RightClickMenuContext } from '../../../../../contexts/RightClickMenuContext';
+import { ProcessesContext } from '../../../../../contexts/ProcessesContext';
+import { path as Path } from 'filer';
+import useInput from '../../../../../hooks/useInput';
+import openWithDefaultApp from '../../../../../utils/helpers/openWithDefaultApp';
+import getFileType from '../../../../../utils/helpers/getFileType';
+import isInSelection from '../../../../../utils/helpers/isInSelection';
+import useClickOutside from '../../../../../hooks/useClickOutside';
 
 const FsoListItem = ({
   name,
@@ -35,7 +35,7 @@ const FsoListItem = ({
   const {
     Name,
     Location,
-    ["Date Modified"]: DateModified,
+    ['Date Modified']: DateModified,
     Size,
     Type,
   } = columnHeadingsWidth;
@@ -45,27 +45,27 @@ const FsoListItem = ({
   const { startProcess } = useContext(ProcessesContext);
   const [inputValue, handleInputChange] = useInput(name);
   const [isSelected, setIsSelected] = useState(false);
-  const fsoRef = useClickOutside("click", () => setIsSelected(false));
+  const fsoRef = useClickOutside('click', () => setIsSelected(false));
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       e.target.blur();
     }
-    if (e.key === "Backspace") {
+    if (e.key === 'Backspace') {
       e.stopPropagation();
     }
   };
 
   const focusInput = (e) => {
     e.stopPropagation();
-    inputRef.current.setAttribute("contenteditable", "true");
+    inputRef.current.setAttribute('contenteditable', 'true');
     inputRef.current.focus();
     selectInputContent(inputRef.current);
   };
 
   const handleBlur = (e) => {
-    e.target.setAttribute("contenteditable", "false");
+    e.target.setAttribute('contenteditable', 'false');
 
     if (name !== inputValue && inputValue.length)
       renameFSO(path, { old: name, new: inputValue });
@@ -98,9 +98,9 @@ const FsoListItem = ({
   const handleDoubleClick = (e) => {
     if (openFile) {
       openFile(path, name);
-      return endProcess("File Explorer", ppid, "Notepad");
+      return endProcess('File Explorer', ppid, 'Notepad');
     }
-    if (type === "DIRECTORY") {
+    if (type === 'DIRECTORY') {
       setExpandBranches(true);
       changePath(location ? location : Path.join(path, name));
     } else openWithDefaultApp(type, path, name, startProcess);
@@ -112,9 +112,9 @@ const FsoListItem = ({
 
   const handleDragStart = (e) => {
     e.dataTransfer.setData(
-      "json",
+      'json',
       JSON.stringify({
-        origin: "File Explorer",
+        origin: 'File Explorer',
         dragObject: {
           name,
           type,
@@ -127,10 +127,10 @@ const FsoListItem = ({
   const preventDefault = (e) => e.preventDefault();
   const handleDrop = (e) => {
     e.preventDefault();
-    const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
+    const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
     const dragObject = dataTransfer.dragObject;
     console.log(dragObject, path);
-    if (type === "DIRECTORY") {
+    if (type === 'DIRECTORY') {
       moveFSO(
         Path.join(dragObject.path, dragObject.name),
         Path.join(path, name, dragObject.name)
@@ -157,12 +157,23 @@ const FsoListItem = ({
   });
 
   useEffect(() => {
-    if (!isSelected)
-      setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
+    !selectedElements[name] && isSelected && setIsSelected(false);
+  }, [selectedElements]);
 
-    return () =>
-      setSelectedElements(({ [name]: remove, ...rest }) => ({ ...rest }));
-  }, [isSelected]);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (e.which === 1 && fsoRef.current && !fsoRef.current.contains(e.target)) {
+        if (!Object.keys(selectedElements).length) {
+          setIsSelected(false);
+        } else setSelectedElements({});
+      }
+    };
+
+    document.addEventListener('mouseup', handleClickOutside);
+    return () => {
+      document.removeEventListener('mouseup', handleClickOutside);
+    };
+  }, [selectedElements]);
 
   return (
     <div
@@ -173,8 +184,8 @@ const FsoListItem = ({
       onDrop={handleDrop}
       className='fso-list-item'
       style={{
-        maxWidth: "inherit",
-        backgroundColor: isSelected ? "gray" : "",
+        maxWidth: 'inherit',
+        backgroundColor: isSelected ? 'gray' : '',
       }}
       onContextMenu={handleRightClick}
       onDoubleClick={handleDoubleClick}
@@ -183,9 +194,7 @@ const FsoListItem = ({
     >
       <div style={{ minWidth: Name, maxWidth: Name }}>
         <span className='fso-list-item-icon'>
-          {getFileTypeIcon(
-            type === "FILE" ? getFileType(Path.extname(name)) : type
-          )}
+          {getFileTypeIcon(type === 'FILE' ? getFileType(Path.extname(name)) : type)}
         </span>
         <span
           className='fso-list-item-name-input'
@@ -193,7 +202,7 @@ const FsoListItem = ({
           suppressContentEditableWarning={true}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          style={{ maxWidth: "calc(inherit - 2rem)" }}
+          style={{ maxWidth: 'calc(inherit - 2rem)' }}
           onInput={handleInputChange}
           onDoubleClick={(e) => e.stopPropagation()}
         >
@@ -203,9 +212,7 @@ const FsoListItem = ({
       {location && (
         <div style={{ minWidth: Location, maxWidth: Location }}>{location}</div>
       )}
-      <div style={{ minWidth: DateModified, maxWidth: DateModified }}>
-        {dateModified}
-      </div>
+      <div style={{ minWidth: DateModified, maxWidth: DateModified }}>{dateModified}</div>
       <div style={{ minWidth: Type, minWidth: Type }}>{type.toLowerCase()}</div>
       <div style={{ minWidth: Size, minWidth: Size }}>{size}</div>
     </div>
