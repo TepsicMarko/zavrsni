@@ -1,20 +1,18 @@
-import "./TaskManager.css";
-import Window from "../../system/window/Window";
-import WindowContent from "../../system/window/window-content/WindowContent";
-import StatusBar from "../../system/window/status-bar/StatusBar";
-import { ProcessesContext } from "../../../contexts/ProcessesContext";
-import { useState, useContext } from "react";
+import './TaskManager.css';
+import Window from '../../system/window/Window';
+import WindowContent from '../../system/window/window-content/WindowContent';
+import StatusBar from '../../system/window/status-bar/StatusBar';
+import { ProcessesContext } from '../../../contexts/ProcessesContext';
+import { useState, useContext } from 'react';
 
 const TaskManager = ({ icon, pid }) => {
-  const [selectedProcess, setSelectedProcess] = useState("");
+  const [selectedProcess, setSelectedProcess] = useState({ name: '', pid: '' });
   const { processes, endProcess } = useContext(ProcessesContext);
 
-  const selectProcess = (e) => {
-    setSelectedProcess(e.target.textContent);
-  };
-
-  const endTask = () => {
-    endProcess(selectedProcess);
+  const endTask = (e) => {
+    e.stopPropagation();
+    endProcess(selectedProcess.name, selectedProcess.pid);
+    setSelectedProcess({ name: '', pid: '' });
   };
 
   return (
@@ -24,31 +22,25 @@ const TaskManager = ({ icon, pid }) => {
       icon={icon}
       minWindowWidth='9rem'
       minWindowHeight='6.5rem'
-      titleBar={{ color: "black", backgroundColor: "white" }}
+      titleBar={{ color: 'black', backgroundColor: 'white' }}
     >
-      <WindowContent
-        backgroundColor='white'
-        flex
-        flexDirection='column'
-        flexWrap='wrap'
-      >
+      <WindowContent backgroundColor='white' flex flexDirection='column' flexWrap='wrap'>
         <div className='overflow-container'>
           <div className='open-processes'>
             {Object.keys(processes).map((process) => {
               const app = processes[process];
-              return (
+              return Object.keys(app).map((appInstance) => (
                 <div
                   className='open-process'
-                  onClick={selectProcess}
+                  onClick={() => setSelectedProcess({ name: process, pid: appInstance })}
                   style={{
-                    backgroundColor:
-                      selectedProcess === process ? "#CDE8FF" : "",
+                    backgroundColor: selectedProcess.pid === appInstance ? '#CDE8FF' : '',
                   }}
                 >
-                  {app.icon}
+                  {app[appInstance].icon}
                   {process}
                 </div>
-              );
+              ));
             })}
           </div>
         </div>
@@ -65,7 +57,7 @@ const TaskManager = ({ icon, pid }) => {
         height='fit-content'
       >
         <button
-          disabled={!selectedProcess.length}
+          disabled={!selectedProcess.pid.length}
           className='end-task'
           onClick={endTask}
         >
