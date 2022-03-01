@@ -68,7 +68,7 @@ const Window = ({
       e.dataTransfer.setDragImage(new Image(), 0, 0);
       setOffset({ x: offsetX, y: offsetY });
     },
-    [process, pid, parentProcess]
+    [processes, process, pid, parentProcess]
   );
 
   const handleDrag = useCallback((e) => updateWindowPosition(e), [offset]);
@@ -178,7 +178,7 @@ const Window = ({
       e.stopPropagation();
       minimizeToTaskbar(process, pid);
     },
-    [process, minimizeToTaskbar]
+    [process, processes]
   );
 
   const maximiseWindow = useCallback(() => {
@@ -229,7 +229,12 @@ const Window = ({
   }, []);
 
   useEffect(() => {
-    addThumbnailPreview(process, titleBar.title || process, icon, pid);
+    addThumbnailPreview(
+      process,
+      titleBar.title || process,
+      icon || processes[process][pid].icon,
+      pid
+    );
 
     return () => removeThumbnailPreview(process, pid);
   }, [process, pid, titleBar.title]);
