@@ -8,8 +8,8 @@ import { HiOutlineZoomIn, HiOutlineZoomOut } from 'react-icons/hi';
 import { BsTrash } from 'react-icons/bs';
 import { AiOutlineExpandAlt } from 'react-icons/ai';
 import Panzoom from '@panzoom/panzoom';
-import useToggle from '../../../hooks/useToggle';
 import useFullScreenToggle from '../../../hooks/useFullScreenToggle';
+import { path as Path } from 'filer';
 
 const Photos = ({ path, pid }) => {
   const imageContainerRef = useRef(null);
@@ -53,7 +53,7 @@ const Photos = ({ path, pid }) => {
   };
 
   const togglePhotosFullSceen = () => {
-    const Photos = document.getElementsByClassName('photos-toolbar')[0].parentElement;
+    const Photos = document.getElementById(pid).lastChild;
     toggleFullScreen(Photos);
   };
 
@@ -93,7 +93,11 @@ const Photos = ({ path, pid }) => {
       pid={pid}
       minWindowWidth='31rem'
       minWindowHeight='20rem'
-      titleBar={{ color: '#EFEFEF', backgroundColor: '#2B2B2B' }}
+      titleBar={{
+        color: '#EFEFEF',
+        backgroundColor: '#2B2B2B',
+        title: 'Photos - ' + Path.basename(path),
+      }}
     >
       <WindowContent backgroundColor='#222222' flex flexDirection='column'>
         <div className='flex-center photos-toolbar'>

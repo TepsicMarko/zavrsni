@@ -194,7 +194,7 @@ const Window = ({
       setWidth(clientWidth);
       setPosition({ top: 0, left: 0 });
     }
-  }, [height, width, previousDimensionsAndPositionRef.current]);
+  }, [height, width, position, previousDimensionsAndPositionRef.current]);
 
   useEffect(() => {
     appDataRef.current = { width, height, position };
