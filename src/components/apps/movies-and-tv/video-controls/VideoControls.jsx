@@ -1,18 +1,14 @@
-import "./VideoControls.css";
-import { useState, useEffect, useRef } from "react";
-import { BsVolumeUp, BsVolumeMute } from "react-icons/bs";
-import {
-  MdOutlineForward30,
-  MdReplay10,
-  MdOutlineSubtitles,
-} from "react-icons/md";
-import { FiPlay } from "react-icons/fi";
-import { AiOutlinePause } from "react-icons/ai";
-import { CgMiniPlayer } from "react-icons/cg";
-import { AiOutlineExpandAlt } from "react-icons/ai";
-import Slider from "rc-slider";
-import useVideoPlayer from "../../../../hooks/useVideoPlayer";
-import useClickOutside from "../../../../hooks/useClickOutside";
+import './VideoControls.css';
+import { useState, useEffect, useRef } from 'react';
+import { BsVolumeUp, BsVolumeMute } from 'react-icons/bs';
+import { MdOutlineForward30, MdReplay10, MdOutlineSubtitles } from 'react-icons/md';
+import { FiPlay } from 'react-icons/fi';
+import { AiOutlinePause } from 'react-icons/ai';
+import { CgMiniPlayer } from 'react-icons/cg';
+import { AiOutlineExpandAlt } from 'react-icons/ai';
+import Slider from 'rc-slider';
+import useVideoPlayer from '../../../../hooks/useVideoPlayer';
+import useClickOutside from '../../../../hooks/useClickOutside';
 
 const VideoControls = ({
   src,
@@ -25,7 +21,7 @@ const VideoControls = ({
 }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [volumeSliderVisibility, setVolumeSiderVisibility] = useState(false);
-  const volumeSettingsRef = useClickOutside("mousedown", () =>
+  const volumeSettingsRef = useClickOutside('mousedown', () =>
     setVolumeSiderVisibility(false)
   );
   const {
@@ -50,14 +46,14 @@ const VideoControls = ({
   } = useVideoPlayer();
 
   const formatTime = (ms) => {
-    if (!ms) return "0:00:00";
+    if (!ms) return '0:00:00';
 
     const hh = Math.floor(ms / 3600);
     const mm = Math.floor(ms / 60);
     const ss = Math.abs(Math.ceil(hh * 3600 + mm * 60 - ms));
 
-    return `${hh}:${mm < 10 ? "0" + mm : mm}:${
-      ss === 60 ? "00" : ss < 10 ? "0" + ss : ss
+    return `${hh}:${mm < 10 ? '0' + mm : mm}:${
+      ss === 60 ? '00' : ss < 10 ? '0' + ss : ss
     }`;
   };
 
@@ -105,9 +101,7 @@ const VideoControls = ({
 
   return videoContorlsVisibility ? (
     <div
-      className={`flex-center ${
-        isMiniplayer ? "miniplayer-" : ""
-      }video-controls`}
+      className={`flex-center ${isMiniplayer ? 'miniplayer-' : ''}video-controls`}
       onClick={!isMiniplayer ? stopPropagation : null}
     >
       {!isMiniplayer && (
@@ -125,17 +119,17 @@ const VideoControls = ({
                 width: 20,
                 marginTop: -8.5,
                 marginLeft: 0,
-                backgroundColor: "transparent",
-                border: "2px solid #5CDCE6",
+                backgroundColor: 'transparent',
+                border: '2px solid #5CDCE6',
               }}
               trackStyle={{
-                background: "#5CDCE6",
+                background: '#5CDCE6',
                 marginTop: -1,
-                borderRadius: "0",
+                borderRadius: '0',
               }}
               railStyle={{
-                backgroundColor: "rgba(255, 255, 255, 0.25)",
-                height: "2px",
+                backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                height: '2px',
               }}
             />
             <div className='watched-time'>{formatTime(currentTime)}</div>
@@ -143,23 +137,12 @@ const VideoControls = ({
           </div>
           <div className='video-controls-btn'>
             {volumeSliderVisibility && (
-              <div
-                ref={volumeSettingsRef}
-                className='flex-center volume-slider'
-              >
-                <div className='video-controls-btn'>
+              <div ref={volumeSettingsRef} className='flex-center volume-slider'>
+                <div className='video-controls-btn' onClick={toggleMuted}>
                   {isMuted ? (
-                    <BsVolumeMute
-                      color='white'
-                      size='1.5rem'
-                      onClick={toggleMuted}
-                    />
+                    <BsVolumeMute color='white' size='1.5rem' />
                   ) : (
-                    <BsVolumeUp
-                      color='white'
-                      size='1.5rem'
-                      onClick={toggleMuted}
-                    />
+                    <BsVolumeUp color='white' size='1.5rem' />
                   )}
                 </div>
                 <Slider
@@ -173,26 +156,24 @@ const VideoControls = ({
                     width: 20,
                     marginTop: -8.5,
                     marginLeft: 0,
-                    backgroundColor: "transparent",
-                    border: "2px solid #5CDCE6",
+                    backgroundColor: 'transparent',
+                    border: '2px solid #5CDCE6',
                   }}
                   trackStyle={{
-                    background: "#5CDCE6",
+                    background: '#5CDCE6',
                     marginTop: -1,
                   }}
                   railStyle={{
-                    backgroundColor: "rgba(255, 255, 255, 0.25)",
-                    height: "2px",
+                    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                    height: '2px',
                   }}
                 />
                 <div className='flex-center'>{volume}</div>
               </div>
             )}
-            <BsVolumeUp
-              color='white'
-              size='1.5rem'
-              onClick={toggleVolumeSettings}
-            />
+            <div className='video-controls-btn' onClick={toggleVolumeSettings}>
+              <BsVolumeUp color='white' size='1.5rem' />
+            </div>
           </div>
           <div className='video-controls-btn'>
             <MdOutlineSubtitles color='white' size='1.5rem' />
@@ -201,50 +182,39 @@ const VideoControls = ({
       )}
 
       <div
-        className={`flex-center ${
-          isMiniplayer ? "miniplayer-" : ""
-        }video-main-controls`}
+        className={`flex-center ${isMiniplayer ? 'miniplayer-' : ''}video-main-controls`}
       >
-        <div className='video-controls-btn'>
-          <MdReplay10 color='white' size='1.75rem' onClick={skipBackwards} />
+        <div className='video-controls-btn' onClick={skipBackwards}>
+          <MdReplay10 color='white' size='1.75rem' />
         </div>
-        <div className='video-controls-btn'>
+        <div className='video-controls-btn' onClick={isPlaying ? pauseVideo : playVideo}>
           {!isPlaying ? (
-            <FiPlay color='white' size='1.25rem' onClick={playVideo} />
+            <FiPlay color='white' size='1.25rem' />
           ) : (
-            <AiOutlinePause color='white' size='1.5rem' onClick={pauseVideo} />
+            <AiOutlinePause color='white' size='1.5rem' />
           )}
         </div>
-        <div className='video-controls-btn'>
-          <MdOutlineForward30
-            color='white'
-            size='1.75rem'
-            onClick={skipForwards}
-          />
+        <div className='video-controls-btn' onClick={skipForwards}>
+          <MdOutlineForward30 color='white' size='1.75rem' />
         </div>
       </div>
 
       <div
-        className={
-          "video-controls-btn" + (isMiniplayer ? " miniplayer-maximise" : "")
-        }
+        className={'video-controls-btn' + (isMiniplayer ? ' miniplayer-maximise' : '')}
+        onClick={toggleMiniplayer}
       >
-        <CgMiniPlayer color='white' size='1.5rem' onClick={toggleMiniplayer} />
+        <CgMiniPlayer color='white' size='1.5rem' />
       </div>
       {!isMiniplayer && (
-        <div className='video-controls-btn'>
-          <AiOutlineExpandAlt
-            color='white'
-            size='1.5rem'
-            onClick={toggleFullScreenVideo}
-          />
+        <div className='video-controls-btn' onClick={toggleFullScreenVideo}>
+          <AiOutlineExpandAlt color='white' size='1.5rem' />
         </div>
       )}
       {isMiniplayer && (
         <div className='miniplayer-progress-bar-container'>
           <div
             className='miniplayer-progress-bar'
-            style={{ width: (currentTime / duration) * 100 + "%" }}
+            style={{ width: (currentTime / duration) * 100 + '%' }}
           ></div>
         </div>
       )}

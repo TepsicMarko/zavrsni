@@ -1,19 +1,19 @@
-import "./Photos.css";
-import Window from "../../system/window/Window";
-import WindowContent from "../../system/window/window-content/WindowContent";
-import { FileSystemContext } from "../../../contexts/FileSystemContext";
-import { ProcessesContext } from "../../../contexts/ProcessesContext";
-import { useState, useContext, useEffect, useRef } from "react";
-import { HiOutlineZoomIn, HiOutlineZoomOut } from "react-icons/hi";
-import { BsTrash } from "react-icons/bs";
-import { AiOutlineExpandAlt } from "react-icons/ai";
-import Panzoom from "@panzoom/panzoom";
-import useToggle from "../../../hooks/useToggle";
-import useFullScreenToggle from "../../../hooks/useFullScreenToggle";
+import './Photos.css';
+import Window from '../../system/window/Window';
+import WindowContent from '../../system/window/window-content/WindowContent';
+import { FileSystemContext } from '../../../contexts/FileSystemContext';
+import { ProcessesContext } from '../../../contexts/ProcessesContext';
+import { useState, useContext, useEffect, useRef } from 'react';
+import { HiOutlineZoomIn, HiOutlineZoomOut } from 'react-icons/hi';
+import { BsTrash } from 'react-icons/bs';
+import { AiOutlineExpandAlt } from 'react-icons/ai';
+import Panzoom from '@panzoom/panzoom';
+import useToggle from '../../../hooks/useToggle';
+import useFullScreenToggle from '../../../hooks/useFullScreenToggle';
 
 const Photos = ({ path, pid }) => {
   const imageContainerRef = useRef(null);
-  const [src, setSrc] = useState("");
+  const [src, setSrc] = useState('');
   const [zoom, setZoom] = useState(100);
   const [panzoom, setPanzoom] = useState();
   const [isFullScreen, toggleFullScreen] = useFullScreenToggle();
@@ -26,8 +26,7 @@ const Photos = ({ path, pid }) => {
 
   const zoomIn = () => {
     setZoom(
-      zoom + parseFloat(`${zoom}`.slice(0, `${parseInt(zoom)}`.length - 1)) <
-        6000
+      zoom + parseFloat(`${zoom}`.slice(0, `${parseInt(zoom)}`.length - 1)) < 6000
         ? zoom + parseFloat(`${zoom}`.slice(0, `${parseInt(zoom)}`.length - 1))
         : zoom
     );
@@ -35,8 +34,7 @@ const Photos = ({ path, pid }) => {
 
   const zoomOut = () => {
     setZoom(
-      zoom - parseFloat(`${zoom}`.slice(0, `${parseInt(zoom)}`.length - 1)) >=
-        100
+      zoom - parseFloat(`${zoom}`.slice(0, `${parseInt(zoom)}`.length - 1)) >= 100
         ? zoom - parseFloat(`${zoom}`.slice(0, `${parseInt(zoom)}`.length - 1))
         : 100
     );
@@ -45,8 +43,8 @@ const Photos = ({ path, pid }) => {
   const resetZoom = () => setZoom(100);
 
   const deleteImage = () => {
-    deleteFSO(path, "");
-    endProcess("Photos");
+    deleteFSO(path, '');
+    endProcess('Photos', pid);
   };
 
   const handleMouseWhele = (e) => {
@@ -55,8 +53,7 @@ const Photos = ({ path, pid }) => {
   };
 
   const togglePhotosFullSceen = () => {
-    const Photos =
-      document.getElementsByClassName("photos-toolbar")[0].parentElement;
+    const Photos = document.getElementsByClassName('photos-toolbar')[0].parentElement;
     toggleFullScreen(Photos);
   };
 
@@ -65,7 +62,7 @@ const Photos = ({ path, pid }) => {
       Panzoom(imageContainerRef.current, {
         maxScale: 60,
         minScale: 1,
-        cursor: "default",
+        cursor: 'default',
         panOnlyWhenZoomed: true,
       })
     );
@@ -96,26 +93,18 @@ const Photos = ({ path, pid }) => {
       pid={pid}
       minWindowWidth='31rem'
       minWindowHeight='20rem'
-      titleBar={{ color: "#EFEFEF", backgroundColor: "#2B2B2B" }}
+      titleBar={{ color: '#EFEFEF', backgroundColor: '#2B2B2B' }}
     >
       <WindowContent backgroundColor='#222222' flex flexDirection='column'>
         <div className='flex-center photos-toolbar'>
-          <div className='flex-center'>
-            <HiOutlineZoomIn
-              onClick={zoomIn}
-              size='1.2rem'
-              color={zoom >= 5800 ? "gray" : ""}
-            />
+          <div className='flex-center' onClick={zoomIn}>
+            <HiOutlineZoomIn size='1.2rem' color={zoom >= 5800 ? 'gray' : ''} />
           </div>
-          <div className='flex-center'>
-            <HiOutlineZoomOut
-              onClick={zoomOut}
-              size='1.2rem'
-              color={zoom === 100 ? "gray" : ""}
-            />
+          <div className='flex-center' onClick={zoomOut}>
+            <HiOutlineZoomOut size='1.2rem' color={zoom === 100 ? 'gray' : ''} />
           </div>
-          <div className='flex-center'>
-            <BsTrash onClick={deleteImage} size='1.2rem' />
+          <div className='flex-center' onClick={deleteImage}>
+            <BsTrash size='1.2rem' />
           </div>
         </div>
         <div className='image-container' onWheel={handleMouseWhele}>
