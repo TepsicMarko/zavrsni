@@ -27,6 +27,7 @@ const DesktopIcon = ({
 }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [isInputTexSelected, setIsInputTextSelected] = useState(false);
+  const [dontDeselect, setDontDeselect] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
   const [imgSrc, setImgSrc] = useState('');
   const { renameFSO, deleteFSO, readFileContent, readBlob, moveFSO } =
@@ -158,7 +159,11 @@ const DesktopIcon = ({
   };
 
   const handleRightClick = (e) => {
-    handleClick(e);
+    e.stopPropagation();
+    !selectedElements[name] && setSelectedElements({});
+    !isSelected && setIsSelected(true);
+    setDontDeselect(true);
+
     renderOptions(
       e,
       <DesktopIconContextMenu
@@ -211,16 +216,19 @@ const DesktopIcon = ({
   });
 
   useEffect(() => {
-    !selectedElements[name] && isSelected && setIsSelected(false);
+    !selectedElements[name] && !dontDeselect && isSelected && setIsSelected(false);
+    dontDeselect && setDontDeselect(false);
   }, [selectedElements]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (e.which === 1 && iconRef.current && !iconRef.current.contains(e.target)) {
-        if (!Object.keys(selectedElements).length) {
-          setIsSelected(false);
-          setIsInputTextSelected(false);
-        } else setSelectedElements({});
+      if (iconRef.current && !iconRef.current.contains(e.target)) {
+        if (e.which === 1) {
+          if (!Object.keys(selectedElements).length) {
+            setIsSelected(false);
+            setIsInputTextSelected(false);
+          } else setSelectedElements({});
+        }
       }
     };
 
