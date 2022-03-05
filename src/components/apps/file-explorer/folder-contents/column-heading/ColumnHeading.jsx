@@ -1,6 +1,6 @@
-import "./ColumnHeading.css";
-import { useState, memo } from "react";
-import remToPx from "../../../../../utils/helpers/remToPx";
+import './ColumnHeading.css';
+import { useState, memo } from 'react';
+import remToPx from '../../../../../utils/helpers/remToPx';
 
 const ColumnHeading = ({ name, width, setColumnHeadingWidth, visible }) => {
   const [initialWidth, setInitialWidth] = useState(remToPx(width));
@@ -10,13 +10,11 @@ const ColumnHeading = ({ name, width, setColumnHeadingWidth, visible }) => {
   };
 
   const handleResize = (e) => {
-    if (typeof width === "string") width = remToPx(width);
+    e.stopPropagation();
+    if (typeof width === 'string') width = remToPx(width);
     const { offsetX } = e.nativeEvent;
     const newWidth = width + offsetX;
-    setColumnHeadingWidth(
-      name,
-      newWidth >= initialWidth ? newWidth : initialWidth
-    );
+    setColumnHeadingWidth(name, newWidth >= initialWidth ? newWidth : initialWidth);
   };
 
   return (

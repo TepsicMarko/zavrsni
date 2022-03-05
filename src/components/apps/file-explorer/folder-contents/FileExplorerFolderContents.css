@@ -2,28 +2,20 @@
   box-sizing: border-box;
   border-left: 2px solid #2e2e2e;
   box-shadow: -1.5px 0px 0px 0px#131313;
-  position: relative;
   overflow-x: auto;
   z-index: 2;
   height: 100%;
   background-color: #202020;
-  position: absolute;
-  right: 0;
+  flex-basis: 0;
+  flex-grow: 1;
+  min-width: 10rem;
+  width: auto;
+  position: relative;
 }
 
 .column-headings {
-  /* outline: 1px solid gray; */
   height: 1.5em;
   display: flex;
   margin-bottom: 0.5rem;
   min-width: fit-content;
-}
-
-.folder-contents-resize {
-  position: absolute;
-  width: 5px;
-  height: 100%;
-  top: 0;
-  left: 0;
-  cursor: w-resize;
 }

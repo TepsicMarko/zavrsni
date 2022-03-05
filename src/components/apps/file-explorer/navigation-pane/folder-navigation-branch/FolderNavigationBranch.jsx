@@ -1,15 +1,15 @@
-import "./FolderNavigationBranch.css";
-import { useContext, useMemo, useRef, useEffect, memo } from "react";
-import useToggle from "../../../../../hooks/useToggle";
-import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
-import { FcFolder } from "react-icons/fc";
-import useWatchFolder from "../../../../../hooks/useWatchFolder";
-import { path as Path } from "filer";
-import { RightClickMenuContext } from "../../../../../contexts/RightClickMenuContext";
-import NavigationPaneBranchContextMenu from "../../../../system/component-specific-context-menus/NavigationPaneBranchContextMenu";
-import { FileSystemContext } from "../../../../../contexts/FileSystemContext";
-import useInput from "../../../../../hooks/useInput";
-import selectInputContent from "../../../../../utils/helpers/selectInputContent";
+import './FolderNavigationBranch.css';
+import { useContext, useMemo, useRef, useEffect, memo } from 'react';
+import useToggle from '../../../../../hooks/useToggle';
+import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
+import { FcFolder } from 'react-icons/fc';
+import useWatchFolder from '../../../../../hooks/useWatchFolder';
+import { path as Path } from 'filer';
+import { RightClickMenuContext } from '../../../../../contexts/RightClickMenuContext';
+import NavigationPaneBranchContextMenu from '../../../../system/component-specific-context-menus/NavigationPaneBranchContextMenu';
+import { FileSystemContext } from '../../../../../contexts/FileSystemContext';
+import useInput from '../../../../../hooks/useInput';
+import selectInputContent from '../../../../../utils/helpers/selectInputContent';
 
 const FolderNavigationBranch = ({
   branchName,
@@ -26,7 +26,7 @@ const FolderNavigationBranch = ({
     useContext(FileSystemContext);
   const [isOpen, toggleOpen, setToggleState] = useToggle(open);
   const [folderContent] = useWatchFolder(
-    Path.join(basePath, branchName === "This PC" ? "" : branchName),
+    Path.join(basePath, branchName === 'This PC' ? '' : branchName),
     watch,
     getFolder
   );
@@ -36,7 +36,7 @@ const FolderNavigationBranch = ({
 
   const handleClick = (e) => {
     // e.stopPropagation();
-    changePath(Path.join(basePath, branchName === "This PC" ? "" : branchName));
+    changePath(Path.join(basePath, branchName === 'This PC' ? '' : branchName));
   };
 
   const toggleChildBranches = (e) => {
@@ -46,7 +46,7 @@ const FolderNavigationBranch = ({
 
   const focusInput = (e) => {
     e.stopPropagation();
-    inputRef.current.setAttribute("contenteditable", "true");
+    inputRef.current.setAttribute('contenteditable', 'true');
     inputRef.current.focus();
     selectInputContent(inputRef.current);
   };
@@ -57,10 +57,7 @@ const FolderNavigationBranch = ({
       <NavigationPaneBranchContextMenu
         name={branchName}
         deletePath={basePath}
-        createPath={Path.join(
-          basePath,
-          branchName === "This PC" ? "" : branchName
-        )}
+        createPath={Path.join(basePath, branchName === 'This PC' ? '' : branchName)}
         isOpen={isOpen}
         toggleOpen={toggleOpen}
         deleteFSO={deleteFSO}
@@ -70,14 +67,14 @@ const FolderNavigationBranch = ({
     );
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       inputRef.current.blur();
     }
   };
 
-  const handleBlur = (e) => {
-    inputRef.current.setAttribute("contenteditable", "false");
+  const handleBlur = () => {
+    inputRef.current.setAttribute('contenteditable', 'false');
 
     if (branchName !== inputValue && inputValue.length)
       renameFSO(basePath, { old: branchName, new: inputValue });
@@ -85,11 +82,11 @@ const FolderNavigationBranch = ({
 
   const handleDragStart = (e) => {
     e.dataTransfer.setData(
-      "json",
+      'json',
       JSON.stringify({
-        origin: "File Explorer",
+        origin: 'File Explorer',
         dragObject: {
-          name: branchName === "This PC" ? "" : branchName,
+          name: branchName === 'This PC' ? '' : branchName,
           path: basePath,
         },
       })
@@ -99,27 +96,23 @@ const FolderNavigationBranch = ({
   const preventDefault = (e) => e.preventDefault();
   const handleDrop = (e) => {
     e.preventDefault();
-    const dataTransfer = JSON.parse(e.dataTransfer.getData("json"));
+    const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
     const dragObject = dataTransfer.dragObject;
     console.log(dragObject, basePath);
     moveFSO(
       Path.join(dragObject.path, dragObject.name),
-      Path.join(
-        basePath,
-        branchName === "This PC" ? "" : branchName,
-        dragObject.name
-      )
+      Path.join(basePath, branchName === 'This PC' ? '' : branchName, dragObject.name)
     );
   };
 
   useEffect(() => {
     const eventHandler = (e) => {
-      inputRef?.current?.setAttribute("contenteditable", "false");
+      inputRef?.current?.setAttribute('contenteditable', 'false');
     };
 
-    document.addEventListener("click", eventHandler);
+    document.addEventListener('click', eventHandler);
     return () => {
-      document.removeEventListener("click", eventHandler);
+      document.removeEventListener('click', eventHandler);
     };
   }, []);
 
@@ -168,8 +161,9 @@ const FolderNavigationBranch = ({
             onKeyPress={handleKeyPress}
             onBlur={handleBlur}
             onInput={handleInputChange}
+            onClick={(e) => e.stopPropagation()}
             style={{
-              width: "fit-content",
+              width: 'fit-content',
               maxWidth: `calc(100% - ${depth * 0.5}rem)`,
             }}
           >
@@ -181,7 +175,7 @@ const FolderNavigationBranch = ({
         () =>
           isOpen &&
           folderContent
-            .filter((fso) => fso.type === "DIRECTORY")
+            .filter((fso) => fso.type === 'DIRECTORY')
             .map((branch) => (
               <FolderNavigationBranch
                 branchName={branch.name}
@@ -189,9 +183,7 @@ const FolderNavigationBranch = ({
                 changePath={changePath}
                 currentPath={currentPath}
                 basePath={
-                  branchName === "This PC"
-                    ? basePath
-                    : Path.join(basePath, branchName)
+                  branchName === 'This PC' ? basePath : Path.join(basePath, branchName)
                 }
                 expandBranches={expandBranches}
                 setExpandBranches={setExpandBranches}

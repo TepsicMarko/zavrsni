@@ -9,7 +9,6 @@ import React, {
 } from 'react';
 import remToPx from '../../../utils/helpers/remToPx';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
-import { WindowDimensionsContext } from '../../../contexts/WindowDimensionsContext';
 import { ThumbnailPreviewsContext } from '../../../contexts/ThumbnailPreviewsContext';
 import TitleBar from './title-bar/TitleBar';
 
@@ -47,8 +46,6 @@ const Window = ({
   const { addThumbnailPreview, removeThumbnailPreview } = useContext(
     ThumbnailPreviewsContext
   );
-  const optionalWindowDimensionsContext = useContext(WindowDimensionsContext);
-
   const appDataRef = useRef({ width, height, position });
   const previousDimensionsAndPositionRef = useRef({});
 
@@ -238,14 +235,6 @@ const Window = ({
 
     return () => removeThumbnailPreview(process, pid);
   }, [process, pid, titleBar.title]);
-
-  useEffect(() => {
-    optionalWindowDimensionsContext &&
-      optionalWindowDimensionsContext.handleWindowDimensionsChange({
-        width,
-        height,
-      });
-  }, [width, height]);
 
   return (
     <div

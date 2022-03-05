@@ -1,18 +1,13 @@
-import "./FileExplorerNavigationBar.css";
-import {
-  IoArrowBack,
-  IoArrowForward,
-  IoArrowUp,
-  IoReload,
-} from "react-icons/io5";
-import { VscSearch } from "react-icons/vsc";
-import { useState, memo, useEffect, useContext } from "react";
-import { FcFolder } from "react-icons/fc";
-import { VscClose } from "react-icons/vsc";
-import { path as Path } from "filer";
-import remToPx from "../../../../utils/helpers/remToPx";
-import { FileSystemContext } from "../../../../contexts/FileSystemContext";
-import usePathHistory from "../../../../hooks/usePathHistory";
+import './FileExplorerNavigationBar.css';
+import { IoArrowBack, IoArrowForward, IoArrowUp, IoReload } from 'react-icons/io5';
+import { VscSearch } from 'react-icons/vsc';
+import { useState, memo, useEffect, useContext } from 'react';
+import { FcFolder } from 'react-icons/fc';
+import { VscClose } from 'react-icons/vsc';
+import { path as Path } from 'filer';
+import remToPx from '../../../../utils/helpers/remToPx';
+import { FileSystemContext } from '../../../../contexts/FileSystemContext';
+import usePathHistory from '../../../../hooks/usePathHistory';
 
 const FileExplorerNavigationBar = ({
   path,
@@ -21,20 +16,19 @@ const FileExplorerNavigationBar = ({
   setSearchResults,
   setExpandBranches,
 }) => {
-  const [searchBoxWidth, setSearchBoxWidth] = useState("5rem");
-  const [minWidth] = useState(remToPx("5rem"));
+  const [searchBoxWidth, setSearchBoxWidth] = useState('5rem');
+  const [minWidth] = useState(remToPx('5rem'));
   const [address, setAddress] = useState(path);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const { exists, findFSO } = useContext(FileSystemContext);
-  const [previous, goBack, current, goForth, next, watchPath] =
-    usePathHistory(path);
+  const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(path);
 
   const handleAddressChange = (e) => {
     setAddress(e.target.value);
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.target.blur();
       exists(address)
         .then(() => {
@@ -42,11 +36,7 @@ const FileExplorerNavigationBar = ({
           changePath(address);
         })
         .catch((e) => {
-          alert(
-            'Windows cant find "' +
-              address +
-              '". Check the spelling and try again.'
-          );
+          alert('Windows cant find "' + address + '". Check the spelling and try again.');
           setAddress(path);
         });
     }
@@ -57,21 +47,23 @@ const FileExplorerNavigationBar = ({
   };
 
   const startSearch = (e) => {
-    if (e.key === "Enter" || e.type === "click") {
+    if (e.key === 'Enter' || e.type === 'click') {
       findFSO(path, true, search, setSearchResults);
     }
   };
 
   const clearSearch = () => {
     setSearchResults([]);
-    setSearch("");
+    setSearch('');
   };
 
   const handleResizeStart = (e) => {
+    e.stopPropagation();
     e.dataTransfer.setDragImage(new Image(), 0, 0);
   };
 
   const handleResize = (e) => {
+    e.stopPropagation();
     const { offsetX } = e.nativeEvent;
     if (offsetX > -100) {
       const newWidth = remToPx(searchBoxWidth) - offsetX;
@@ -81,7 +73,7 @@ const FileExplorerNavigationBar = ({
   };
 
   const goUp = () => {
-    changePath(Path.join(path, ".."));
+    changePath(Path.join(path, '..'));
   };
 
   const resetAddress = () => {
@@ -106,14 +98,11 @@ const FileExplorerNavigationBar = ({
       <div className='flex-center buttons-navigation'>
         <div
           onClick={previous.length && goBack}
-          className={!previous.length && "disabled"}
+          className={!previous.length && 'disabled'}
         >
           <IoArrowBack />
         </div>
-        <div
-          onClick={next.length && goForth}
-          className={!next.length && "disabled"}
-        >
+        <div onClick={next.length && goForth} className={!next.length && 'disabled'}>
           <IoArrowForward />
         </div>
         <div onClick={goUp}>
@@ -138,10 +127,7 @@ const FileExplorerNavigationBar = ({
         </div>
       </div>
 
-      <div
-        className='flex-center file-search-box'
-        style={{ flexBasis: searchBoxWidth }}
-      >
+      <div className='flex-center file-search-box' style={{ flexBasis: searchBoxWidth }}>
         <div
           className='resize-search-box'
           draggable

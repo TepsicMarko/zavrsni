@@ -7,7 +7,6 @@ import remToPx from '../../../../utils/helpers/remToPx';
 import moment from 'moment';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../../contexts/ProcessesContext';
-import { WindowDimensionsContext } from '../../../../contexts/WindowDimensionsContext';
 import { RightClickMenuContext } from '../../../../contexts/RightClickMenuContext';
 import FolderContentsContextMenu from '../../../system/component-specific-context-menus/FolderContentsContextMenu';
 import { path as Path } from 'filer';
@@ -16,8 +15,6 @@ import useSelectionRectangle from '../../../../hooks/useSelectionRectangle';
 const FileExplorerFolderContents = ({
   changePath,
   path,
-  width,
-  setWidth,
   searchResults,
   setItemCount,
   setExpandBranches,
@@ -27,18 +24,15 @@ const FileExplorerFolderContents = ({
 }) => {
   const { watch, getFolder, renameFSO, deleteFSO, createFSO, moveFSO, createBlob } =
     useContext(FileSystemContext);
-  const { windowDimensions } = useContext(WindowDimensionsContext);
   const { startProcess } = useContext(ProcessesContext);
   const { renderOptions } = useContext(RightClickMenuContext);
 
-  const windowWidthOnFirstRender = useRef(windowDimensions.width);
   const [folderContent, setWatcherPath] = useWatchFolder(
     path,
     watch,
     getFolder,
     setItemCount
   );
-  // const [handleExternalFileDrop] = useExternalFileDrop(createFSO, createBlob);
 
   const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
     Name: '4.5rem',
@@ -57,10 +51,6 @@ const FileExplorerFolderContents = ({
     setSelectedElements,
     dimensions,
   } = useSelectionRectangle();
-  const [minWidth, setMinWidth] = useState(remToPx('6rem'));
-
-  const folderContentsRef = useRef(null);
-  const previousWindowWidthRef = useRef(windowDimensions.width);
 
   const setColumnHeadingWidth = useCallback(
     (name, width) => {
@@ -68,22 +58,6 @@ const FileExplorerFolderContents = ({
     },
     [columnHeadingsWidth]
   );
-
-  const handleResizeStart = (e) => {
-    e.stopPropagation();
-    e.dataTransfer.setDragImage(new Image(), 0, 0);
-  };
-
-  const handleResize = (e) => {
-    e.stopPropagation();
-    const { offsetX } = e.nativeEvent;
-    const newWidth = width - offsetX;
-    const maxWidth = windowDimensions.width - remToPx('3.5rem');
-
-    setWidth(
-      newWidth >= maxWidth ? maxWidth : newWidth >= minWidth ? newWidth : minWidth
-    );
-  };
 
   const handleRightClick = (e) =>
     renderOptions(e, <FolderContentsContextMenu path={path} createFSO={createFSO} />);
@@ -138,31 +112,13 @@ const FileExplorerFolderContents = ({
     setWatcherPath(path);
   }, [path]);
 
-  useEffect(() => {
-    if (windowWidthOnFirstRender.current === 0) {
-      setWidth(windowDimensions.width - 150);
-      windowWidthOnFirstRender.current = windowDimensions.width;
-    }
-  }, [windowDimensions.width]);
-
-  useEffect(() => {
-    const maxWidth = windowDimensions.width - remToPx('3.5rem');
-    const windowWidthDiff = windowDimensions.width - previousWindowWidthRef.current;
-    const newWidth = width + windowWidthDiff;
-    if (width + windowWidthDiff > minWidth && newWidth <= maxWidth)
-      setWidth(width + windowWidthDiff);
-    previousWindowWidthRef.current = windowDimensions.width;
-  }, [windowDimensions.width]);
-
   return (
     <div
       draggable
       onDragStart={handleDragStart}
       onDrag={handleSelection}
       onDragEnd={disableSelection}
-      ref={folderContentsRef}
       className='fx-folder-contents'
-      style={{ width }}
       onContextMenu={handleRightClick}
       onDragEnter={preventDefault}
       onDragOver={preventDefault}
@@ -216,13 +172,6 @@ const FileExplorerFolderContents = ({
           );
         })}
       </div>
-      <div
-        draggable
-        onDragStart={handleResizeStart}
-        onDrag={handleResize}
-        onDragEnd={handleResize}
-        className='folder-contents-resize'
-      ></div>
       <div ref={rectRef} className='rect-selection' style={{ ...calcRectStyle() }}></div>
     </div>
   );

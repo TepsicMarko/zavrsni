@@ -8,10 +8,11 @@ const useSelectionRectangle = () => {
   const rectRef = useRef(null);
 
   const enableSelection = (e) => {
+    const { top, left } = e.target.getBoundingClientRect();
     setIsSelectionActive(true);
     setPosition({
-      x: e.clientX - e.target.getBoundingClientRect().left,
-      y: e.clientY - e.target.getBoundingClientRect().top,
+      x: e.clientX - left,
+      y: e.clientY - top,
     });
   };
 
@@ -23,9 +24,11 @@ const useSelectionRectangle = () => {
 
   const handleSelection = (e) => {
     e.stopPropagation();
+    const { top, left } = e.target.getBoundingClientRect();
+
     setDimensions({
-      width: position.x - e.clientX + e.target.getBoundingClientRect().left,
-      height: position.y - e.clientY + e.target.getBoundingClientRect().top,
+      width: position.x - e.clientX + left,
+      height: position.y - e.clientY + top,
     });
   };
 

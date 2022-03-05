@@ -1,13 +1,23 @@
 .fx-navigation-pane {
   background-color: #191919;
-  min-width: fit-content;
+  min-width: 5rem;
   box-sizing: border-box;
-  height: 100%;
   position: relative;
-  width: 100%;
+  flex-basis: unset;
+  height: 100%;
+  max-width: 100%;
 }
 
 .folder-navigation-tree {
   width: inherit;
   padding-top: 0.5rem;
+}
+
+.resize-navigation-pane {
+  position: absolute;
+  width: 5px;
+  height: 100%;
+  top: 0;
+  right: -2.5px;
+  cursor: w-resize;
 }
