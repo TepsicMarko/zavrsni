@@ -3,7 +3,7 @@ import { FcFolder } from 'react-icons/fc';
 import { AiFillFileText } from 'react-icons/ai';
 import { GoFileSymlinkFile } from 'react-icons/go';
 import { BsFileEarmarkFill } from 'react-icons/bs';
-import { useContext, useState, useEffect, useRef, useMemo } from 'react';
+import { useContext, useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { RightClickMenuContext } from '../../../../contexts/RightClickMenuContext';
 import useInput from '../../../../hooks/useInput';
@@ -12,6 +12,8 @@ import openWithDefaultApp from '../../../../utils/helpers/openWithDefaultApp';
 import { path as Path } from 'filer';
 import getFileType from '../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../utils/helpers/isInSelection';
+import chrome from '../../../../assets/chrome.svg';
+import pdf from '../../../../assets/pdf.jpg';
 
 const DesktopIcon = ({
   name,
@@ -56,23 +58,23 @@ const DesktopIcon = ({
     }
   };
 
-  const setImageSource = (src) => {
-    imgSrc.length === 0 && setImgSrc(src);
-  };
-
-  const renderIcon = useMemo(() => {
+  const renderIcon = () => {
     if (type === 'file') {
       const fileType = getFileType(Path.extname(name));
+
+      if (fileType === 'document') {
+        const ext = Path.extname(name);
+        if (ext === '.html') return <img src={chrome} width='45rem' draggable={false} />;
+        if (ext === '.pdf') return <img src={pdf} width='45rem' draggable={false} />;
+      }
 
       if (fileType === 'text') return <AiFillFileText size='2.5rem' color='white' />;
 
       if (fileType === 'image') {
-        readFileContent(Path.join(path, name), setImageSource);
         return <img src={imgSrc} width='70%' height='100%' draggable={false} />;
       }
 
       if (fileType === 'video') {
-        readBlob(Path.join(path, name), setImageSource);
         return <video src={imgSrc} width='70%' height='100%' draggable={false} />;
       }
 
@@ -80,7 +82,7 @@ const DesktopIcon = ({
         return <BsFileEarmarkFill size='2.5rem' color='white' />;
     } else if (type === 'link') return <GoFileSymlinkFile size='2.5rem' color='white' />;
     else return <FcFolder size='2.5rem' />;
-  }, [imgSrc]);
+  };
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -116,10 +118,10 @@ const DesktopIcon = ({
 
   const handleDelete = async () => {
     if (Object.keys(selectedElements).length)
-      Object.values(selectedElements).forEach(async ({ path, name, type }) => {
+      for (let { path, name, type } of Object.values(selectedElements)) {
         await deleteFSO(path, name, type.toLowerCase());
         deleteFromGrid(name);
-      });
+      }
     else {
       await deleteFSO(path, name, type.toLowerCase());
       deleteFromGrid(name);
@@ -197,6 +199,15 @@ const DesktopIcon = ({
     }
   };
 
+  useEffect(async () => {
+    const fileType = await getFileType(Path.extname(name));
+    if (type === 'file') {
+      fileType === 'image' && setImgSrc(await readFileContent(Path.join(path, name)));
+      fileType === 'video' &&
+        setImgSrc(await readBlob(Path.join(path, name), 'video/mp4'));
+    }
+  }, []);
+
   useEffect(() => {
     if (rectRef) {
       const selection = rectRef.current;
@@ -253,7 +264,7 @@ const DesktopIcon = ({
       onDrag={stopPropagation}
       onDrop={handleDrop}
     >
-      {renderIcon}
+      {renderIcon()}
       <div
         ref={inputRef}
         contentEditable={isSelected}

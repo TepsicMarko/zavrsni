@@ -1,10 +1,10 @@
 const suported = {
   '.txt': 'text',
-  '.doc': 'text',
-  '.docx': 'text',
   '.me': 'text',
   '.text': 'text',
   '.readme': 'text',
+  '.doc': 'document',
+  '.docx': 'document',
   '.pdf': 'document',
   '.html': 'document',
   '.bmp': 'image',

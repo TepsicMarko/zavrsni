@@ -141,14 +141,13 @@ export const FileSystemProvider = ({ children }) => {
     else return content;
   };
 
-  const readBlob = (path, callback) => {
-    readBinaryFile(path).then((buffer) => {
-      const blob = new Blob([buffer], {
-        type: 'video/mp4',
+  const readBlob = (path, type, callback) =>
+    new Promise((resolve, reject) => {
+      readBinaryFile(path).then((buffer) => {
+        const blob = new Blob([buffer], { type });
+        resolve(window.URL.createObjectURL(blob));
       });
-      callback(window.URL.createObjectURL(blob));
     });
-  };
 
   const renameFSO = (path, name) =>
     new Promise((resolve, reject) => {
@@ -170,7 +169,7 @@ export const FileSystemProvider = ({ children }) => {
     if (type === 'directory') {
       return recusive
         ? await rmdirRecursive(Path.join(path, name))
-        : rmdir(Path.join(path, name));
+        : await rmdir(Path.join(path, name));
     } else {
       await unlink(Path.addTrailing(path), name);
     }

@@ -35,7 +35,7 @@ const FolderNavigationBranch = ({
   const inputRef = useRef(null);
 
   const handleClick = (e) => {
-    // e.stopPropagation();
+    e.stopPropagation();
     changePath(Path.join(basePath, branchName === 'This PC' ? '' : branchName));
   };
 
@@ -161,7 +161,7 @@ const FolderNavigationBranch = ({
             onKeyPress={handleKeyPress}
             onBlur={handleBlur}
             onInput={handleInputChange}
-            onClick={(e) => e.stopPropagation()}
+            onClick={handleClick}
             style={{
               width: 'fit-content',
               maxWidth: `calc(100% - ${depth * 0.5}rem)`,

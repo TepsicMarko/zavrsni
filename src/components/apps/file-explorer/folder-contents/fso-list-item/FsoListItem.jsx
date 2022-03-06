@@ -1,5 +1,5 @@
 import './FsoListItem.css';
-import { memo, useRef, useContext, useEffect, useState } from 'react';
+import { memo, useRef, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import getFileTypeIcon from '../../../../../utils/helpers/getFileTypeIcon';
 import FsoListItemContextMenu from '../../../../system/component-specific-context-menus/FsoListItemContextMenu';
 import selectInputContent from '../../../../../utils/helpers/selectInputContent';
@@ -11,6 +11,8 @@ import openWithDefaultApp from '../../../../../utils/helpers/openWithDefaultApp'
 import getFileType from '../../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../../utils/helpers/isInSelection';
 import useClickOutside from '../../../../../hooks/useClickOutside';
+import chrome from '../../../../../assets/chrome.svg';
+import pdf from '../../../../../assets/pdf.jpg';
 
 const FsoListItem = ({
   name,
@@ -45,6 +47,7 @@ const FsoListItem = ({
   const { startProcess } = useContext(ProcessesContext);
   const [inputValue, handleInputChange] = useInput(name);
   const [isSelected, setIsSelected] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const fsoRef = useClickOutside('click', () => setIsSelected(false));
 
   const handleKeyDown = (e) => {
@@ -59,13 +62,12 @@ const FsoListItem = ({
 
   const focusInput = (e) => {
     e.stopPropagation();
-    inputRef.current.setAttribute('contenteditable', 'true');
-    inputRef.current.focus();
+    setIsInputFocused(true);
     selectInputContent(inputRef.current);
   };
 
   const handleBlur = (e) => {
-    e.target.setAttribute('contenteditable', 'false');
+    setIsInputFocused(false);
 
     if (name !== inputValue && inputValue.length)
       renameFSO(path, { old: name, new: inputValue });
@@ -138,6 +140,22 @@ const FsoListItem = ({
     }
   };
 
+  const renderIcon = () => {
+    if (type === 'FILE') {
+      const ext = Path.extname(name);
+
+      if (ext === '.html') return <img src={chrome} width='14px' draggable={false} />;
+      else if (ext === '.pdf') return <img src={pdf} width='14px' draggable={false} />;
+      else return getFileTypeIcon(getFileType(ext));
+    } else {
+      return getFileTypeIcon(type);
+    }
+  };
+
+  useLayoutEffect(() => {
+    isInputFocused && inputRef.current.focus();
+  }, [isInputFocused]);
+
   useEffect(() => {
     if (rectRef) {
       const selection = rectRef.current;
@@ -193,10 +211,9 @@ const FsoListItem = ({
       onDragStart={handleDragStart}
     >
       <div style={{ minWidth: Name, maxWidth: Name }}>
-        <span className='fso-list-item-icon'>
-          {getFileTypeIcon(type === 'FILE' ? getFileType(Path.extname(name)) : type)}
-        </span>
+        <span className='fso-list-item-icon'>{renderIcon()}</span>
         <span
+          contentEditable={isInputFocused}
           className='fso-list-item-name-input'
           ref={inputRef}
           suppressContentEditableWarning={true}
@@ -204,7 +221,7 @@ const FsoListItem = ({
           onBlur={handleBlur}
           style={{ maxWidth: 'calc(inherit - 2rem)' }}
           onInput={handleInputChange}
-          onDoubleClick={(e) => e.stopPropagation()}
+          onDoubleClick={(e) => (isInputFocused ? e.stopPropagation() : undefined)}
         >
           {name}
         </span>

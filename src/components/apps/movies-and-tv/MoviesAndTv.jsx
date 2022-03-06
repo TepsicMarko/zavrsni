@@ -1,15 +1,15 @@
-import "./MoviesAndTv.css";
-import { useState, useEffect, useContext, useRef } from "react";
-import Window from "../../system/window/Window";
-import WindowContent from "../../system/window/window-content/WindowContent";
-import { FileSystemContext } from "../../../contexts/FileSystemContext";
-import "rc-slider/assets/index.css";
-import VideoControls from "./video-controls/VideoControls";
-import { path as Path } from "filer";
+import './MoviesAndTv.css';
+import { useState, useEffect, useContext, useRef } from 'react';
+import Window from '../../system/window/Window';
+import WindowContent from '../../system/window/window-content/WindowContent';
+import { FileSystemContext } from '../../../contexts/FileSystemContext';
+import 'rc-slider/assets/index.css';
+import VideoControls from './video-controls/VideoControls';
+import { path as Path } from 'filer';
 
 const MoviesAndTv = ({ path, pid }) => {
   const videoRef = useRef(null);
-  const [src, setSrc] = useState("");
+  const [src, setSrc] = useState('');
   const { readBlob } = useContext(FileSystemContext);
   const [isMiniplayer, setIsMiniplayer] = useState(false);
   const [videoContorlsVisibility, setVideoContorlsVisibility] = useState(true);
@@ -21,11 +21,10 @@ const MoviesAndTv = ({ path, pid }) => {
     Date.now() - lastVideoVisibilityChnage.current > 1000 &&
     setVideoContorlsVisibility(true);
 
-  const handleClick = () =>
-    setVideoContorlsVisibility(!videoContorlsVisibility);
+  const handleClick = () => setVideoContorlsVisibility(!videoContorlsVisibility);
 
-  useEffect(() => {
-    path && readBlob(path, (blobSrc) => setSrc(blobSrc));
+  useEffect(async () => {
+    path && setSrc(await readBlob(path, 'video/mp4'));
   }, []);
 
   useEffect(() => {
@@ -40,8 +39,8 @@ const MoviesAndTv = ({ path, pid }) => {
       minWindowWidth='9rem'
       minWindowHeight='10rem'
       titleBar={{
-        color: "white",
-        backgroundColor: !isMiniplayer ? "black" : "transparent",
+        color: 'white',
+        backgroundColor: !isMiniplayer ? 'black' : 'transparent',
         overlay: true,
       }}
       limitedWindowControls={isMiniplayer}
@@ -67,8 +66,8 @@ const MoviesAndTv = ({ path, pid }) => {
             <div
               className='controls-overlay'
               style={{
-                background: isMiniplayer ? "rgba(0, 0, 0, 0.6)" : "",
-                height: isMiniplayer ? "100%" : "",
+                background: isMiniplayer ? 'rgba(0, 0, 0, 0.6)' : '',
+                height: isMiniplayer ? '100%' : '',
               }}
             ></div>
           )}
