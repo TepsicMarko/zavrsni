@@ -74,24 +74,6 @@ const handleExternalFileDrop = async (
           });
         }
 
-        if (fileType === 'document')
-          entry.file((file) => {
-            reader.onprogress = handleProgress;
-
-            reader.onload = (e) => {
-              const content = e.target.result;
-              createFSO(
-                dropzone,
-                Path.basename(entry.name, Path.extname(entry.name)),
-                Path.extname(entry.name),
-                content
-              );
-              resolve();
-            };
-
-            reader.readAsDataURL(file);
-          });
-
         if (fileType === 'text')
           entry.file((file) => {
             reader.onprogress = handleProgress;
@@ -128,7 +110,7 @@ const handleExternalFileDrop = async (
             reader.readAsDataURL(file);
           });
 
-        if (fileType === 'video')
+        if (fileType === 'video' || fileType === 'document')
           entry.file((file) => {
             reader.onprogress = handleProgress;
 

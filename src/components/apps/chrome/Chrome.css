@@ -4,3 +4,8 @@
   width: 100%;
   border: none;
 }
+
+.pdf {
+  flex-grow: 1;
+  width: 100%;
+}

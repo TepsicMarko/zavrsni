@@ -9,7 +9,7 @@ import { FileSystemContext } from '../../../contexts/FileSystemContext';
 const Chrome = ({ icon, pid, path }) => {
   const [url, setUrl] = useState(path || '');
   const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(url, true);
-  const { readFileContent } = useContext(FileSystemContext);
+  const { readFileContent, readBlob } = useContext(FileSystemContext);
   const iframeRef = useRef(null);
 
   const isDomain = () => {
@@ -25,10 +25,10 @@ const Chrome = ({ icon, pid, path }) => {
   const refreshPage = () => iframeRef.current.contentWindow.location.reload();
 
   useEffect(async () => {
-    console.log(path, path);
     if (path && url === path) {
-      iframeRef.current.src = await readFileContent(path);
-      console.log(await readFileContent(path));
+      path.endsWith('.pdf')
+        ? (iframeRef.current.src = await readBlob(path, 'application/pdf'))
+        : (iframeRef.current.srcdoc = await readFileContent(path));
     } else {
       watchPath(url);
       url && isLink()
@@ -45,8 +45,10 @@ const Chrome = ({ icon, pid, path }) => {
     url !== current && setUrl(current);
   }, [current]);
 
-  const disableIframe = () => (iframeRef.current.style.pointerEvents = 'none');
-  const enableIframe = () => (iframeRef.current.style.pointerEvents = '');
+  const disableIframe = () =>
+    iframeRef.current && (iframeRef.current.style.pointerEvents = 'none');
+  const enableIframe = () =>
+    iframeRef.current && (iframeRef.current.style.pointerEvents = '');
 
   return (
     <Window
@@ -59,7 +61,7 @@ const Chrome = ({ icon, pid, path }) => {
       disableIframe={disableIframe}
       enableIframe={enableIframe}
     >
-      <WindowContent flex flexDirection='column'>
+      <WindowContent flex flexWrap flexDirection='column'>
         <ChromeNavbar
           previous={previous.length}
           goBack={goBack}
@@ -73,8 +75,6 @@ const Chrome = ({ icon, pid, path }) => {
           ref={iframeRef}
           className='google'
           referrerPolicy='no-referrer'
-          sandbox='allow-downloads allow-forms allow-modals allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts'
-          src='https://www.google.com/webhp?igu=1'
           style={{ backgroundColor: 'white' }}
         ></iframe>
       </WindowContent>
