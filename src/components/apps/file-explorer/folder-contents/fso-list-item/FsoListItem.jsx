@@ -113,15 +113,16 @@ const FsoListItem = ({
   };
 
   const handleDragStart = (e) => {
+    e.stopPropagation();
     e.dataTransfer.setData(
       'json',
       JSON.stringify({
         origin: 'File Explorer',
-        dragObject: {
-          name,
-          type,
-          path: location ? location : path,
-        },
+        dragObjects: [
+          ...(Object.keys(selectedElements).length
+            ? Object.values(selectedElements)
+            : [{ path, name }]),
+        ],
       })
     );
   };

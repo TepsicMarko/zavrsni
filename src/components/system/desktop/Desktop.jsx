@@ -76,16 +76,22 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
   const handleDrop = (e) => {
     if (!e.dataTransfer.files.length) {
       const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
-      console.log(dataTransfer);
+      console.log(dataTransfer.dragObjects);
       if (dataTransfer.origin === 'Desktop')
         addToGrid(
           dataTransfer.dragObjects,
           calculateGridPosition({ x: e.clientX, y: e.clientY })
         );
-      else
+      else if (dataTransfer.origin === 'File Explorer') {
+        addToGrid(
+          dataTransfer.dragObjects.map(({ name }) => name),
+          calculateGridPosition({ x: e.clientX, y: e.clientY })
+        );
         dataTransfer.dragObjects.forEach(({ path, name }) => {
+          console.log(path, name);
           moveFSO(Path.join(path, name), Path.join(origin, name));
         });
+      }
     } else {
       e.preventDefault();
       startProcess('File Transfer Dialog', {

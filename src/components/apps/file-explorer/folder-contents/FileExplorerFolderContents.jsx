@@ -74,15 +74,15 @@ const FileExplorerFolderContents = ({
   };
 
   const handleDrop = (e) => {
+    e.stopPropagation();
     if (!e.dataTransfer.files.length) {
       e.preventDefault();
       const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
-      const dragObject = dataTransfer.dragObject;
       if (dataTransfer.origin === 'Desktop') {
-        moveFSO(
-          Path.join(dragObject.path, dragObject.name),
-          Path.join(path, dragObject.name)
-        );
+        const origin = '/C/users/admin/Desktop';
+        dataTransfer.dragObjects.forEach((name) => {
+          moveFSO(Path.join(origin, name), Path.join(path, name));
+        });
       }
     } else {
       e.preventDefault();
