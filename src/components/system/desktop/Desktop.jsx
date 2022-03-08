@@ -115,16 +115,20 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
     Object.keys(processes).flatMap((process) => {
       return Object.keys(processes[process]).map((processInstance) => {
         const appInstance = processes[process][processInstance];
+        const canCreateFiles =
+          process === 'File Explorer' || process === 'Command Prompt';
 
         return appInstance.childProcess ? (
           <>
             {cloneElement(appInstance.source, {
               key: processInstance,
               pid: processInstance,
+              addToGrid: canCreateFiles ? addToGrid : null,
             })}
             {Object.keys(appInstance.childProcess).length
               ? cloneElement(appInstance.childProcess.source, {
                   key: processInstance + '-' + appInstance.childProcess.name,
+                  addToGrid: canCreateFiles ? addToGrid : null,
                 })
               : null}
           </>
@@ -132,6 +136,7 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
           cloneElement(appInstance.source, {
             key: processInstance,
             pid: processInstance,
+            addToGrid: canCreateFiles ? addToGrid : null,
           })
         );
       });

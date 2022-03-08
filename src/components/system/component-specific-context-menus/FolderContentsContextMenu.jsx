@@ -1,7 +1,7 @@
 import ContextMenuItem from '../context-menu/context-menu-item/ContextMenuItem';
 import { useState } from 'react';
 
-const FolderContentsContextMenu = ({ path, createFSO, closeMenu }) => {
+const FolderContentsContextMenu = ({ path, createFSO, closeMenu, addToGrid }) => {
   const [openSubmenu, setOpenSubmenu] = useState('');
   const [view, setView] = useState('Medium icons');
   const handleClick = (name) => setOpenSubmenu(name);
@@ -36,8 +36,10 @@ const FolderContentsContextMenu = ({ path, createFSO, closeMenu }) => {
         ].map(({ name, type }) => (
           <ContextMenuItem
             name={name}
-            onClick={() => {
-              createFSO(path, name, type);
+            onClick={async () => {
+              const fsoName = await createFSO(path, name, type);
+              if (path === '/C/users/admin/Desktop')
+                addToGrid([fsoName, undefined], { row: 1, column: 1 });
             }}
             closeMenu={closeMenu}
           />

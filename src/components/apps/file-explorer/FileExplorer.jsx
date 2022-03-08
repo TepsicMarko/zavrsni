@@ -23,6 +23,7 @@ const FileExplorer = ({
   openFile,
   endParrentProcess,
   ppid,
+  addToGrid,
 }) => {
   const [activeTab, setActiveTab] = useState('Home');
   const [path, setPath] = useState(customPath || '/C/users/admin');
@@ -77,6 +78,7 @@ const FileExplorer = ({
             currentPath={path}
             expandBranches={expandBranches}
             setExpandBranches={setExpandBranches}
+            addToGrid={addToGrid}
           />
           <FileExplorerFolderContents
             changePath={changePath}
@@ -87,6 +89,7 @@ const FileExplorer = ({
             openFile={openFile}
             endProcess={endProcess}
             ppid={ppid}
+            addToGrid={addToGrid}
           />
         </div>
       </WindowContent>

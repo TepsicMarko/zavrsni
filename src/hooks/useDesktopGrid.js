@@ -103,6 +103,8 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       return 'right';
     } else if (Math.abs(movedRows) < Math.abs(movedColumns)) {
       return 'down';
+    } else if (movedRows === 0 && movedColumns === 0) {
+      return 'fromTopToBottom';
     } else {
       return Math.round(Math.random() * 1) > 0 ? 'right' : 'down';
     }
@@ -141,6 +143,14 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
         }
       }
 
+      if (searchDirection === 'fromTopToBottom') {
+        cellPosition.row += 1;
+        if (cellPosition.row > maxRows) {
+          cellPosition.row = 1;
+          cellPosition.column += 1;
+        }
+      }
+
       cellPosition = returnToGridIfOutside(cellPosition.column, cellPosition.row);
       const { isOccupied } = await checkIsOccupied(name, cellPosition, newGrid);
 
@@ -172,7 +182,7 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       if (!grid[items[0]]) {
         console.log('adding to grid');
         items.forEach((item) => {
-          newGrid[item] = newCellPosition;
+          item && (newGrid[item] = newCellPosition);
         });
       }
 
@@ -184,67 +194,72 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       }
 
       for (let name of items) {
-        const newColumnValue = newGrid[name].column + movedColumns;
-        const newRowValue = newGrid[name].row + movedRows;
+        if (name) {
+          console.log(name);
+          const newColumnValue = newGrid[name].column + movedColumns;
+          const newRowValue = newGrid[name].row + movedRows;
 
-        if (items.length > 1) {
-          newGrid[name] = { row: newRowValue, column: newColumnValue };
-        }
+          if (items.length > 1) {
+            newGrid[name] = { row: newRowValue, column: newColumnValue };
+          }
 
-        if (items.length === 1) {
-          const cellPosition = returnToGridIfOutside(
-            newCellPosition.column,
-            newCellPosition.row,
-            'item'
-          );
-          const { isOccupied, occupiedCellName } = await checkIsOccupied(
-            name,
-            cellPosition,
-            newGrid
-          );
-
-          if (isOccupied) {
-            newGrid[name] = cellPosition;
-            const { notEnoughSpace } = await makeSpace(
-              cellPosition,
-              occupiedCellName,
-              newGrid,
-              grid
+          if (items.length === 1) {
+            const cellPosition = returnToGridIfOutside(
+              newCellPosition.column,
+              newCellPosition.row,
+              'item'
             );
-            if (notEnoughSpace) {
-              newGrid = { ...grid };
-              if (Math.abs(movedColumns) <= 0) {
-                newGrid[name].row += movedRows;
-                newGrid[occupiedCellName].row -= movedRows;
+            const { isOccupied, occupiedCellName } = await checkIsOccupied(
+              name,
+              cellPosition,
+              newGrid
+            );
+
+            if (isOccupied) {
+              newGrid[name] = cellPosition;
+              const { notEnoughSpace } = await makeSpace(
+                cellPosition,
+                occupiedCellName,
+                newGrid,
+                grid
+              );
+              if (notEnoughSpace) {
+                newGrid = { ...grid };
+                if (Math.abs(movedColumns) <= 0) {
+                  newGrid[name].row += movedRows;
+                  newGrid[occupiedCellName].row -= movedRows;
+                }
               }
+            } else {
+              newGrid[name] = cellPosition;
             }
-          } else {
-            newGrid[name] = cellPosition;
           }
         }
       }
 
       for (let name of items) {
-        const cellPosition = returnToGridIfOutside(
-          newGrid[name].column,
-          newGrid[name].row
-        );
-        const { isOccupied } = await checkIsOccupied(name, cellPosition, newGrid);
+        if (name) {
+          const cellPosition = returnToGridIfOutside(
+            newGrid[name].column,
+            newGrid[name].row
+          );
+          const { isOccupied } = await checkIsOccupied(name, cellPosition, newGrid);
 
-        if (isOccupied) {
-          if (items.length > 1) {
-            const freeCellPosition = await findFirstFreeCell(
-              name,
-              cellPosition,
-              newGrid,
-              calcSearchDirection(movedColumns, movedRows),
-              calcIsInCorner(cellPosition)
-            );
+          if (isOccupied) {
+            if (items.length > 1) {
+              const freeCellPosition = await findFirstFreeCell(
+                name,
+                cellPosition,
+                newGrid,
+                calcSearchDirection(movedColumns, movedRows),
+                calcIsInCorner(cellPosition)
+              );
 
-            newGrid[name] = freeCellPosition;
+              newGrid[name] = freeCellPosition;
+            }
+          } else {
+            newGrid[name] = cellPosition;
           }
-        } else {
-          newGrid[name] = cellPosition;
         }
       }
 

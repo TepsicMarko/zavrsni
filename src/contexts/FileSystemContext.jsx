@@ -114,11 +114,13 @@ export const FileSystemProvider = ({ children }) => {
     if (type === 'directory') {
       const folderName = await mkdir(path, name);
       callback && callback(folderName);
+      return folderName;
     } else if (type === 'lnk') {
       link(Path.join(path, name));
     } else {
       const fileName = await writeFile(Path.join(path, name), type, true, content);
       callback && callback(fileName);
+      return fileName;
     }
   };
 

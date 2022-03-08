@@ -21,6 +21,7 @@ const FileExplorerFolderContents = ({
   openFile,
   endProcess,
   ppid,
+  addToGrid,
 }) => {
   const { watch, getFolder, renameFSO, deleteFSO, createFSO, moveFSO, createBlob } =
     useContext(FileSystemContext);
@@ -60,7 +61,14 @@ const FileExplorerFolderContents = ({
   );
 
   const handleRightClick = (e) =>
-    renderOptions(e, <FolderContentsContextMenu path={path} createFSO={createFSO} />);
+    renderOptions(
+      e,
+      <FolderContentsContextMenu
+        path={path}
+        createFSO={createFSO}
+        addToGrid={addToGrid}
+      />
+    );
 
   const preventDefault = (e) => e.preventDefault();
 

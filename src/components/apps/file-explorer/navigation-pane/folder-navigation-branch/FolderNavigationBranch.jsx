@@ -21,6 +21,7 @@ const FolderNavigationBranch = ({
   currentPath,
   expandBranches,
   setExpandBranches,
+  addToGrid,
 }) => {
   const { watch, getFolder, createFSO, deleteFSO, renameFSO, moveFSO } =
     useContext(FileSystemContext);
@@ -63,6 +64,7 @@ const FolderNavigationBranch = ({
         deleteFSO={deleteFSO}
         createFSO={createFSO}
         focusInput={focusInput}
+        addToGrid={addToGrid}
       />
     );
 
@@ -187,9 +189,10 @@ const FolderNavigationBranch = ({
                 }
                 expandBranches={expandBranches}
                 setExpandBranches={setExpandBranches}
+                addToGrid={addToGrid}
               />
             )),
-        [isOpen, folderContent, currentPath]
+        [isOpen, folderContent, currentPath, addToGrid]
       )}
     </>
   );
