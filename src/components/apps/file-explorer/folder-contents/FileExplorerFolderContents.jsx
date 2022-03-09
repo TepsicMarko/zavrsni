@@ -22,6 +22,8 @@ const FileExplorerFolderContents = ({
   endProcess,
   ppid,
   addToGrid,
+  mode,
+  setSelectedFile,
 }) => {
   const { watch, getFolder, renameFSO, deleteFSO, createFSO, moveFSO, createBlob } =
     useContext(FileSystemContext);
@@ -112,7 +114,7 @@ const FileExplorerFolderContents = ({
 
   const handleDragStart = (e) => {
     e.stopPropagation();
-    enableSelection(e);
+    mode === 'v' && enableSelection(e);
     e.dataTransfer.setDragImage(new Image(), 0, 0);
   };
 
@@ -153,7 +155,7 @@ const FileExplorerFolderContents = ({
         }}
         onDragEnter={(e) => e.stopPropagation()}
       >
-        {[searchResults.length ? searchResults : folderContent][0].map((fso, i) => {
+        {[...(searchResults.length ? searchResults : folderContent)].map((fso, i) => {
           return (
             <FsoListItem
               key={fso.node}
@@ -176,6 +178,8 @@ const FileExplorerFolderContents = ({
               selectedElements={selectedElements}
               setSelectedElements={setSelectedElements}
               dimensions={dimensions}
+              setSelectedFile={setSelectedFile}
+              mode
             />
           );
         })}

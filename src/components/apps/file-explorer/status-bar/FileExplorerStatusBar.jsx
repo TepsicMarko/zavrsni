@@ -1,5 +1,6 @@
 import './FileExplorerStatusBar.css';
-import { useState, memo } from 'react';
+import { useState, memo, useEffect, useContext } from 'react';
+import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 
 const FileExplorerStatusBar = ({
   path,
@@ -11,10 +12,13 @@ const FileExplorerStatusBar = ({
   openFile,
   endParrentProcess,
   ppid,
+  selectedFile,
+  setSearchResults,
 }) => {
   const [fileName, setFileName] = useState('');
   const [fileType, setFileType] = useState('.txt');
   const [encoding, setEncoding] = useState('Auto-Detec');
+  const { getFolder } = useContext(FileSystemContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,11 +43,27 @@ const FileExplorerStatusBar = ({
 
   const loadFile = (e) => {
     e.preventDefault();
-    openFile(path, fileName);
+    openFile(path, fileName, fileType);
     endProcess('File Explorer', ppid, parentProcess);
   };
 
   const stopPropagation = (e) => e.stopPropagation();
+
+  useEffect(async () => {
+    if (mode !== 'v') {
+      const folderContent = await getFolder(path);
+
+      setSearchResults(
+        folderContent.filter(
+          (fso) => fso.type === 'DIRECTORY' || fso.name.endsWith(fileType)
+        )
+      );
+    }
+  }, [fileType, path]);
+
+  useEffect(() => {
+    setFileName(selectedFile);
+  }, [selectedFile]);
 
   return (
     <>
@@ -58,6 +78,7 @@ const FileExplorerStatusBar = ({
             <span>Save as type:</span>
             <select name='type' value={fileType} onChange={handleChange}>
               <option value='.txt'>Text Document (*.txt)</option>
+              <option value=''>All Files</option>
             </select>
           </label>
           <div className='encoding'>
@@ -91,7 +112,8 @@ const FileExplorerStatusBar = ({
           <div className='file-type-and-save-or-cancel'>
             <label>
               <select name='type' value={fileType} onChange={handleChange}>
-                <option value='Text Document (*.txt)'>Text Document (*.txt)</option>
+                <option value='.txt'>Text Document (*.txt)</option>
+                <option value=''>All Files</option>
               </select>
             </label>
             <div className='open-or-cancel'>

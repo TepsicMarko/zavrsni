@@ -11,6 +11,7 @@ const FileExplorerNavigationPane = ({
   expandBranches,
   setExpandBranches,
   addToGrid,
+  resetSearch,
 }) => {
   const [width, setWidth] = useState(160);
   const [minWidth] = useState(remToPx('5rem'));
@@ -43,6 +44,7 @@ const FileExplorerNavigationPane = ({
           expandBranches={expandBranches}
           setExpandBranches={setExpandBranches}
           addToGrid={addToGrid}
+          resetSearch={resetSearch}
           open
         />
       </div>

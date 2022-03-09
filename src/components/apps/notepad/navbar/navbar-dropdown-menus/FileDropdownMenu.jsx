@@ -23,9 +23,9 @@ const FileDropdownMenu = ({
       addToGrid([name + type, undefined], { row: 1, column: 1 });
   };
 
-  const openSelectedFile = (path, name) => {
+  const openSelectedFile = (path, name, type) => {
     console.log(path, name);
-    setFilePath(Path.join(path, name));
+    setFilePath(Path.join(path, name + type));
   };
 
   const saveChanges = () => {

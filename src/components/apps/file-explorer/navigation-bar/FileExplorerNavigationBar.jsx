@@ -15,6 +15,7 @@ const FileExplorerNavigationBar = ({
   changePath,
   setSearchResults,
   setExpandBranches,
+  mode,
 }) => {
   const [searchBoxWidth, setSearchBoxWidth] = useState('5rem');
   const [minWidth] = useState(remToPx('5rem'));
@@ -48,7 +49,7 @@ const FileExplorerNavigationBar = ({
 
   const startSearch = (e) => {
     if (e.key === 'Enter' || e.type === 'click') {
-      findFSO(path, true, search, setSearchResults);
+      findFSO(path, false, search, setSearchResults);
     }
   };
 
@@ -86,7 +87,7 @@ const FileExplorerNavigationBar = ({
 
   useEffect(() => {
     watchPath(path);
-    setSearchResults([]);
+    mode === 'v' && setSearchResults([]);
   }, [path]);
 
   useEffect(() => {

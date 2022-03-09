@@ -33,6 +33,8 @@ const FsoListItem = ({
   rectRef,
   selectedElements,
   setSelectedElements,
+  mode,
+  setSelectedFile,
 }) => {
   const {
     Name,
@@ -109,6 +111,7 @@ const FsoListItem = ({
   };
 
   const handleClick = (e) => {
+    mode !== 'v' && setSelectedFile(name.replace(/\.[^/.]+$/, ''));
     setIsSelected(true);
   };
 

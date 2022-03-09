@@ -30,6 +30,7 @@ const FileExplorer = ({
   const [searchResults, setSearchResults] = useState([]);
   const [itemCount, setItemCount] = useState('');
   const [expandBranches, setExpandBranches] = useState(false);
+  const [selectedFile, setSelectedFile] = useState('');
 
   const changeTab = (e) => setActiveTab(e.target.textContent);
 
@@ -39,6 +40,10 @@ const FileExplorer = ({
     },
     [path]
   );
+
+  const resetSearch = () => {
+    setSearchResults([]);
+  };
 
   return (
     <Window
@@ -63,6 +68,7 @@ const FileExplorer = ({
           changePath={changePath}
           setSearchResults={setSearchResults}
           setExpandBranches={setExpandBranches}
+          mode={mode}
         />
         <div
           className='navigation-pane-and-folder-contents-container'
@@ -79,6 +85,7 @@ const FileExplorer = ({
             expandBranches={expandBranches}
             setExpandBranches={setExpandBranches}
             addToGrid={addToGrid}
+            resetSearch={searchResults.length ? resetSearch : undefined}
           />
           <FileExplorerFolderContents
             changePath={changePath}
@@ -90,10 +97,12 @@ const FileExplorer = ({
             endProcess={endProcess}
             ppid={ppid}
             addToGrid={addToGrid}
+            mode={mode}
+            setSelectedFile={setSelectedFile}
           />
         </div>
       </WindowContent>
-      <StatusBar backgroundColor='#2e2e2e' color='#DEDEDE' flex height='fit-content'>
+      <StatusBar backgroundColor='#383838' color='#DEDEDE' flex height='fit-content'>
         <FileExplorerStatusBar
           path={path}
           itemCount={itemCount}
@@ -104,6 +113,8 @@ const FileExplorer = ({
           parentProcess={parentProcess}
           openFile={openFile}
           ppid={ppid}
+          selectedFile={selectedFile}
+          setSearchResults={setSearchResults}
         />
       </StatusBar>
     </Window>

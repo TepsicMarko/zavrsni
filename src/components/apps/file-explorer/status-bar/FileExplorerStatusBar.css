@@ -129,3 +129,7 @@
   margin: 0.25rem 0;
   margin-right: 0.5rem;
 }
+
+.open-file-form > .file-type-and-save-or-cancel > label > select > option {
+  background-color: #2e2e2e;
+}

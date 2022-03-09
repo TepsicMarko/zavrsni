@@ -22,6 +22,7 @@ const FolderNavigationBranch = ({
   expandBranches,
   setExpandBranches,
   addToGrid,
+  resetSearch
 }) => {
   const { watch, getFolder, createFSO, deleteFSO, renameFSO, moveFSO } =
     useContext(FileSystemContext);
@@ -38,6 +39,7 @@ const FolderNavigationBranch = ({
   const handleClick = (e) => {
     e.stopPropagation();
     changePath(Path.join(basePath, branchName === 'This PC' ? '' : branchName));
+    resetSearch && resetSearch();
   };
 
   const toggleChildBranches = (e) => {
