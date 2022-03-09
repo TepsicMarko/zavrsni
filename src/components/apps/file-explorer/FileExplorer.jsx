@@ -54,6 +54,7 @@ const FileExplorer = ({
       minWindowHeight={minHeight || '16rem'}
       titleBar={{ color: 'white', backgroundColor: 'black' }}
       parentProcess={parentProcess}
+      limitedWindowControls
     >
       <WindowContent backgroundColor='#202020' flex flexDirection='row'>
         {mode === 'v' && (

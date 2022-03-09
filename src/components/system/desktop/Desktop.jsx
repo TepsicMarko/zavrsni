@@ -75,7 +75,12 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
 
   const handleDrop = (e) => {
     if (!e.dataTransfer.files.length) {
-      const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
+      let dataTransfer;
+      try {
+        dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
+      } catch (e) {
+        return null;
+      }
       console.log(dataTransfer.dragObjects);
       if (dataTransfer.origin === 'Desktop')
         addToGrid(

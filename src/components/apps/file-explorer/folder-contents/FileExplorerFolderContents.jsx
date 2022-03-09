@@ -87,7 +87,12 @@ const FileExplorerFolderContents = ({
     e.stopPropagation();
     if (!e.dataTransfer.files.length) {
       e.preventDefault();
-      const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
+      let dataTransfer;
+      try {
+        dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
+      } catch (e) {
+        return null;
+      }
       if (dataTransfer.origin === 'Desktop') {
         const origin = '/C/users/admin/Desktop';
         dataTransfer.dragObjects.forEach((name) => {

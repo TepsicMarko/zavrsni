@@ -1,6 +1,7 @@
 import './FileExplorerStatusBar.css';
-import { useState, memo, useEffect, useContext } from 'react';
+import { useState, memo, useEffect, useContext, useRef } from 'react';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
+import { path as Path } from 'filer';
 
 const FileExplorerStatusBar = ({
   path,
@@ -18,13 +19,26 @@ const FileExplorerStatusBar = ({
   const [fileName, setFileName] = useState('');
   const [fileType, setFileType] = useState('.txt');
   const [encoding, setEncoding] = useState('Auto-Detec');
-  const { getFolder } = useContext(FileSystemContext);
+  const { getFolder, exists } = useContext(FileSystemContext);
+  const inputRef = useRef();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleSave(path, fileName, fileType);
-    endProcess('File Explorer', ppid, parentProcess);
-    endParrentProcess && endProcess('Notepad', ppid);
+    if (!inputRef.current.value) {
+      inputRef.current.focus();
+    } else {
+      try {
+        await exists(Path.join(path, fileName + fileType));
+
+        alert('File already exists');
+        inputRef.current.focus();
+        inputRef.current.select();
+      } catch {
+        handleSave(path, fileName, fileType);
+        endProcess('File Explorer', ppid, parentProcess);
+        endParrentProcess && endProcess('Notepad', ppid);
+      }
+    }
   };
 
   const closeWindow = () => endProcess('File Explorer', ppid, parentProcess);
@@ -41,10 +55,22 @@ const FileExplorerStatusBar = ({
     }
   };
 
-  const loadFile = (e) => {
+  const loadFile = async (e) => {
     e.preventDefault();
-    openFile(path, fileName, fileType);
-    endProcess('File Explorer', ppid, parentProcess);
+    if (!inputRef.current.value) {
+      inputRef.current.focus();
+    } else {
+      try {
+        await exists(Path.join(path, fileName + fileType));
+
+        openFile(path, fileName, fileType);
+        endProcess('File Explorer', ppid, parentProcess);
+      } catch (e) {
+        alert('File doesnt exists');
+        inputRef.current.focus();
+        inputRef.current.select();
+      }
+    }
   };
 
   const stopPropagation = (e) => e.stopPropagation();
@@ -72,7 +98,13 @@ const FileExplorerStatusBar = ({
         <form className='new-file-form' onSubmit={handleSubmit}>
           <label>
             <span>File name:</span>
-            <input type='text' name='name' value={fileName} onChange={handleChange} />
+            <input
+              ref={inputRef}
+              type='text'
+              name='name'
+              value={fileName}
+              onChange={handleChange}
+            />
           </label>
           <label>
             <span>Save as type:</span>
@@ -100,7 +132,13 @@ const FileExplorerStatusBar = ({
           <div className='file-name-and-encoding'>
             <label>
               <span>File name:</span>
-              <input type='text' name='name' value={fileName} onChange={handleChange} />
+              <input
+                ref={inputRef}
+                type='text'
+                name='name'
+                value={fileName}
+                onChange={handleChange}
+              />
             </label>
             <label>
               <span>Encoding:</span>
