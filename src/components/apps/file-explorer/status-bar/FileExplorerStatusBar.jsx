@@ -1,38 +1,38 @@
-import "./FileExplorerStatusBar.css";
-import { useState, memo } from "react";
+import './FileExplorerStatusBar.css';
+import { useState, memo } from 'react';
 
 const FileExplorerStatusBar = ({
   path,
   itemCount,
   mode,
-  createFile,
+  handleSave,
   endProcess,
   parentProcess,
   openFile,
   endParrentProcess,
   ppid,
 }) => {
-  const [fileName, setFileName] = useState("");
-  const [fileType, setFileType] = useState("Text Document (*.txt)");
-  const [encoding, setEncoding] = useState("Auto-Detec");
+  const [fileName, setFileName] = useState('');
+  const [fileType, setFileType] = useState('.txt');
+  const [encoding, setEncoding] = useState('Auto-Detec');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    endProcess("File Explorer", ppid, parentProcess);
-    createFile(path, fileName);
-    endParrentProcess && endProcess("Notepad", ppid);
+    handleSave(path, fileName, fileType);
+    endProcess('File Explorer', ppid, parentProcess);
+    endParrentProcess && endProcess('Notepad', ppid);
   };
 
-  const closeWindow = () => endProcess("File Explorer", ppid, parentProcess);
+  const closeWindow = () => endProcess('File Explorer', ppid, parentProcess);
 
   const handleChange = (e) => {
-    if (e.target.name === "name") {
+    if (e.target.name === 'name') {
       setFileName(e.target.value);
     }
-    if (e.target.name === "type") {
+    if (e.target.name === 'type') {
       setFileType(e.target.value);
     }
-    if (e.target.name === "encoding") {
+    if (e.target.name === 'encoding') {
       setEncoding(e.target.value);
     }
   };
@@ -40,31 +40,24 @@ const FileExplorerStatusBar = ({
   const loadFile = (e) => {
     e.preventDefault();
     openFile(path, fileName);
-    endProcess("File Explorer", ppid, parentProcess);
+    endProcess('File Explorer', ppid, parentProcess);
   };
 
   const stopPropagation = (e) => e.stopPropagation();
 
   return (
     <>
-      {mode === "v" && <div className='item-count'>{itemCount}</div>}
-      {mode === "w" && (
+      {mode === 'v' && <div className='item-count'>{itemCount}</div>}
+      {mode === 'w' && (
         <form className='new-file-form' onSubmit={handleSubmit}>
           <label>
             <span>File name:</span>
-            <input
-              type='text'
-              name='name'
-              value={fileName}
-              onChange={handleChange}
-            />
+            <input type='text' name='name' value={fileName} onChange={handleChange} />
           </label>
           <label>
             <span>Save as type:</span>
             <select name='type' value={fileType} onChange={handleChange}>
-              <option value='Text Document (*.txt)'>
-                Text Document (*.txt)
-              </option>
+              <option value='.txt'>Text Document (*.txt)</option>
             </select>
           </label>
           <div className='encoding'>
@@ -81,17 +74,12 @@ const FileExplorerStatusBar = ({
           </div>
         </form>
       )}
-      {mode === "r" && (
+      {mode === 'r' && (
         <form className='open-file-form' onSubmit={loadFile}>
           <div className='file-name-and-encoding'>
             <label>
               <span>File name:</span>
-              <input
-                type='text'
-                name='name'
-                value={fileName}
-                onChange={handleChange}
-              />
+              <input type='text' name='name' value={fileName} onChange={handleChange} />
             </label>
             <label>
               <span>Encoding:</span>
@@ -103,9 +91,7 @@ const FileExplorerStatusBar = ({
           <div className='file-type-and-save-or-cancel'>
             <label>
               <select name='type' value={fileType} onChange={handleChange}>
-                <option value='Text Document (*.txt)'>
-                  Text Document (*.txt)
-                </option>
+                <option value='Text Document (*.txt)'>Text Document (*.txt)</option>
               </select>
             </label>
             <div className='open-or-cancel'>

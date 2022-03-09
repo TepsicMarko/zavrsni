@@ -1,10 +1,10 @@
-import "./NotepadNavbar.css";
-import { useState, useRef, useEffect, cloneElement } from "react";
-import FileDropdownMenu from "./navbar-dropdown-menus/FileDropdownMenu";
-import EditDropdownMenu from "./navbar-dropdown-menus/EditDropdownMenu";
-import FormatDropdownMenu from "./navbar-dropdown-menus/FormatDropdownMenu";
-import ViewDropdownMenu from "./navbar-dropdown-menus/ViewDropdownMenu";
-import useClickOutside from "../../../../hooks/useClickOutside";
+import './NotepadNavbar.css';
+import { useState, useRef, useEffect, cloneElement } from 'react';
+import FileDropdownMenu from './navbar-dropdown-menus/FileDropdownMenu';
+import EditDropdownMenu from './navbar-dropdown-menus/EditDropdownMenu';
+import FormatDropdownMenu from './navbar-dropdown-menus/FormatDropdownMenu';
+import ViewDropdownMenu from './navbar-dropdown-menus/ViewDropdownMenu';
+import useClickOutside from '../../../../hooks/useClickOutside';
 
 const NotepadNavbar = ({
   textContent,
@@ -20,11 +20,12 @@ const NotepadNavbar = ({
   openUnsavedChangesDialog,
   resetNotepad,
   pid,
+  addToGrid,
 }) => {
-  const [activeTab, setActiveTab] = useState("");
+  const [activeTab, setActiveTab] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const navRef = useClickOutside("mousedown", () => {
-    setActiveTab("");
+  const navRef = useClickOutside('mousedown', () => {
+    setActiveTab('');
     setIsDropdownOpen(false);
   });
 
@@ -47,10 +48,10 @@ const NotepadNavbar = ({
   return (
     <div className='notepad-navbar'>
       {[
-        { name: "File", size: "14.5rem" },
-        { name: "Edit", size: "12.5rem" },
-        { name: "Format", size: "7.5rem" },
-        { name: "View", size: "7.5rem" },
+        { name: 'File', size: '14.5rem' },
+        { name: 'Edit', size: '12.5rem' },
+        { name: 'Format', size: '7.5rem' },
+        { name: 'View', size: '7.5rem' },
       ].map(({ name, size }) => (
         <div
           ref={navRef}
@@ -69,7 +70,7 @@ const NotepadNavbar = ({
                 e.stopPropagation();
               }}
             >
-              {name === "File" && (
+              {name === 'File' && (
                 <FileDropdownMenu
                   setFilePath={setFilePath}
                   textContent={textContent}
@@ -77,16 +78,14 @@ const NotepadNavbar = ({
                   openUnsavedChangesDialog={openUnsavedChangesDialog}
                   resetNotepad={resetNotepad}
                   pid={pid}
+                  addToGrid={addToGrid}
                 />
               )}
-              {name === "Edit" && <EditDropdownMenu divRef={divRef} />}
-              {name === "Format" && (
-                <FormatDropdownMenu
-                  setWordWrap={setWordWrap}
-                  wordWrap={wordWrap}
-                />
+              {name === 'Edit' && <EditDropdownMenu divRef={divRef} />}
+              {name === 'Format' && (
+                <FormatDropdownMenu setWordWrap={setWordWrap} wordWrap={wordWrap} />
               )}
-              {name === "View" && (
+              {name === 'View' && (
                 <ViewDropdownMenu
                   setStatusBarVisibility={setStatusBarVisibility}
                   statusBarVisible={statusBarVisible}

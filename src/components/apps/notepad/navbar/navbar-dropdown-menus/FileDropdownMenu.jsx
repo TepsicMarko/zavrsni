@@ -11,13 +11,16 @@ const FileDropdownMenu = ({
   openUnsavedChangesDialog,
   resetNotepad,
   pid,
+  addToGrid,
 }) => {
-  const { startChildProcess, endProcess } = useContext(ProcessesContext);
+  const { startProcess, startChildProcess, endProcess } = useContext(ProcessesContext);
   const { createFSO, saveFile, readFileContent } = useContext(FileSystemContext);
 
-  const createFile = (path, name) => {
-    createFSO(path, name, 'txt', textContent);
-    setFilePath(Path.join(path, name));
+  const createFile = (path, name, type) => {
+    createFSO(path, name, type, textContent);
+    setFilePath(Path.join(path, name + type));
+    if (path === '/C/users/admin/Desktop')
+      addToGrid([name + type, undefined], { row: 1, column: 1 });
   };
 
   const openSelectedFile = (path, name) => {
@@ -37,7 +40,7 @@ const FileDropdownMenu = ({
       mode: 'w',
       parentProcess: 'Notepad',
       endProcess,
-      createFile,
+      handleSave: createFile,
       minWidth: '31rem',
       minHeight: '17rem',
       ppid: pid,
@@ -57,34 +60,31 @@ const FileDropdownMenu = ({
     });
   };
 
-  const isContentSame = (fileContent, handleSameContent) => {
-    console.log(fileContent, textContent);
-    if (fileContent === textContent) {
-      handleSameContent();
+  const openFile = async (e) => {
+    if (filePath) {
+      const fileContent = await readFileContent(filePath);
+
+      fileContent === textContent
+        ? openFileSelection()
+        : openUnsavedChangesDialog({ openFileSelection });
     } else {
-      openUnsavedChangesDialog(handleSameContent);
+      textContent ? openUnsavedChangesDialog({ openFileSelection }) : openFileSelection();
     }
   };
 
-  const openFile = (e) => {
+  const createBlankFile = async () => {
     if (filePath) {
-      readFileContent(filePath, (fileContent) =>
-        isContentSame(fileContent, openFileSelection)
-      );
-    } else {
-      textContent ? openUnsavedChangesDialog(openFileSelection) : openFileSelection();
-    }
-  };
+      const fileContent = await readFileContent(filePath);
 
-  const createBlankFile = () => {
-    if (filePath) {
-      readFileContent(filePath, (fileContent) =>
-        isContentSame(fileContent, resetNotepad)
-      );
+      fileContent === textContent
+        ? resetNotepad()
+        : openUnsavedChangesDialog({ resetNotepad });
     } else {
       textContent ? openUnsavedChangesDialog(resetNotepad) : resetNotepad();
     }
   };
+
+  const openNotepad = () => startProcess('Notepad');
 
   return (
     <>
@@ -94,7 +94,12 @@ const FileDropdownMenu = ({
         hoverColor='#91c9f7'
         onClick={createBlankFile}
       />
-      <ContextMenuItem fontWeight='400' name='New Window' hoverColor='#91c9f7' />
+      <ContextMenuItem
+        fontWeight='400'
+        name='New Window'
+        onClick={openNotepad}
+        hoverColor='#91c9f7'
+      />
       <ContextMenuItem
         fontWeight='400'
         name='Open...'

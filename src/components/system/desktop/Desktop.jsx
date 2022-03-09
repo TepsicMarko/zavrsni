@@ -115,8 +115,9 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
     Object.keys(processes).flatMap((process) => {
       return Object.keys(processes[process]).map((processInstance) => {
         const appInstance = processes[process][processInstance];
-        const canCreateFiles =
-          process === 'File Explorer' || process === 'Command Prompt';
+        const canCreateFiles = ['File Explorer', 'Command Prompt', 'Notepad'].includes(
+          process
+        );
 
         return appInstance.childProcess ? (
           <>

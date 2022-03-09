@@ -16,7 +16,7 @@ const FileExplorer = ({
   customPath,
   mode = 'v',
   endProcess,
-  createFile,
+  handleSave,
   parentProcess,
   minWidth,
   minHeight,
@@ -98,7 +98,7 @@ const FileExplorer = ({
           path={path}
           itemCount={itemCount}
           mode={mode}
-          createFile={createFile}
+          handleSave={handleSave}
           endProcess={endProcess}
           endParrentProcess={endParrentProcess}
           parentProcess={parentProcess}

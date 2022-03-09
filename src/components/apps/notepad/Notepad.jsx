@@ -6,15 +6,13 @@ import NotepadNavbar from './navbar/NotepadNavbar';
 import { useState, memo, useEffect, useContext, useRef } from 'react';
 import { FileSystemContext } from '../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
-import { nanoid } from 'nanoid';
 import { path as Path } from 'filer';
 
-const Notepad = ({ icon, path = '', pid }) => {
+const Notepad = ({ icon, path = '', pid, addToGrid }) => {
   const [filePath, setFilePath] = useState(path);
   const [text, setText] = useState({ content: '', lines: 1 });
   const [wordWrap, setWordWrap] = useState(false);
   const [zoom, setZoom] = useState(100);
-  const [dialogID] = useState(nanoid());
   const [statusBarVisible, setStatusBarVisibility] = useState(true);
   const { readFileContent, createFSO, saveFile } = useContext(FileSystemContext);
   const { startChildProcess, endProcess } = useContext(ProcessesContext);
@@ -45,23 +43,26 @@ const Notepad = ({ icon, path = '', pid }) => {
     textInfo.remove();
   };
 
-  const createFile = (createPath, name) => {
-    createFSO(createPath, name, 'txt', text.content);
-    setFilePath(Path.join(createPath, name));
+  const createFile = (createPath, name, type) => {
+    createFSO(createPath, name, type, text.content);
+    setFilePath(Path.join(createPath, name + type));
+    if (createPath === '/C/users/admin/Desktop')
+      addToGrid([name + type, undefined], { row: 1, column: 1 });
   };
 
   const handleSave = (callback) => {
     if (!filePath) {
       endProcess('Unsaved Changes Dialog', pid, 'Notepad');
+
       startChildProcess('Notepad', pid, 'File Explorer', {
         customPath: '/C/users/admin/Documents',
         mode: 'w',
         parentProcess: 'Notepad',
         endProcess,
-        endParrentProcess: !callback ? true : false,
-        createFile: callback
-          ? (createPath, name) => {
-              createFile(createPath, name);
+        endParrentProcess: true,
+        handleSave: callback
+          ? (createPath, name, type) => {
+              createFile(createPath, name, type);
               callback();
             }
           : createFile,
@@ -69,46 +70,44 @@ const Notepad = ({ icon, path = '', pid }) => {
         minHeight: '17rem',
         ppid: pid,
       });
-    } else {
+    }
+
+    if (filePath) {
       saveFile(filePath.replace(/\.[^/.]+$/, ''), Path.extname(filePath), text.content);
       endProcess('Unsaved Changes Dialog', pid, 'Notepad');
+      console.log(callback);
       callback ? callback() : endProcess('Notepad', pid);
     }
   };
 
-  const handleDontSave = (callback) => {
+  const handleDontSave = (openFileSelection) => {
     endProcess('Unsaved Changes Dialog', pid, 'Notepad');
-    callback ? callback() : endProcess('Notepad', pid);
+    openFileSelection ? openFileSelection() : endProcess('Notepad', pid);
   };
 
   const handleCancel = () => {
     endProcess('Unsaved Changes Dialog', pid, 'Notepad');
   };
 
-  const openUnsavedChangesDialog = (callback) =>
+  const openUnsavedChangesDialog = ({ openFileSelection, resetNotepad }) =>
     startChildProcess('Notepad', pid, 'Unsaved Changes Dialog', {
       icon,
-      handleSave: () => handleSave(callback),
-      handleDontSave: () => handleDontSave(callback),
+      handleSave: () => handleSave(openFileSelection || resetNotepad),
+      handleDontSave: () => handleDontSave(openFileSelection),
       handleCancel,
       filePath,
       ppid: pid,
       parentProcess: 'Notepad',
     });
 
-  const isContentSame = (fileContent) => {
-    if (fileContent === text.content) {
-      endProcess('Notepad', pid);
-    } else {
-      openUnsavedChangesDialog();
-    }
-  };
-
-  const onClose = () => {
+  const onClose = async () => {
     if (!filePath) {
-      text.content.length ? openUnsavedChangesDialog() : endProcess('Notepad', pid);
+      text.content.length ? openUnsavedChangesDialog({}) : endProcess('Notepad', pid);
     } else {
-      readFileContent(filePath, isContentSame);
+      const fileContent = await readFileContent(filePath);
+      fileContent === text.content
+        ? endProcess('Notepad', pid)
+        : openUnsavedChangesDialog({});
     }
   };
 
@@ -151,6 +150,7 @@ const Notepad = ({ icon, path = '', pid }) => {
           openUnsavedChangesDialog={openUnsavedChangesDialog}
           resetNotepad={resetNotepad}
           pid={pid}
+          addToGrid={addToGrid}
         />
         <div
           className='notepad-text-content-container'
