@@ -17,6 +17,7 @@ const Window = ({
   process,
   dialog,
   pid,
+  ppid,
   displayTitle = true,
   icon,
   minWindowWidth,
@@ -55,7 +56,7 @@ const Window = ({
     setPosition({ top: clientY - offset.y, left: clientX - offset.x });
   };
 
-  const setFocus = () => focusProcess(process, pid, parentProcess);
+  const setFocus = () => focusProcess(process, pid);
 
   const handleDragStart = useCallback(
     (e) => {
@@ -165,7 +166,7 @@ const Window = ({
       e.stopPropagation();
       if (onClose) {
         onClose(endProcess);
-      } else endProcess(process, pid, parentProcess);
+      } else endProcess(process, pid, parentProcess, ppid);
     },
     [process, endProcess, parentProcess, onClose]
   );
@@ -246,15 +247,8 @@ const Window = ({
         ...position,
         minWidth,
         minHeight,
-        zIndex: zIndex
-          ? zIndex
-          : processes[parentProcess || process][pid] &&
-            processes[parentProcess || process][pid].focusLevel + (parentProcess ? 1 : 0),
-        visibility: processes[parentProcess || process][pid]
-          ? !processes[parentProcess || process][pid].minimized
-            ? 'visible'
-            : 'hidden'
-          : '',
+        zIndex: zIndex || processes[process][pid].focusLevel,
+        visibility: !processes[process][pid].minimized ? 'visible' : 'hidden',
       }}
       onClick={resizable && setFocus}
     >

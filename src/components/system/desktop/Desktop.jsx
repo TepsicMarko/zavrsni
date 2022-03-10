@@ -124,27 +124,11 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
           process
         );
 
-        return appInstance.childProcess ? (
-          <>
-            {cloneElement(appInstance.source, {
-              key: processInstance,
-              pid: processInstance,
-              addToGrid: canCreateFiles ? addToGrid : null,
-            })}
-            {Object.keys(appInstance.childProcess).length
-              ? cloneElement(appInstance.childProcess.source, {
-                  key: processInstance + '-' + appInstance.childProcess.name,
-                  addToGrid: canCreateFiles ? addToGrid : null,
-                })
-              : null}
-          </>
-        ) : (
-          cloneElement(appInstance.source, {
-            key: processInstance,
-            pid: processInstance,
-            addToGrid: canCreateFiles ? addToGrid : null,
-          })
-        );
+        return cloneElement(appInstance.source, {
+          key: processInstance,
+          pid: processInstance,
+          addToGrid: canCreateFiles ? addToGrid : null,
+        });
       });
     });
 

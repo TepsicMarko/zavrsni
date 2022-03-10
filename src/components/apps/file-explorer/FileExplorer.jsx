@@ -4,18 +4,18 @@ import WindowContent from '../../system/window/window-content/WindowContent';
 import StatusBar from '../../system/window/status-bar/StatusBar';
 import FileExplorerNavbar from './navbar/FileExplorerNavbar';
 import FileExplorerRibbon from './ribbon/FileExplorerRibbon';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useContext } from 'react';
 import FileExplorerNavigationBar from './navigation-bar/FileExplorerNavigationBar';
 import FileExplorerNavigationPane from './navigation-pane/FileExplorerNavigationPane';
 import FileExplorerFolderContents from './folder-contents/FileExplorerFolderContents';
 import FileExplorerStatusBar from './status-bar/FileExplorerStatusBar';
+import { ProcessesContext } from '../../../contexts/ProcessesContext';
 
 const FileExplorer = ({
   pid,
   icon,
   customPath,
   mode = 'v',
-  endProcess,
   handleSave,
   parentProcess,
   minWidth,
@@ -31,6 +31,7 @@ const FileExplorer = ({
   const [itemCount, setItemCount] = useState('');
   const [expandBranches, setExpandBranches] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
+  const { startChildProcess, endProcess } = useContext(ProcessesContext);
 
   const changeTab = (e) => setActiveTab(e.target.textContent);
 
@@ -48,13 +49,14 @@ const FileExplorer = ({
   return (
     <Window
       process='File Explorer'
-      pid={ppid || pid}
+      parentProcess={parentProcess}
+      pid={pid}
+      ppid={ppid}
       icon={icon}
       minWindowWidth={minWidth || '14rem'}
       minWindowHeight={minHeight || '16rem'}
       titleBar={{ color: 'white', backgroundColor: 'black' }}
-      parentProcess={parentProcess}
-      limitedWindowControls
+      limitedWindowControls={mode !== 'v'}
     >
       <WindowContent backgroundColor='#202020' flex flexDirection='row'>
         {mode === 'v' && (
@@ -95,7 +97,7 @@ const FileExplorer = ({
             setItemCount={setItemCount}
             setExpandBranches={setExpandBranches}
             openFile={openFile}
-            endProcess={endProcess}
+            endProcess={mode !== 'v' ? endProcess : undefined}
             ppid={ppid}
             addToGrid={addToGrid}
             mode={mode}
@@ -109,13 +111,15 @@ const FileExplorer = ({
           itemCount={itemCount}
           mode={mode}
           handleSave={handleSave}
-          endProcess={endProcess}
           endParrentProcess={endParrentProcess}
           parentProcess={parentProcess}
           openFile={openFile}
+          pid={pid}
           ppid={ppid}
           selectedFile={selectedFile}
           setSearchResults={setSearchResults}
+          endProcess={mode !== 'v' ? endProcess : undefined}
+          startChildProcess={mode !== 'v' ? startChildProcess : undefined}
         />
       </StatusBar>
     </Window>

@@ -1,0 +1,36 @@
+.warning-message {
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.warning-message > img {
+  margin: 0 0.75rem;
+}
+
+.warning-status-bar {
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: #f0f0f0;
+  border-top: 1px solid #e1e1e1;
+  font-weight: 400;
+  padding-right: 0.75rem;
+}
+
+.warning-status-bar > button {
+  box-sizing: border-box;
+  font-size: 0.8rem;
+  width: 3.75rem;
+  border: 2px solid #0078d7;
+  transition: background-color ease-in 0.25s, border-color ease-in 0.25s;
+  transition: border-width 0.25s;
+}
+
+.warning-status-bar > button:hover {
+  background-color: #e5f1fb;
+  border: 1px solid #3c96dd;
+}

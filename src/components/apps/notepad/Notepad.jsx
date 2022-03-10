@@ -50,20 +50,17 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
       addToGrid([name + type, undefined], { row: 1, column: 1 });
   };
 
-  const handleSave = (callback) => {
+  const handleSave = (callback, endParrentProcess = true) => {
     if (!filePath) {
-      endProcess('Unsaved Changes Dialog', pid, 'Notepad');
-
       startChildProcess('Notepad', pid, 'File Explorer', {
         customPath: '/C/users/admin/Documents',
         mode: 'w',
         parentProcess: 'Notepad',
-        endProcess,
-        endParrentProcess: true,
+        endParrentProcess,
         handleSave: callback
-          ? (createPath, name, type) => {
+          ? (createPath, name, type, startChildProcess, endProcess) => {
               createFile(createPath, name, type);
-              callback();
+              callback(startChildProcess, endProcess);
             }
           : createFile,
         minWidth: '31rem',
@@ -74,27 +71,20 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
 
     if (filePath) {
       saveFile(filePath.replace(/\.[^/.]+$/, ''), Path.extname(filePath), text.content);
-      endProcess('Unsaved Changes Dialog', pid, 'Notepad');
-      console.log(callback);
       callback ? callback() : endProcess('Notepad', pid);
     }
   };
 
-  const handleDontSave = (openFileSelection) => {
-    endProcess('Unsaved Changes Dialog', pid, 'Notepad');
-    openFileSelection ? openFileSelection() : endProcess('Notepad', pid);
-  };
-
-  const handleCancel = () => {
-    endProcess('Unsaved Changes Dialog', pid, 'Notepad');
-  };
-
-  const openUnsavedChangesDialog = ({ openFileSelection, resetNotepad }) =>
+  const openUnsavedChangesDialog = ({
+    openFileSelection,
+    resetNotepad,
+    endParrentProcess,
+  }) =>
     startChildProcess('Notepad', pid, 'Unsaved Changes Dialog', {
       icon,
-      handleSave: () => handleSave(openFileSelection || resetNotepad),
-      handleDontSave: () => handleDontSave(openFileSelection),
-      handleCancel,
+      save: () => handleSave(openFileSelection || resetNotepad, endParrentProcess),
+      dontSave: () =>
+        openFileSelection ? openFileSelection() : endProcess('Notepad', pid),
       filePath,
       ppid: pid,
       parentProcess: 'Notepad',

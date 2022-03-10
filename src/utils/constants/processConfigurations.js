@@ -16,6 +16,7 @@ import cmd from '../../assets/cmd.png';
 import UnsavedChanges from '../../components/system/dialogs/unsaved-changes/UnsavedChanges';
 import FileTransfer from '../../components/system/dialogs/file-transfer/FileTransfer';
 import fileTransferProgress from '../../assets/fileTransferProgress.svg';
+import Warning from '../../components/system/dialogs/warning/Warning';
 
 const appConfigurations = {
   'File Explorer': {
@@ -24,6 +25,7 @@ const appConfigurations = {
     icon: <FcFolder />,
     pinnedToTaskbar: true,
     isFocused: false,
+    childProcess: {},
   },
   Notepad: {
     source: <Notepad icon={<img src={notepad} width='20rem' />} />,
@@ -73,6 +75,9 @@ const appConfigurations = {
 const dialogConfigurations = {
   'Unsaved Changes Dialog': {
     source: <UnsavedChanges />,
+  },
+  'Warning Dialog': {
+    source: <Warning />,
   },
   'File Transfer Dialog': {
     source: (

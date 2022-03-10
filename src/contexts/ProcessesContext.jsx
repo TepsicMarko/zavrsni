@@ -7,6 +7,21 @@ export const ProcessesProvider = ({ children }) => {
   const [processes, setProcesses] = useState({});
   const [processesFocusLevel, setProcessesFocusLevel] = useState([]);
 
+  const deepCloneProcesses = (obj) => {
+    const clonedProcesses = JSON.parse(JSON.stringify(obj || processes));
+
+    Object.entries(clonedProcesses).forEach(([processName, processInstances]) => {
+      Object.entries(processInstances).forEach(([processInstanceId, processInstance]) => {
+        clonedProcesses[processName][processInstanceId].source =
+          processes[processName][processInstanceId].source;
+        clonedProcesses[processName][processInstanceId].icon =
+          processes[processName][processInstanceId].icon;
+      });
+    });
+
+    return clonedProcesses;
+  };
+
   const adjustProcessesFocusLevel = (pid, newProcessesFocusLevel) => {
     return newProcessesFocusLevel
       .filter((processFocusLevel) => processFocusLevel.pid !== pid)
@@ -18,7 +33,7 @@ export const ProcessesProvider = ({ children }) => {
   };
 
   const unfocusProcesses = () => {
-    let unfocused = { ...processes };
+    let unfocused = deepCloneProcesses();
     Object.entries(unfocused).forEach(([processName, processInstances]) =>
       Object.keys(processInstances).forEach(
         (processInstance) => (processInstances[processInstance].isFocused = false)
@@ -52,48 +67,95 @@ export const ProcessesProvider = ({ children }) => {
   };
 
   const startChildProcess = (parent, ppid, child, props) => {
-    // ppid => parent pid
-    console.log('Starting child process' + child);
+    const pid = nanoid();
     const hasProps = Object.keys(props).length;
-    setProcesses({
-      ...processes,
-      [parent]: {
-        ...processes[parent],
-        [ppid]: {
-          ...processes[parent][ppid],
-          childProcess: {
-            ...processConfigurations[child],
-            name: child,
-            source: hasProps
-              ? cloneElement(processConfigurations[child].source, {
-                  ...props,
-                })
-              : processConfigurations[child].source,
+    const focusLevel = (processesFocusLevel.length + 1) * 10;
+
+    setProcesses((processes) => {
+      const newProcessesState = {
+        ...processes,
+        [parent]: {
+          ...processes[parent],
+          [ppid]: {
+            ...processes[parent][ppid],
+            childProcess: {
+              name: child,
+              pid,
+            },
           },
         },
-      },
+        [child]: {
+          ...processes[child],
+          [pid]: {
+            ...processConfigurations[child],
+            focusLevel,
+            source: hasProps
+              ? cloneElement(processConfigurations[child].source, { ...props })
+              : processConfigurations[child].source,
+            isChildProcess: true,
+          },
+        },
+      };
+
+      return newProcessesState;
+    });
+
+    setProcessesFocusLevel((prev) => {
+      return [...prev, { name: child, pid, focusLevel }];
     });
   };
 
-  const endProcess = (name, pid, parentProcess) => {
-    let newProcessesState = { ...processes };
+  const endAllChildProcesses = (newProcessesFocusLevel, newProcessesState, name, pid) => {
+    const { name: childProcess, pid: cpid } = processes[name][pid].childProcess;
+    delete newProcessesState[childProcess][cpid];
+
+    if (Object.keys(processes[childProcess][cpid].childProcess || {}).length)
+      return adjustProcessesFocusLevel(
+        cpid,
+        endAllChildProcesses(
+          newProcessesFocusLevel,
+          newProcessesState,
+          childProcess,
+          cpid
+        )
+      );
+
+    return adjustProcessesFocusLevel(cpid, newProcessesFocusLevel);
+  };
+
+  const endProcess = (name, pid, parentProcess, ppid) => {
+    let newProcessesState = deepCloneProcesses();
     let newProcessesFocusLevel = [...processesFocusLevel];
+    const isChildProcess = newProcessesState[name][pid].isChildProcess;
+    const hasChildProcess =
+      Object.keys(newProcessesState[name][pid].childProcess || {}).length > 0;
 
-    if (parentProcess) newProcessesState[parentProcess][pid].childProcess = {};
-    else {
-      delete newProcessesState[name][pid];
-      newProcessesFocusLevel = adjustProcessesFocusLevel(pid, newProcessesFocusLevel);
-      const maxFocusLevel = newProcessesFocusLevel.length * 10;
-      newProcessesFocusLevel.forEach((processesFocusLevel) => {
-        if (processesFocusLevel.focusLevel === maxFocusLevel)
-          newProcessesState[processesFocusLevel.name][
-            processesFocusLevel.pid
-          ].isFocused = true;
-      });
-
-      setProcessesFocusLevel(newProcessesFocusLevel);
+    if (hasChildProcess) {
+      newProcessesFocusLevel = endAllChildProcesses(
+        newProcessesFocusLevel,
+        newProcessesState,
+        name,
+        pid
+      );
     }
 
+    delete newProcessesState[name][pid];
+    newProcessesFocusLevel = adjustProcessesFocusLevel(pid, newProcessesFocusLevel);
+
+    const maxFocusLevel = newProcessesFocusLevel.length * 10;
+
+    newProcessesFocusLevel.forEach((processesFocusLevel) => {
+      if (processesFocusLevel.focusLevel === maxFocusLevel)
+        newProcessesState[processesFocusLevel.name][
+          processesFocusLevel.pid
+        ].isFocused = true;
+    });
+
+    if (isChildProcess) {
+      newProcessesState[parentProcess][ppid].childProcess = {};
+    }
+
+    setProcessesFocusLevel(newProcessesFocusLevel);
     setProcesses(newProcessesState);
   };
 
@@ -103,11 +165,9 @@ export const ProcessesProvider = ({ children }) => {
         (processesFocusLevel) =>
           !processes[processesFocusLevel.name][processesFocusLevel.pid].minimized
       ).length * 10;
-    let minimized = { ...processes };
+    let minimized = deepCloneProcesses();
     minimized[name][pid].minimized = true;
     minimized[name][pid].isFocused = false;
-
-    console.log(maxFocusLevel);
 
     if (
       processesFocusLevel.some(({ name, pid }) => !minimized[name][pid].minimized) &&
@@ -117,8 +177,6 @@ export const ProcessesProvider = ({ children }) => {
         (process) => process.focusLevel === maxFocusLevel - 10
       );
 
-      console.log(toBeFocused);
-
       minimized = unfocusProcesses();
       minimized[toBeFocused.name][toBeFocused.pid].isFocused = true;
     }
@@ -126,31 +184,30 @@ export const ProcessesProvider = ({ children }) => {
     setProcesses(minimized);
   };
 
-  const focusProcess = (name, pid, parentProcess) => {
-    if (!pid) pid = Object.keys(processes[parentProcess || name])[0];
-    const isFocused = processes[parentProcess || name][pid].isFocused;
+  const focusProcess = (name, pid) => {
+    if (!pid) pid = Object.keys(processes[name])[0];
+    const isFocused = processes[name][pid].isFocused;
 
-    if (!isFocused || processes[parentProcess || name][pid].minimized) {
+    if (!isFocused || processes[name][pid].minimized) {
       let newProcessesFocusLevel = [...processesFocusLevel];
-      let newProcessesState = { ...processes };
+      let newProcessesState = deepCloneProcesses();
 
       newProcessesFocusLevel = adjustProcessesFocusLevel(pid, newProcessesFocusLevel);
       newProcessesFocusLevel.push({
-        name: parentProcess || name,
+        name: name,
         pid,
         focusLevel: (newProcessesFocusLevel.length + 1) * 10,
       });
 
       newProcessesFocusLevel.forEach(({ name, pid, focusLevel }) => {
-        newProcessesState[parentProcess || name][pid].focusLevel = focusLevel;
-        newProcessesState[parentProcess || name][pid].isFocused = false;
+        newProcessesState[name][pid].isFocused = false;
       });
 
-      newProcessesState[parentProcess || name][pid].minimized = false;
-      newProcessesState[parentProcess || name][pid].isFocused = true;
+      newProcessesState[name][pid].minimized = false;
+      newProcessesState[name][pid].isFocused = true;
 
-      setProcesses(newProcessesState);
       setProcessesFocusLevel(newProcessesFocusLevel);
+      setProcesses(newProcessesState);
     }
   };
 

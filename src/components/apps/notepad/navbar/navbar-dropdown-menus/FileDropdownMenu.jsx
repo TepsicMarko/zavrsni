@@ -34,7 +34,7 @@ const FileDropdownMenu = ({
     else saveAs();
   };
 
-  const saveAs = (e) => {
+  const saveAs = () => {
     startChildProcess('Notepad', pid, 'File Explorer', {
       customPath: '/C/users/admin/Documents',
       mode: 'w',
@@ -47,7 +47,7 @@ const FileDropdownMenu = ({
     });
   };
 
-  const openFileSelection = () => {
+  const openFileSelection = (startChildProcess, endProcess) => {
     startChildProcess('Notepad', pid, 'File Explorer', {
       customPath: '/C/users/admin/Documents',
       mode: 'r',
@@ -65,10 +65,12 @@ const FileDropdownMenu = ({
       const fileContent = await readFileContent(filePath);
 
       fileContent === textContent
-        ? openFileSelection()
-        : openUnsavedChangesDialog({ openFileSelection });
+        ? openFileSelection(startChildProcess, endProcess)
+        : openUnsavedChangesDialog({ openFileSelection, endParrentProcess: false });
     } else {
-      textContent ? openUnsavedChangesDialog({ openFileSelection }) : openFileSelection();
+      textContent
+        ? openUnsavedChangesDialog({ openFileSelection, endParrentProcess: false })
+        : openFileSelection(startChildProcess, endProcess);
     }
   };
 
@@ -78,9 +80,11 @@ const FileDropdownMenu = ({
 
       fileContent === textContent
         ? resetNotepad()
-        : openUnsavedChangesDialog({ resetNotepad });
+        : openUnsavedChangesDialog({ resetNotepad, endParrentProcess: false });
     } else {
-      textContent ? openUnsavedChangesDialog(resetNotepad) : resetNotepad();
+      textContent
+        ? openUnsavedChangesDialog({ resetNotepad, endParrentProcess: false })
+        : resetNotepad();
     }
   };
 

@@ -8,22 +8,25 @@ const FileExplorerStatusBar = ({
   itemCount,
   mode,
   handleSave,
-  endProcess,
   parentProcess,
   openFile,
   endParrentProcess,
+  pid,
   ppid,
   selectedFile,
   setSearchResults,
+  endProcess,
+  startChildProcess,
 }) => {
   const [fileName, setFileName] = useState('');
   const [fileType, setFileType] = useState('.txt');
-  const [encoding, setEncoding] = useState('Auto-Detec');
+  const [encoding, setEncoding] = useState('Auto-Detect');
   const { getFolder, exists } = useContext(FileSystemContext);
   const inputRef = useRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!inputRef.current.value) {
       inputRef.current.focus();
     } else {
@@ -34,14 +37,18 @@ const FileExplorerStatusBar = ({
         inputRef.current.focus();
         inputRef.current.select();
       } catch {
-        handleSave(path, fileName, fileType);
-        endProcess('File Explorer', ppid, parentProcess);
-        endParrentProcess && endProcess('Notepad', ppid);
+        endParrentProcess
+          ? endProcess(parentProcess, ppid)
+          : endProcess('File Explorer', pid, parentProcess, ppid);
+        handleSave(path, fileName, fileType, startChildProcess, endProcess);
       }
     }
   };
 
-  const closeWindow = () => endProcess('File Explorer', ppid, parentProcess);
+  const closeWindow = (e) => {
+    e.stopPropagation();
+    endProcess('File Explorer', pid, parentProcess, ppid);
+  };
 
   const handleChange = (e) => {
     if (e.target.name === 'name') {
@@ -57,16 +64,26 @@ const FileExplorerStatusBar = ({
 
   const loadFile = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!inputRef.current.value) {
       inputRef.current.focus();
     } else {
       try {
         await exists(Path.join(path, fileName + fileType));
 
+        endProcess('File Explorer', pid, parentProcess, ppid);
         openFile(path, fileName, fileType);
-        endProcess('File Explorer', ppid, parentProcess);
       } catch (e) {
-        alert('File doesnt exists');
+        startChildProcess('File Explorer', pid, 'Warning Dialog', {
+          icon: <div></div>,
+          title: 'Open',
+          warning: (
+            <div>
+              {fileName} <br /> File not found. <br /> Check the file name and try again.
+            </div>
+          ),
+          ppid: pid,
+        });
         inputRef.current.focus();
         inputRef.current.select();
       }
@@ -122,7 +139,7 @@ const FileExplorerStatusBar = ({
             </label>
           </div>
           <div className='save-or-cancel'>
-            <button>Save</button>
+            <button onClick={stopPropagation}>Save</button>
             <button onClick={closeWindow}>Cancel</button>
           </div>
         </form>
