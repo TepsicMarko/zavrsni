@@ -1,5 +1,5 @@
-import "./StatusBar.css";
-import { memo } from "react";
+import './StatusBar.css';
+import { memo } from 'react';
 
 const StatusBar = ({
   children,
@@ -14,11 +14,13 @@ const StatusBar = ({
 }) => {
   return (
     <div
+      draggable
+      onDragStart={(e) => e.preventDefault()}
       className='status-bar'
       style={{
         backgroundColor,
         color,
-        display: flex ? "flex" : "",
+        display: flex ? 'flex' : '',
         borderColor,
         borderStyle,
         borderWidth,

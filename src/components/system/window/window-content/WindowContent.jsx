@@ -1,19 +1,15 @@
-import "./WindowContent.css";
-import { memo } from "react";
+import './WindowContent.css';
+import { memo } from 'react';
 
-const WindowContent = ({
-  children,
-  backgroundColor,
-  flex,
-  flexDirection,
-  flexWrap,
-}) => {
+const WindowContent = ({ children, backgroundColor, flex, flexDirection, flexWrap }) => {
   return (
     <div
+      draggable
+      onDragStart={(e) => e.preventDefault()}
       style={{
         backgroundColor,
         flexDirection,
-        display: flex ? "flex" : "",
+        display: flex ? 'flex' : '',
         flexWrap,
       }}
       className='window-content'
