@@ -29,18 +29,23 @@ const TaskManager = ({ icon, pid }) => {
           <div className='open-processes'>
             {Object.keys(processes).map((process) => {
               const app = processes[process];
-              return Object.keys(app).map((appInstance) => (
-                <div
-                  className='open-process'
-                  onClick={() => setSelectedProcess({ name: process, pid: appInstance })}
-                  style={{
-                    backgroundColor: selectedProcess.pid === appInstance ? '#CDE8FF' : '',
-                  }}
-                >
-                  {app[appInstance].icon}
-                  {process}
-                </div>
-              ));
+              return Object.keys(app).map((appInstance) =>
+                app[appInstance].isChildProcess ? null : (
+                  <div
+                    className='open-process'
+                    onClick={() =>
+                      setSelectedProcess({ name: process, pid: appInstance })
+                    }
+                    style={{
+                      backgroundColor:
+                        selectedProcess.pid === appInstance ? '#CDE8FF' : '',
+                    }}
+                  >
+                    {app[appInstance].icon}
+                    {process}
+                  </div>
+                )
+              );
             })}
           </div>
         </div>

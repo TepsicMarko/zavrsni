@@ -1,15 +1,15 @@
-import "./CommandPrompt.css";
-import Window from "../../system/window/Window";
-import WindowContent from "../../system/window/window-content/WindowContent";
-import { useRef, useState, useEffect, useContext } from "react";
-import { FileSystemContext } from "../../../contexts/FileSystemContext";
-import { ProcessesContext } from "../../../contexts/ProcessesContext";
-import Terminal from "react-console-emulator";
-import commands from "./commands";
-import { path as Path } from "filer";
-import DirectoryContentOutput from "./command-outputs/DirectoryContentOutput";
-import FileContentsOutput from "./command-outputs/FileContentsOutput";
-import formatCommandLineArguments from "../../../utils/helpers/formatCommandLineArgumnets";
+import './CommandPrompt.css';
+import Window from '../../system/window/Window';
+import WindowContent from '../../system/window/window-content/WindowContent';
+import { useRef, useState, useEffect, useContext } from 'react';
+import { FileSystemContext } from '../../../contexts/FileSystemContext';
+import { ProcessesContext } from '../../../contexts/ProcessesContext';
+import Terminal from 'react-console-emulator';
+import commands from './commands';
+import { path as Path } from 'filer';
+import DirectoryContentOutput from './command-outputs/DirectoryContentOutput';
+import FileContentsOutput from './command-outputs/FileContentsOutput';
+import formatCommandLineArguments from '../../../utils/helpers/formatCommandLineArgumnets';
 
 const CommandPrompt = ({ icon, pid }) => {
   const {
@@ -23,22 +23,21 @@ const CommandPrompt = ({ icon, pid }) => {
     moveFSO,
   } = useContext(FileSystemContext);
   const { endProcess, processes } = useContext(ProcessesContext);
-  const [currentPath, setCurrentPath] = useState("/C/users/admin");
+  const [currentPath, setCurrentPath] = useState('/C/users/admin');
   const terminal = useRef(null);
 
   const changePath = async (path) => {
-    if (!path.includes('"') && path.includes(" "))
-      return "cd: too many arguments";
+    if (!path.includes('"') && path.includes(' ')) return 'cd: too many arguments';
 
-    const toManyArgs = path.slice(path.lastIndexOf('"')).includes(" ");
-    if (toManyArgs) return "cd: too many arguments";
+    const toManyArgs = path.slice(path.lastIndexOf('"')).includes(' ');
+    if (toManyArgs) return 'cd: too many arguments';
 
-    const newPath = Path.join(currentPath, path.replaceAll('"', ""));
+    const newPath = Path.join(currentPath, path.replaceAll('"', ''));
     const exists = await doesPathExist(newPath);
     if (exists) {
       setCurrentPath(newPath);
     } else {
-      return "The system cannot find the path specified.";
+      return 'The system cannot find the path specified.';
     }
   };
 
@@ -60,7 +59,7 @@ const CommandPrompt = ({ icon, pid }) => {
         await mkdirAsync(Path.join(currentPath, args[0]));
         return null;
       } catch (err) {
-        return command === "mkdir"
+        return command === 'mkdir'
           ? `mkdir: cannot create directory '${args[0]}': File exists`
           : `A subdirectory or file ${args[0]} already exists.`;
       }
@@ -73,7 +72,7 @@ const CommandPrompt = ({ icon, pid }) => {
           try {
             await mkdirAsync(Path.join(currentPath, folderPath));
           } catch (err) {
-            return command === "mkdir"
+            return command === 'mkdir'
               ? `mkdir: cannot create directory '${folderPath}': File exists`
               : `A subdirectory or file ${folderPath} already exists.`;
           }
@@ -85,21 +84,21 @@ const CommandPrompt = ({ icon, pid }) => {
   };
 
   const deleteFolders = async (command, recusive, ...args) => {
-    if (args.every((arg) => arg === ""))
-      return command === "rm"
-        ? "rm: missing operand"
-        : "The syntax of the command is incorrect.";
+    if (args.every((arg) => arg === ''))
+      return command === 'rm'
+        ? 'rm: missing operand'
+        : 'The syntax of the command is incorrect.';
     if (args.length === 1) {
       try {
-        await deleteFSO(currentPath, args[0], "directory", recusive);
+        await deleteFSO(currentPath, args[0], 'directory', recusive);
       } catch (err) {
         return err.errno == 53
-          ? command === "rm"
+          ? command === 'rm'
             ? `rm: cannot remove '${args[0]}': Is a directory`
-            : "The directory is not empty."
-          : command === "rm"
+            : 'The directory is not empty.'
+          : command === 'rm'
           ? `rm: cannot remove '${args[0]}': No such file or directory`
-          : "The system cannot find the file specified.";
+          : 'The system cannot find the file specified.';
       }
     }
     if (args.length > 1) {
@@ -110,16 +109,16 @@ const CommandPrompt = ({ icon, pid }) => {
       const failedFolderPaths = await Promise.all(
         folderPaths.map(async (folderPath) => {
           try {
-            await deleteFSO(currentPath, folderPath, "directory", recusive);
+            await deleteFSO(currentPath, folderPath, 'directory', recusive);
           } catch (err) {
             console.log(err);
             return err.errno == 53
-              ? command === "rm"
+              ? command === 'rm'
                 ? `rm: cannot remove '${folderPath}': Is a directory`
-                : "The directory is not empty."
-              : command === "rm"
+                : 'The directory is not empty.'
+              : command === 'rm'
               ? `rm: cannot remove '${folderPath}': No such file or directory`
-              : "The system cannot find the file specified.";
+              : 'The system cannot find the file specified.';
           }
         })
       );
@@ -158,21 +157,31 @@ const CommandPrompt = ({ icon, pid }) => {
     );
   };
 
-  const killTasks = (...args) => {
-    const tasks = formatCommandLineArguments(...args);
+  const killTasks = (flag, ...process) => {
+    process = formatCommandLineArguments(...process)[0];
 
-    return tasks
-      .map((task) => {
-        if (processes[task] && processes[task].running) {
-          endProcess(task);
-          return null;
-        } else return `ERROR: The process ${task} not found.`;
-      })
-      .filter((el) => el);
+    if (flag === '/im') {
+      if (!processes[process]) return `ERROR: The process ${process} not found.`;
+      endProcess(process, Object.keys(processes[process])[0]);
+    }
+
+    if (flag === '/pid') {
+      let foundProcessName;
+
+      Object.entries(processes).forEach(([processName, processInstances]) =>
+        Object.keys(processInstances).forEach(
+          (processInstanceId) =>
+            processInstanceId === process && (foundProcessName = processName)
+        )
+      );
+
+      if (foundProcessName) endProcess(foundProcessName, process);
+      else return `ERROR: The process ${process} not found.`;
+    }
   };
 
   const renameFiles = async (command, ...args) => {
-    if (command === "rename") {
+    if (command === 'rename') {
       const allNames = formatCommandLineArguments(...args);
       const oldNames = allNames.filter((el, i) => i % 2 === 0);
       const newNames = allNames.filter((el, i) => i % 2 !== 0);
@@ -208,13 +217,11 @@ const CommandPrompt = ({ icon, pid }) => {
   const moveFiles = async (...args) => {
     const [origin, destination, ...rest] = formatCommandLineArguments(...args);
     if (rest.length)
-      return "The system cannot find the file specified. Too many arguments.";
+      return 'The system cannot find the file specified. Too many arguments.';
     if (origin && destination) {
       let destinationExists = false;
       try {
-        destinationExists = await doesPathExist(
-          Path.join(currentPath, destination)
-        );
+        destinationExists = await doesPathExist(Path.join(currentPath, destination));
       } catch (err) {
         //do nothing
       }
@@ -240,10 +247,10 @@ const CommandPrompt = ({ icon, pid }) => {
       } catch (err) {
         console.log(err);
         return err.errno === 34
-          ? "The system cannot find the file specified."
-          : "File already exists at destination";
+          ? 'The system cannot find the file specified.'
+          : 'File already exists at destination';
       }
-    } else return "The syntax of the command is incorrect.";
+    } else return 'The syntax of the command is incorrect.';
   };
 
   return (
@@ -253,7 +260,7 @@ const CommandPrompt = ({ icon, pid }) => {
       icon={icon}
       minWindowWidth='15rem'
       minWindowHeight='5rem'
-      titleBar={{ color: "white", backgroundColor: "black" }}
+      titleBar={{ color: 'white', backgroundColor: 'black' }}
     >
       <WindowContent flex flexDirection='column'>
         <div className='command-prompt-container'>
@@ -269,9 +276,7 @@ const CommandPrompt = ({ icon, pid }) => {
               deleteFolders,
               createNewFiles,
               readFiles,
-              Object.keys(processes).filter(
-                (process) => processes[process].running
-              ),
+              processes,
               killTasks,
               renameFiles,
               moveFiles
@@ -284,7 +289,7 @@ const CommandPrompt = ({ icon, pid }) => {
             messageClassName='command-prompt-message'
             welcomeMessage={`Microsoft Windows [Version 10.0.19044.1466]
           (c) Microsoft Corporation. All rights reserved.`}
-            promptLabel={currentPath + ">"}
+            promptLabel={currentPath + '>'}
             errorText='[command] is not recognized as an internal or external command,
             operable program or batch file.'
           />
