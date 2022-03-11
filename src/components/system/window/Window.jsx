@@ -56,12 +56,12 @@ const Window = ({
     setPosition({ top: clientY - offset.y, left: clientX - offset.x });
   };
 
-  const setFocus = () => focusProcess(process, pid);
+  const setFocus = () => focusProcess(parentProcess || process, ppid || pid);
 
   const handleDragStart = useCallback(
     (e) => {
       e.stopPropagation();
-      resizable && setFocus();
+      setFocus();
       const { offsetX, offsetY } = e.nativeEvent;
       e.dataTransfer.setDragImage(new Image(), 0, 0);
       setOffset({ x: offsetX, y: offsetY });
@@ -247,10 +247,10 @@ const Window = ({
         ...position,
         minWidth,
         minHeight,
-        zIndex: zIndex || processes[process][pid].focusLevel,
+        zIndex: zIndex || processes[parentProcess || process][ppid || pid].focusLevel,
         visibility: !processes[process][pid].minimized ? 'visible' : 'hidden',
       }}
-      onClick={resizable && setFocus}
+      onClick={setFocus}
     >
       {resizable &&
         [

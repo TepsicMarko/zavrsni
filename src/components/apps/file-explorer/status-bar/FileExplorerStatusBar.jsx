@@ -75,14 +75,15 @@ const FileExplorerStatusBar = ({
         openFile(path, fileName, fileType);
       } catch (e) {
         startChildProcess('File Explorer', pid, 'Warning Dialog', {
-          icon: <div></div>,
+          // icon: <div></div>,
           title: 'Open',
           warning: (
             <div>
               {fileName} <br /> File not found. <br /> Check the file name and try again.
             </div>
           ),
-          ppid: pid,
+          parentProcess,
+          ppid,
         });
         inputRef.current.focus();
         inputRef.current.select();

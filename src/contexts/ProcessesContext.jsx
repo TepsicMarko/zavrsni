@@ -185,6 +185,7 @@ export const ProcessesProvider = ({ children }) => {
   };
 
   const focusProcess = (name, pid) => {
+    console.log(name, pid);
     if (!pid) pid = Object.keys(processes[name])[0];
     const isFocused = processes[name][pid].isFocused;
 
@@ -200,6 +201,7 @@ export const ProcessesProvider = ({ children }) => {
       });
 
       newProcessesFocusLevel.forEach(({ name, pid, focusLevel }) => {
+        newProcessesState[name][pid].focusLevel = focusLevel;
         newProcessesState[name][pid].isFocused = false;
       });
 

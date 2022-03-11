@@ -25,6 +25,8 @@ const UnsavedChanges = ({ icon, save, dontSave, filePath, pid, ppid, parentProce
     <Window
       process='Unsaved Changes Dialog'
       pid={pid}
+      ppid={ppid}
+      parentProcess={parentProcess}
       icon={icon}
       minWindowWidth='20rem'
       minWindowHeight='9rem'

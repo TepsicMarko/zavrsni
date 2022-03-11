@@ -30,7 +30,12 @@ const TitleBar = ({
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
     >
-      <div className='flex-center aplication-icon'>{icon}</div>
+      <div
+        className='flex-center aplication-icon'
+        style={{ width: !icon ? '0.5rem' : '' }}
+      >
+        {icon}
+      </div>
       <div className='aplication-name'>{title}</div>
       <div className='window-controls' style={{ backgroundColor }}>
         {!limitedWindowControls && (

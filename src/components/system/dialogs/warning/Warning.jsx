@@ -5,7 +5,7 @@ import warningIcon from '../../../../assets/warning.png';
 import { useContext } from 'react';
 import { ProcessesContext } from '../../../../contexts/ProcessesContext';
 
-const Warning = ({ icon, pid, ppid, title, warning }) => {
+const Warning = ({ icon, pid, ppid, parentProcess, title, warning }) => {
   const { endProcess } = useContext(ProcessesContext);
 
   const dismissWarning = () => {
@@ -16,6 +16,8 @@ const Warning = ({ icon, pid, ppid, title, warning }) => {
     <Window
       process='Warning Dialog'
       pid={pid}
+      parentProcess={parentProcess}
+      ppid={ppid}
       icon={icon}
       minWindowWidth='20rem'
       minWindowHeight='9rem'
