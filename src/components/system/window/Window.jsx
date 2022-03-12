@@ -227,12 +227,13 @@ const Window = ({
   }, []);
 
   useEffect(() => {
-    addThumbnailPreview(
-      process,
-      titleBar.title || process,
-      icon || processes[process][pid].icon,
-      pid
-    );
+    !processes[process][pid].isChildProcess &&
+      addThumbnailPreview(
+        process,
+        titleBar.title || process,
+        icon || processes[process][pid].icon,
+        pid
+      );
 
     return () => removeThumbnailPreview(process, pid);
   }, [process, pid, titleBar.title]);
@@ -247,7 +248,10 @@ const Window = ({
         ...position,
         minWidth,
         minHeight,
-        zIndex: zIndex || processes[parentProcess || process][ppid || pid].focusLevel,
+        zIndex:
+          zIndex ||
+          processes[parentProcess || process][ppid || pid].focusLevel +
+            (parentProcess ? 1 : 0),
         visibility: !processes[process][pid].minimized ? 'visible' : 'hidden',
       }}
       onClick={setFocus}

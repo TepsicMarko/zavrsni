@@ -32,8 +32,8 @@ export const ProcessesProvider = ({ children }) => {
       }));
   };
 
-  const unfocusProcesses = () => {
-    let unfocused = deepCloneProcesses();
+  const unfocusProcesses = (minimized) => {
+    let unfocused = deepCloneProcesses(minimized);
     Object.entries(unfocused).forEach(([processName, processInstances]) =>
       Object.keys(processInstances).forEach(
         (processInstance) => (processInstances[processInstance].isFocused = false)
@@ -177,7 +177,7 @@ export const ProcessesProvider = ({ children }) => {
         (process) => process.focusLevel === maxFocusLevel - 10
       );
 
-      minimized = unfocusProcesses();
+      minimized = unfocusProcesses(minimized);
       minimized[toBeFocused.name][toBeFocused.pid].isFocused = true;
     }
 
