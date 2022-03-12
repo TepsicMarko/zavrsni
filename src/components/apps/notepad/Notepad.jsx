@@ -71,7 +71,7 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
 
     if (filePath) {
       saveFile(filePath.replace(/\.[^/.]+$/, ''), Path.extname(filePath), text.content);
-      callback ? callback() : endProcess('Notepad', pid);
+      callback ? callback(startChildProcess) : endProcess('Notepad', pid);
     }
   };
 
@@ -84,7 +84,9 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
       icon,
       save: () => handleSave(openFileSelection || resetNotepad, endParrentProcess),
       dontSave: () =>
-        openFileSelection ? openFileSelection() : endProcess('Notepad', pid),
+        openFileSelection
+          ? openFileSelection(startChildProcess)
+          : endProcess('Notepad', pid),
       filePath,
       ppid: pid,
       parentProcess: 'Notepad',

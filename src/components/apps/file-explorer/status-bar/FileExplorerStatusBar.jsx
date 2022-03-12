@@ -2,6 +2,10 @@ import './FileExplorerStatusBar.css';
 import { useState, memo, useEffect, useContext, useRef } from 'react';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { path as Path } from 'filer';
+import {
+  ERROR_ALREADY_EXISTS,
+  ERROR_FILE_NOT_FOUND,
+} from '../../../system/dialogs/warning/errorCodes';
 
 const FileExplorerStatusBar = ({
   path,
@@ -21,8 +25,29 @@ const FileExplorerStatusBar = ({
   const [fileName, setFileName] = useState('');
   const [fileType, setFileType] = useState('.txt');
   const [encoding, setEncoding] = useState('Auto-Detect');
-  const { getFolder, exists } = useContext(FileSystemContext);
+  const { getFolder, exists, deleteFSO } = useContext(FileSystemContext);
   const inputRef = useRef();
+
+  const replaceFile = async () => {
+    await deleteFSO(path, fileName + fileType);
+    handleSave(path, fileName, fileType, startChildProcess, endProcess);
+  };
+
+  const showWarning = (errCode, title, warning) => {
+    startChildProcess('File Explorer', pid, 'Warning Dialog', {
+      errCode,
+      title,
+      warning,
+      parentProcess,
+      ppid: pid,
+      gppid: ppid,
+      replaceFile,
+      onClose: () => {
+        inputRef.current.focus();
+        inputRef.current.select();
+      },
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,9 +58,13 @@ const FileExplorerStatusBar = ({
       try {
         await exists(Path.join(path, fileName + fileType));
 
-        alert('File already exists');
-        inputRef.current.focus();
-        inputRef.current.select();
+        showWarning(
+          ERROR_ALREADY_EXISTS,
+          'Confirm Save As',
+          <div>
+            {fileName} already exists. <br /> Do you want to replace it?
+          </div>
+        );
       } catch {
         endParrentProcess
           ? endProcess(parentProcess, ppid)
@@ -74,19 +103,13 @@ const FileExplorerStatusBar = ({
         endProcess('File Explorer', pid, parentProcess, ppid);
         openFile(path, fileName, fileType);
       } catch (e) {
-        startChildProcess('File Explorer', pid, 'Warning Dialog', {
-          // icon: <div></div>,
-          title: 'Open',
-          warning: (
-            <div>
-              {fileName} <br /> File not found. <br /> Check the file name and try again.
-            </div>
-          ),
-          parentProcess,
-          ppid,
-        });
-        inputRef.current.focus();
-        inputRef.current.select();
+        showWarning(
+          ERROR_FILE_NOT_FOUND,
+          'Open',
+          <div>
+            {fileName} <br /> File not found. <br /> Check the file name and try again.
+          </div>
+        );
       }
     }
   };

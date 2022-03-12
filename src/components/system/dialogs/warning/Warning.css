@@ -18,13 +18,23 @@
   background-color: #f0f0f0;
   border-top: 1px solid #e1e1e1;
   font-weight: 400;
-  padding-right: 0.75rem;
+  padding-right: 0.25rem;
 }
 
 .warning-status-bar > button {
-  box-sizing: border-box;
-  font-size: 0.8rem;
-  width: 3.75rem;
+  height: 1.25rem;
+  width: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  border: 1px solid #b1b1b1;
+  margin: 0.25rem;
+  font-weight: 400;
+  transition: background-color ease-in 0.25s, border-color ease-in 0.25s;
+}
+
+.warning-status-bar > button:last-child {
   border: 2px solid #0078d7;
   transition: background-color ease-in 0.25s, border-color ease-in 0.25s;
   transition: border-width 0.25s;
