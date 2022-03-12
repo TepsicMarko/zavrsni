@@ -5,6 +5,7 @@ import FsoListItemContextMenu from '../../../../system/component-specific-contex
 import selectInputContent from '../../../../../utils/helpers/selectInputContent';
 import { RightClickMenuContext } from '../../../../../contexts/RightClickMenuContext';
 import { ProcessesContext } from '../../../../../contexts/ProcessesContext';
+import { FileSystemContext } from '../../../../../contexts/FileSystemContext';
 import { path as Path } from 'filer';
 import useInput from '../../../../../hooks/useInput';
 import openWithDefaultApp from '../../../../../utils/helpers/openWithDefaultApp';
@@ -15,17 +16,10 @@ import chrome from '../../../../../assets/chrome.svg';
 import pdf from '../../../../../assets/pdf.jpg';
 
 const FsoListItem = ({
-  name,
-  dateModified,
-  type,
-  size,
-  columnHeadingsWidth,
+  fso: { name, dateModified, type, size, location },
+  columnHeadingsWidth: { Name, Location, ['Date Modified']: DateModified, Size, Type },
   path,
-  renameFSO,
-  deleteFSO,
   changePath,
-  location,
-  moveFSO,
   setExpandBranches,
   openFile,
   endProcess,
@@ -36,20 +30,15 @@ const FsoListItem = ({
   mode,
   setSelectedFile,
 }) => {
-  const {
-    Name,
-    Location,
-    ['Date Modified']: DateModified,
-    Size,
-    Type,
-  } = columnHeadingsWidth;
-
   const inputRef = useRef(null);
   const { renderOptions } = useContext(RightClickMenuContext);
   const { startProcess } = useContext(ProcessesContext);
+  const { renameFSO, deleteFSO, moveFSO, cutFiles, copyFiles, cut } =
+    useContext(FileSystemContext);
   const [inputValue, handleInputChange] = useInput(name);
   const [isSelected, setIsSelected] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isCut, setIsCut] = useState(false);
   const fsoRef = useClickOutside('click', () => setIsSelected(false));
 
   const handleKeyDown = (e) => {
@@ -83,6 +72,19 @@ const FsoListItem = ({
     else deleteFSO(path, name, type.toLowerCase());
   };
 
+  const handleCopy = () =>
+    copyFiles(
+      Object.keys(selectedElements).length
+        ? Object.values(selectedElements)
+        : [{ path, name, type }]
+    );
+  const handleCut = () =>
+    cutFiles(
+      Object.keys(selectedElements).length
+        ? Object.values(selectedElements)
+        : [{ path, name, type }]
+    );
+
   const handleRightClick = (e) =>
     renderOptions(
       e,
@@ -94,8 +96,9 @@ const FsoListItem = ({
         path={path}
         changePath={changePath}
         type={type}
-        Path={Path}
         startProcess={startProcess}
+        handleCopy={handleCopy}
+        handleCut={handleCut}
       />
     );
 
@@ -133,15 +136,19 @@ const FsoListItem = ({
   const preventDefault = (e) => e.preventDefault();
   const handleDrop = (e) => {
     e.preventDefault();
-    const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
-    const dragObject = dataTransfer.dragObject;
-    console.log(dragObject, path);
-    if (type === 'DIRECTORY') {
-      moveFSO(
-        Path.join(dragObject.path, dragObject.name),
-        Path.join(path, name, dragObject.name)
-      );
-    }
+    let dataTransfer;
+    try {
+      JSON.parse(e.dataTransfer.getData('json'));
+
+      const dragObject = dataTransfer.dragObject;
+      console.log(dragObject, path);
+      if (type === 'DIRECTORY') {
+        moveFSO(
+          Path.join(dragObject.path, dragObject.name),
+          Path.join(path, name, dragObject.name)
+        );
+      }
+    } catch (e) {}
   };
 
   const renderIcon = () => {
@@ -174,6 +181,7 @@ const FsoListItem = ({
           });
       } else {
         setIsSelected(false);
+        setSelectedElements(({ [name]: remove, ...rest }) => rest);
       }
     }
   });
@@ -197,6 +205,13 @@ const FsoListItem = ({
     };
   }, [selectedElements]);
 
+  useEffect(() => {
+    if (cut.length)
+      if (!cut.find((file) => file.name === name)) setIsCut(false);
+      else !isCut && setIsCut(true);
+    else isCut && setIsCut(false);
+  }, [cut]);
+
   return (
     <div
       ref={fsoRef}
@@ -215,7 +230,9 @@ const FsoListItem = ({
       onDragStart={handleDragStart}
     >
       <div style={{ minWidth: Name, maxWidth: Name }}>
-        <span className='fso-list-item-icon'>{renderIcon()}</span>
+        <span className='fso-list-item-icon' style={{ opacity: isCut ? 0.5 : 1 }}>
+          {renderIcon()}
+        </span>
         <span
           contentEditable={isInputFocused}
           className='fso-list-item-name-input'

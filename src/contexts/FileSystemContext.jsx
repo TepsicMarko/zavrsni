@@ -1,9 +1,86 @@
-import { createContext, useEffect } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { path as Path, fs, Buffer } from 'filer';
 
 export const FileSystemContext = createContext();
 
 export const FileSystemProvider = ({ children }) => {
+  const [cut, setCut] = useState([]);
+  const [copied, setCopied] = useState([]);
+
+  const cutFiles = (files) => {
+    setCut(files);
+    setCopied([]);
+  };
+  const copyFiles = (files) => {
+    setCopied(files);
+    setCut([]);
+  };
+
+  const pasteFiles = async (newPath, deleFromGrid) => {
+    if (cut.length) {
+      const pastedFiles = [...cut];
+      const currentPath = Path.join(cut[0].path, cut[0].name);
+
+      if (currentPath === Path.join(newPath, cut[0].name)) {
+        setCut([]);
+        return [];
+      } else deleFromGrid && pastedFiles.forEach((file) => deleFromGrid(file.name));
+
+      for (let { path, name, type } of cut) {
+        const currentPath = Path.join(path, name);
+        const newFilePath = Path.join(newPath, name);
+
+        await copyFSO(currentPath, newFilePath, type);
+        await deleteFSO(path, name, type);
+      }
+
+      setCut([]);
+      return pastedFiles;
+    }
+
+    if (copied.length) {
+      const pastedFiles = [...copied];
+      const currentPath = Path.join(copied[0].path, copied[0].name);
+
+      if (currentPath === Path.join(newPath, cut[0].name)) {
+        setCopied([]);
+        return [];
+      } else deleFromGrid && pastedFiles.forEach((file) => deleFromGrid(file.name));
+
+      for (let { path, name, type } of copied) {
+        const currentPath = Path.join(path, name);
+        const newFilePath = Path.join(newPath, name);
+
+        await copyFSO(currentPath, newFilePath, type);
+      }
+
+      setCopied([]);
+      return pastedFiles;
+    }
+  };
+
+  const copyFSO = (currentPath, newPath, type) =>
+    new Promise(async (resolveParent, rejectParent) => {
+      if (type.toLowerCase() === 'file') {
+        const file = await new Promise((resolve, reject) => {
+          fs.readFile(currentPath, (data, err) => {
+            if (err) {
+              resolve(err);
+            } else {
+              resolve(data);
+            }
+          });
+        });
+
+        fs.writeFile(newPath, file, (err) => {
+          resolveParent();
+          if (err) {
+            console.log(err);
+          }
+        });
+      }
+    });
+
   const mkdir = (path, name, i = 1) =>
     new Promise((resolve, reject) => {
       fs.mkdir(`${path}/${name}`, (err) => {
@@ -268,6 +345,11 @@ export const FileSystemProvider = ({ children }) => {
         doesPathExist,
         mkdirAsync,
         writeFileAsync,
+        cutFiles,
+        copyFiles,
+        pasteFiles,
+        cut,
+        isClipboardEmpty: cut.length === 0 && copied.length === 0,
       }}
     >
       {children}

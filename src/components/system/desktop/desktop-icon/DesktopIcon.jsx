@@ -29,11 +29,20 @@ const DesktopIcon = ({
 }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [isInputTexSelected, setIsInputTextSelected] = useState(false);
+  const [isCut, setIsCut] = useState(false);
   const [dontDeselect, setDontDeselect] = useState(false);
   const [inputValue, handleInputChange] = useInput(name);
   const [imgSrc, setImgSrc] = useState('');
-  const { renameFSO, deleteFSO, readFileContent, readBlob, moveFSO } =
-    useContext(FileSystemContext);
+  const {
+    renameFSO,
+    deleteFSO,
+    readFileContent,
+    readBlob,
+    moveFSO,
+    cutFiles,
+    copyFiles,
+    cut,
+  } = useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
   const iconRef = useRef(null);
@@ -64,7 +73,8 @@ const DesktopIcon = ({
 
       if (fileType === 'document') {
         const ext = Path.extname(name);
-        if (ext === '.html') return <img src={chrome} width='45rem' draggable={false} />;
+        if (ext === '.html')
+          return <img src={chrome} width='45rem' draggable={false} s />;
         if (ext === '.pdf') return <img src={pdf} width='45rem' draggable={false} />;
       }
 
@@ -160,6 +170,21 @@ const DesktopIcon = ({
     isSelected && !isInputTexSelected && selectDivText(inputRef.current);
   };
 
+  const handleCopy = () =>
+    copyFiles(
+      Object.keys(selectedElements).length
+        ? Object.values(selectedElements)
+        : [{ path, name, type }]
+    );
+  const handleCut = () => {
+    cutFiles(
+      Object.keys(selectedElements).length
+        ? Object.values(selectedElements)
+        : [{ path, name, type }]
+    );
+    setIsCut(true);
+  };
+
   const handleRightClick = (e) => {
     e.stopPropagation();
     !selectedElements[name] && setSelectedElements({});
@@ -174,6 +199,8 @@ const DesktopIcon = ({
         handleOpen={handleOpen}
         selectDivText={selectDivText}
         handleFocus={handleFocus}
+        handleCopy={handleCopy}
+        handleCut={handleCut}
       />
     );
   };
@@ -222,6 +249,7 @@ const DesktopIcon = ({
           }));
       } else {
         setIsSelected(false);
+        setSelectedElements(({ [name]: remove, ...rest }) => rest);
       }
     }
   });
@@ -249,6 +277,15 @@ const DesktopIcon = ({
     };
   }, [selectedElements]);
 
+  useEffect(() => {
+    if (cut.length)
+      if (!cut.find((file) => file.name === name)) setIsCut(false);
+      else !isCut && setIsCut(true);
+    else isCut && setIsCut(false);
+  }, [cut]);
+
+  useEffect(() => (iconRef.current.firstChild.style.opacity = isCut ? 0.5 : 1), [isCut]);
+
   return (
     <div
       ref={iconRef}
@@ -264,7 +301,7 @@ const DesktopIcon = ({
       onDrag={stopPropagation}
       onDrop={handleDrop}
     >
-      {renderIcon()}
+      {renderIcon(isCut ? 0.5 : 1)}
       <div
         ref={inputRef}
         contentEditable={isSelected}

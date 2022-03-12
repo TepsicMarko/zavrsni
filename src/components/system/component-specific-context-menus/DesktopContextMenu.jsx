@@ -9,11 +9,19 @@ const DesktopContextMenu = ({
   mousePosition,
   closeMenu,
   sortGrid,
+  handlePaste,
+  isClipboardEmpty,
 }) => {
   const [openSubmenu, setOpenSubmenu] = useState('');
   const handleMouseOver = (name) => setOpenSubmenu(name);
   return (
     <>
+      <ContextMenuItem
+        name='Paste'
+        onClick={handlePaste}
+        closeMenu={closeMenu}
+        disabled={isClipboardEmpty}
+      />
       <ContextMenuItem
         name='Sort'
         openSubmenu={openSubmenu === 'Sort'}

@@ -15,7 +15,8 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
   const origin = '/C/users/admin/Desktop';
   const { renderOptions } = useContext(RightClickMenuContext);
   const { processes, startProcess } = useContext(ProcessesContext);
-  const { createFSO, watch, getFolder, moveFSO } = useContext(FileSystemContext);
+  const { createFSO, watch, getFolder, moveFSO, pasteFiles, isClipboardEmpty } =
+    useContext(FileSystemContext);
   const [folderContent] = useWatchFolder(origin, watch, getFolder);
   const {
     rectRef,
@@ -48,6 +49,16 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
     maxColumns: Math.floor(document.documentElement.clientWidth / 68),
   });
 
+  const handlePaste = async (e) => {
+    const pastedFiles = await pasteFiles(origin, deleteFromGrid);
+
+    pastedFiles.length &&
+      addToGrid(
+        pastedFiles.map(({ name }) => name),
+        calculateGridPosition({ x: e.clientX, y: e.clientY })
+      );
+  };
+
   const handleRightClick = (e) => {
     const { clientX, clientY } = e;
     const mousePosition = { x: clientX, y: clientY };
@@ -60,6 +71,8 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
         calculateGridPosition={calculateGridPosition}
         mousePosition={mousePosition}
         sortGrid={(sortBy) => sortGrid(sortBy, folderContent)}
+        handlePaste={handlePaste}
+        isClipboardEmpty={isClipboardEmpty}
       />
     );
   };

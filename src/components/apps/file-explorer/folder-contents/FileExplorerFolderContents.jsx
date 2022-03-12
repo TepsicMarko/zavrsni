@@ -25,7 +25,7 @@ const FileExplorerFolderContents = ({
   mode,
   setSelectedFile,
 }) => {
-  const { watch, getFolder, renameFSO, deleteFSO, createFSO, moveFSO, createBlob } =
+  const { watch, getFolder, renameFSO, deleteFSO, createFSO, moveFSO, pasteFiles } =
     useContext(FileSystemContext);
   const { startProcess } = useContext(ProcessesContext);
   const { renderOptions } = useContext(RightClickMenuContext);
@@ -62,6 +62,8 @@ const FileExplorerFolderContents = ({
     [columnHeadingsWidth]
   );
 
+  const handlePaste = () => pasteFiles(path);
+
   const handleRightClick = (e) =>
     renderOptions(
       e,
@@ -69,6 +71,7 @@ const FileExplorerFolderContents = ({
         path={path}
         createFSO={createFSO}
         addToGrid={addToGrid}
+        handlePaste={handlePaste}
       />
     );
 
@@ -164,17 +167,10 @@ const FileExplorerFolderContents = ({
           return (
             <FsoListItem
               key={fso.node}
-              name={fso.name}
-              dateModified={moment(fso.ctime).format('DD/MM/YYYY hh:mm a')}
-              type={fso.type}
-              size={fso.size}
+              fso={fso}
               columnHeadingsWidth={columnHeadingsWidth}
               path={path}
-              renameFSO={renameFSO}
-              deleteFSO={deleteFSO}
               changePath={changePath}
-              location={fso.path}
-              moveFSO={moveFSO}
               setExpandBranches={setExpandBranches}
               openFile={openFile}
               endProcess={endProcess}
@@ -184,7 +180,7 @@ const FileExplorerFolderContents = ({
               setSelectedElements={setSelectedElements}
               dimensions={dimensions}
               setSelectedFile={setSelectedFile}
-              mode
+              mode={mode}
             />
           );
         })}

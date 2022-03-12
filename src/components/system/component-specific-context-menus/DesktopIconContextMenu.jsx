@@ -6,11 +6,9 @@ const DesktopIconContextMenu = ({
   handleOpen,
   handleDelete,
   selectDivText,
+  handleCopy,
+  handleCut,
 }) => {
-  const handleClick = () => {
-    alert('not yet implemented');
-  };
-
   const focusInput = () => {
     inputRef.current.focus();
     selectDivText(inputRef.current);
@@ -19,8 +17,8 @@ const DesktopIconContextMenu = ({
   return (
     <>
       <ContextMenuItem name='Open' onClick={handleOpen} closeMenu={closeMenu} />
-      <ContextMenuItem name='Cut' onClick={handleClick} closeMenu={closeMenu} />
-      <ContextMenuItem name='Copy' onClick={handleClick} closeMenu={closeMenu} />
+      <ContextMenuItem name='Cut' onClick={handleCut} closeMenu={closeMenu} />
+      <ContextMenuItem name='Copy' onClick={handleCopy} closeMenu={closeMenu} />
       <ContextMenuItem name='Delete' onClick={handleDelete} closeMenu={closeMenu} />
       <ContextMenuItem name='Rename' onClick={focusInput} closeMenu={closeMenu} />
     </>

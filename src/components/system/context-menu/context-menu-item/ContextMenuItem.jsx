@@ -17,7 +17,8 @@ const ContextMenuItem = ({
   fontWeight,
   returnName,
   checkBox,
-  hoverColor,
+  hoverColor = 'rgba(255, 255, 255, 0.15)',
+  disabled,
 }) => {
   const [isMouseOver, setIsMouseOver] = useState(false);
   const [submenuPosition, setSubmenuPosition] = useState({ left: '', bottom: '' });
@@ -27,9 +28,11 @@ const ContextMenuItem = ({
   const handleMouseLeve = () => setIsMouseOver(false);
 
   const handleClick = (e) => {
-    e.stopPropagation();
-    onClick(returnName ? name : e);
-    closeMenu && closeMenu();
+    if (!disabled) {
+      e.stopPropagation();
+      onClick(returnName ? name : e);
+      closeMenu && closeMenu();
+    }
   };
 
   useLayoutEffect(() => {
@@ -65,7 +68,10 @@ const ContextMenuItem = ({
     >
       <div
         className={'cm-item-name'}
-        style={{ fontWeight, backgroundColor: isMouseOver ? hoverColor : '' }}
+        style={{
+          fontWeight,
+          backgroundColor: isMouseOver ? hoverColor : '',
+        }}
       >
         <div
           className={
@@ -76,7 +82,7 @@ const ContextMenuItem = ({
           {checkBox && <FiCheck />}
           {radio && active && <VscCircleFilled />}
         </div>
-        {name}
+        <span style={{ opacity: disabled ? 0.5 : 1 }}>{name}</span>
       </div>
       {children && (
         <div

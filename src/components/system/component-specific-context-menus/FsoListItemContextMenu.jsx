@@ -1,6 +1,6 @@
-import ContextMenuItem from "../context-menu/context-menu-item/ContextMenuItem";
-import { path as Path } from "filer";
-import openWithDefaultApp from "../../../utils/helpers/openWithDefaultApp";
+import ContextMenuItem from '../context-menu/context-menu-item/ContextMenuItem';
+import { path as Path } from 'filer';
+import openWithDefaultApp from '../../../utils/helpers/openWithDefaultApp';
 
 const FsoListItemContextMenu = ({
   name,
@@ -11,14 +11,12 @@ const FsoListItemContextMenu = ({
   focusInput,
   changePath,
   type,
-  Path,
   startProcess,
+  handleCopy,
+  handleCut,
 }) => {
-  // const [openSubmenu, setOpenSubmenu] = useState("");
-  // const handleClick = (name) => setOpenSubmenu(name);
-
   const openFSO = () => {
-    if (type === "DIRECTORY") {
+    if (type === 'DIRECTORY') {
       changePath(Path.join(path, name));
     } else openWithDefaultApp(type, path, name, startProcess);
   };
@@ -26,21 +24,17 @@ const FsoListItemContextMenu = ({
   return (
     <>
       <ContextMenuItem name='Open' onClick={openFSO} closeMenu={closeMenu} />
-      <ContextMenuItem
-        name='Open in new window'
-        onClick={toggleOpen}
-        closeMenu={closeMenu}
-      />
-      <ContextMenuItem
-        name='Delete'
-        onClick={handleDelete}
-        closeMenu={closeMenu}
-      />
-      <ContextMenuItem
-        name='Rename'
-        onClick={focusInput}
-        closeMenu={closeMenu}
-      />
+      {type === 'DIRECTORY' && (
+        <ContextMenuItem
+          name='Open in new window'
+          onClick={toggleOpen}
+          closeMenu={closeMenu}
+        />
+      )}
+      <ContextMenuItem name='Cut' onClick={handleCut} closeMenu={closeMenu} />
+      <ContextMenuItem name='Copy' onClick={handleCopy} closeMenu={closeMenu} />
+      <ContextMenuItem name='Delete' onClick={handleDelete} closeMenu={closeMenu} />
+      <ContextMenuItem name='Rename' onClick={focusInput} closeMenu={closeMenu} />
     </>
   );
 };
