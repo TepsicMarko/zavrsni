@@ -42,7 +42,7 @@ export const FileSystemProvider = ({ children }) => {
       const pastedFiles = [...copied];
       const currentPath = Path.join(copied[0].path, copied[0].name);
 
-      if (currentPath === Path.join(newPath, cut[0].name)) {
+      if (currentPath === Path.join(newPath, copied[0].name)) {
         setCopied([]);
         return [];
       } else deleFromGrid && pastedFiles.forEach((file) => deleFromGrid(file.name));
@@ -78,7 +78,40 @@ export const FileSystemProvider = ({ children }) => {
             console.log(err);
           }
         });
+      } else {
+        await mkdirAsync(newPath);
+        resolveParent(await copyDirRecursive(currentPath, newPath));
       }
+    });
+
+  const copyDirRecursive = (currentPath, newPath) =>
+    new Promise((resolve, reject) => {
+      fs.readdir(currentPath, { withFileTypes: true }, async (err, files) => {
+        if (err) reject(err);
+        else {
+          if (files.length) {
+            resolve(
+              await Promise.all(
+                files.map(async (file) => {
+                  if (file.isDirectory()) {
+                    const folderPath = Path.join(newPath, file.name);
+                    await mkdirAsync(folderPath);
+                    return await copyDirRecursive(
+                      Path.join(currentPath, file.name),
+                      folderPath
+                    );
+                  } else
+                    copyFSO(
+                      Path.join(currentPath, file.name),
+                      Path.join(newPath, file.name),
+                      'file'
+                    );
+                })
+              )
+            );
+          } else resolve(await mkdirAsync(newPath));
+        }
+      });
     });
 
   const mkdir = (path, name, i = 1) =>
@@ -245,7 +278,7 @@ export const FileSystemProvider = ({ children }) => {
     });
 
   const deleteFSO = async (path, name, type, recusive = true) => {
-    if (type === 'directory') {
+    if (type.toLowerCase() === 'directory') {
       return recusive
         ? await rmdirRecursive(Path.join(path, name))
         : await rmdir(Path.join(path, name));
