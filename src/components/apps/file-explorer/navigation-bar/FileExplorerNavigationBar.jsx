@@ -1,20 +1,23 @@
 import './FileExplorerNavigationBar.css';
 import { IoArrowBack, IoArrowForward, IoArrowUp, IoReload } from 'react-icons/io5';
 import { VscSearch } from 'react-icons/vsc';
-import { useState, memo, useEffect, useContext } from 'react';
+import { useState, memo, useEffect, useContext, useRef } from 'react';
 import { FcFolder } from 'react-icons/fc';
 import { VscClose } from 'react-icons/vsc';
 import { path as Path } from 'filer';
 import remToPx from '../../../../utils/helpers/remToPx';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import usePathHistory from '../../../../hooks/usePathHistory';
+import { ERROR_PATH_NOT_FOUND } from '../../../system/dialogs/message/errorCodes';
 
 const FileExplorerNavigationBar = ({
+  pid,
   path,
   setPath,
   changePath,
   setSearchResults,
   setExpandBranches,
+  startChildProcess,
   mode,
 }) => {
   const [searchBoxWidth, setSearchBoxWidth] = useState('5rem');
@@ -23,6 +26,7 @@ const FileExplorerNavigationBar = ({
   const [search, setSearch] = useState('');
   const { exists, findFSO } = useContext(FileSystemContext);
   const [previous, goBack, current, goForth, next, watchPath] = usePathHistory(path);
+  const positionRef = useRef({});
 
   const handleAddressChange = (e) => {
     setAddress(e.target.value);
@@ -37,7 +41,15 @@ const FileExplorerNavigationBar = ({
           changePath(address);
         })
         .catch((e) => {
-          alert('Windows cant find "' + address + '". Check the spelling and try again.');
+          startChildProcess('File Explorer', pid, 'Message Dialog', {
+            errCode: ERROR_PATH_NOT_FOUND,
+            title: 'File Explorer',
+            warning:
+              'Windows cant find "' + address + '". Check the spelling and try again.',
+            parentProcess: 'File Explorer',
+            ppid: pid,
+            isError: true,
+          });
           setAddress(path);
         });
     }
@@ -61,16 +73,16 @@ const FileExplorerNavigationBar = ({
   const handleResizeStart = (e) => {
     e.stopPropagation();
     e.dataTransfer.setDragImage(new Image(), 0, 0);
+    const { clientX: x } = e;
+    positionRef.current = { x: e.target.parentElement.clientWidth + x };
   };
 
   const handleResize = (e) => {
     e.stopPropagation();
-    const { offsetX } = e.nativeEvent;
-    if (offsetX > -100) {
-      const newWidth = remToPx(searchBoxWidth) - offsetX;
-      setSearchBoxWidth(newWidth > minWidth ? newWidth : minWidth);
-      console.log(offsetX, newWidth, minWidth);
-    }
+    const { x } = positionRef.current;
+    const { clientX } = e;
+    const newWidth = x - clientX;
+    setSearchBoxWidth(newWidth <= minWidth ? minWidth : newWidth);
   };
 
   const goUp = () => {
@@ -88,6 +100,7 @@ const FileExplorerNavigationBar = ({
   useEffect(() => {
     watchPath(path);
     mode === 'v' && setSearchResults([]);
+    mode === 'v' && setSearch('');
   }, [path]);
 
   useEffect(() => {
@@ -98,12 +111,15 @@ const FileExplorerNavigationBar = ({
     <div className='flex-center fx-navigation-bar'>
       <div className='flex-center buttons-navigation'>
         <div
-          onClick={previous.length && goBack}
+          onClick={previous.length ? goBack : undefined}
           className={!previous.length && 'disabled'}
         >
           <IoArrowBack />
         </div>
-        <div onClick={next.length && goForth} className={!next.length && 'disabled'}>
+        <div
+          onClick={next.length ? goForth : undefined}
+          className={!next.length && 'disabled'}
+        >
           <IoArrowForward />
         </div>
         <div onClick={goUp}>

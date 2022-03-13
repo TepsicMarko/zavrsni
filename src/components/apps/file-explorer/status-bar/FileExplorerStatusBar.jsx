@@ -5,7 +5,7 @@ import { path as Path } from 'filer';
 import {
   ERROR_ALREADY_EXISTS,
   ERROR_FILE_NOT_FOUND,
-} from '../../../system/dialogs/warning/errorCodes';
+} from '../../../system/dialogs/message/errorCodes';
 
 const FileExplorerStatusBar = ({
   path,
@@ -34,7 +34,7 @@ const FileExplorerStatusBar = ({
   };
 
   const showWarning = (errCode, title, warning) => {
-    startChildProcess('File Explorer', pid, 'Warning Dialog', {
+    startChildProcess('File Explorer', pid, 'Message Dialog', {
       errCode,
       title,
       warning,

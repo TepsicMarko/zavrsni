@@ -66,11 +66,13 @@ const FileExplorer = ({
           </>
         )}
         <FileExplorerNavigationBar
+          pid={pid}
           path={path}
           setPath={changePath}
           changePath={changePath}
           setSearchResults={setSearchResults}
           setExpandBranches={setExpandBranches}
+          startChildProcess={startChildProcess}
           mode={mode}
         />
         <div

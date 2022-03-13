@@ -235,7 +235,8 @@ const Window = ({
         pid
       );
 
-    return () => removeThumbnailPreview(process, pid);
+    return () =>
+      !processes[process][pid].isChildProcess && removeThumbnailPreview(process, pid);
   }, [process, pid, titleBar.title]);
 
   return (

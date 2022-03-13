@@ -16,7 +16,7 @@ import cmd from '../../assets/cmd.png';
 import UnsavedChanges from '../../components/system/dialogs/unsaved-changes/UnsavedChanges';
 import FileTransfer from '../../components/system/dialogs/file-transfer/FileTransfer';
 import fileTransferProgress from '../../assets/fileTransferProgress.svg';
-import Warning from '../../components/system/dialogs/warning/Warning';
+import Message from '../../components/system/dialogs/message/Message';
 
 const appConfigurations = {
   'File Explorer': {
@@ -76,8 +76,8 @@ const dialogConfigurations = {
   'Unsaved Changes Dialog': {
     source: <UnsavedChanges />,
   },
-  'Warning Dialog': {
-    source: <Warning />,
+  'Message Dialog': {
+    source: <Message />,
   },
   'File Transfer Dialog': {
     source: (
