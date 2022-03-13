@@ -62,6 +62,7 @@ const ContextMenuItem = ({
     <div
       className='context-menu-item'
       onClick={children ? (e) => onClick(name, e) : handleClick}
+      onMouseUp={(e) => e.stopPropagation()}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeve}
       onMouseOver={onMouseOver ? () => onMouseOver(name) : undefined}

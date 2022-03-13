@@ -215,7 +215,8 @@ const DesktopIcon = ({
     if (
       dataTransfer.origin === 'Desktop' &&
       type === 'directory' &&
-      !selectedElements[name]
+      !selectedElements[name] &&
+      !dataTransfer.dragObjects.includes(name)
     ) {
       e.stopPropagation();
 
