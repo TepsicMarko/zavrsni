@@ -3,7 +3,7 @@ import { FcFolder } from 'react-icons/fc';
 import { AiFillFileText } from 'react-icons/ai';
 import { GoFileSymlinkFile } from 'react-icons/go';
 import { BsFileEarmarkFill } from 'react-icons/bs';
-import { useContext, useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { RightClickMenuContext } from '../../../../contexts/RightClickMenuContext';
 import useInput from '../../../../hooks/useInput';
@@ -14,6 +14,7 @@ import getFileType from '../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../utils/helpers/isInSelection';
 import chrome from '../../../../assets/chrome.svg';
 import pdf from '../../../../assets/pdf.jpg';
+import useKeyboardShortcut from '../../../../hooks/useKeyboardShortcut';
 
 const DesktopIcon = ({
   name,
@@ -126,7 +127,7 @@ const DesktopIcon = ({
     );
   };
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     if (Object.keys(selectedElements).length)
       for (let { path, name, type } of Object.values(selectedElements)) {
         await deleteFSO(path, name, type.toLowerCase());
@@ -136,7 +137,7 @@ const DesktopIcon = ({
       await deleteFSO(path, name, type.toLowerCase());
       deleteFromGrid(name);
     }
-  };
+  }, [selectedElements, deleteFSO, deleteFromGrid]);
   const handleOpen = () => {
     openWithDefaultApp(type, path, name, startProcess);
   };
@@ -170,20 +171,23 @@ const DesktopIcon = ({
     isSelected && !isInputTexSelected && selectDivText(inputRef.current);
   };
 
-  const handleCopy = () =>
-    copyFiles(
-      Object.keys(selectedElements).length
-        ? Object.values(selectedElements)
-        : [{ path, name, type }]
-    );
-  const handleCut = () => {
+  const handleCopy = useCallback(
+    () =>
+      copyFiles(
+        Object.keys(selectedElements).length
+          ? Object.values(selectedElements)
+          : [{ path, name, type }]
+      ),
+    [selectedElements, copyFiles]
+  );
+  const handleCut = useCallback(() => {
     cutFiles(
       Object.keys(selectedElements).length
         ? Object.values(selectedElements)
         : [{ path, name, type }]
     );
     setIsCut(true);
-  };
+  }, [selectedElements, cutFiles]);
 
   const handleRightClick = (e) => {
     e.stopPropagation();
@@ -242,7 +246,7 @@ const DesktopIcon = ({
       const icon = iconRef.current;
 
       if (isInSelection(icon, selection)) {
-        setIsSelected(true);
+        !isSelected && setIsSelected(true);
         !selectedElements[name] &&
           setSelectedElements((currState) => ({
             ...currState,
@@ -286,6 +290,19 @@ const DesktopIcon = ({
   }, [cut]);
 
   useEffect(() => (iconRef.current.firstChild.style.opacity = isCut ? 0.5 : 1), [isCut]);
+
+  const updateCutHandler = useKeyboardShortcut(['ctrl', 'x'], handleCut);
+  const updateCopyHandler = useKeyboardShortcut(['ctrl', 'c'], handleCopy);
+  const updateDeleteHandler = useKeyboardShortcut(
+    ['delete'],
+    isSelected ? handleDelete : undefined
+  );
+
+  useEffect(() => {
+    updateCutHandler(isSelected ? handleCut : undefined);
+    updateCopyHandler(isSelected ? handleCopy : undefined);
+    updateDeleteHandler(isSelected ? handleDelete : undefined);
+  }, [handleCut, handleCopy, handleDelete, isSelected]);
 
   return (
     <div

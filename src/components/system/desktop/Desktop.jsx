@@ -1,5 +1,5 @@
 import './Desktop.css';
-import { useContext, useState, cloneElement } from 'react';
+import { useContext, cloneElement, useCallback, useEffect } from 'react';
 import { RightClickMenuContext } from '../../../contexts/RightClickMenuContext';
 import { FileSystemContext } from '../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
@@ -10,6 +10,7 @@ import useWatchFolder from '../../../hooks/useWatchFolder';
 import { path as Path } from 'filer';
 import useSelectionRectangle from '../../../hooks/useSelectionRectangle';
 import ContextMenu from '../context-menu/ContextMenu';
+import useKeyboardShortcut from '../../../hooks/useKeyboardShortcut';
 
 const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
   const origin = '/C/users/admin/Desktop';
@@ -49,15 +50,18 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
     maxColumns: Math.floor(document.documentElement.clientWidth / 68),
   });
 
-  const handlePaste = async (e) => {
-    const pastedFiles = await pasteFiles(origin, deleteFromGrid);
+  const handlePaste = useCallback(
+    async (e) => {
+      const pastedFiles = await pasteFiles(origin, deleteFromGrid);
 
-    pastedFiles.length &&
-      addToGrid(
-        pastedFiles.map(({ name }) => name),
-        calculateGridPosition({ x: e.clientX, y: e.clientY })
-      );
-  };
+      pastedFiles.length &&
+        addToGrid(
+          pastedFiles.map(({ name }) => name),
+          calculateGridPosition({ x: e?.clientX || 1, y: e?.clientY || 1 })
+        );
+    },
+    [grid, pasteFiles]
+  );
 
   const handleRightClick = (e) => {
     const { clientX, clientY } = e;
@@ -161,6 +165,15 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
         setSelectedElements={setSelectedElements}
       />
     ));
+
+  const updatePasteHandler = useKeyboardShortcut(
+    ['ctrl', 'v'],
+    !isClipboardEmpty ? handlePaste : undefined
+  );
+
+  useEffect(() => {
+    updatePasteHandler(!isClipboardEmpty ? handlePaste : undefined);
+  }, [handlePaste]);
 
   return (
     <div

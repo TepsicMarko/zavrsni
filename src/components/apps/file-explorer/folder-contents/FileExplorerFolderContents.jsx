@@ -4,13 +4,13 @@ import FsoListItem from './fso-list-item/FsoListItem';
 import { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import useWatchFolder from '../../../../hooks/useWatchFolder';
 import remToPx from '../../../../utils/helpers/remToPx';
-import moment from 'moment';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../../contexts/ProcessesContext';
 import { RightClickMenuContext } from '../../../../contexts/RightClickMenuContext';
 import FolderContentsContextMenu from '../../../system/component-specific-context-menus/FolderContentsContextMenu';
 import { path as Path } from 'filer';
 import useSelectionRectangle from '../../../../hooks/useSelectionRectangle';
+import useKeyboardShortcut from '../../../../hooks/useKeyboardShortcut';
 
 const FileExplorerFolderContents = ({
   changePath,
@@ -25,7 +25,7 @@ const FileExplorerFolderContents = ({
   mode,
   setSelectedFile,
 }) => {
-  const { watch, getFolder, renameFSO, deleteFSO, createFSO, moveFSO, pasteFiles } =
+  const { watch, getFolder, createFSO, moveFSO, pasteFiles, isClipboardEmpty } =
     useContext(FileSystemContext);
   const { startProcess } = useContext(ProcessesContext);
   const { renderOptions } = useContext(RightClickMenuContext);
@@ -62,7 +62,7 @@ const FileExplorerFolderContents = ({
     [columnHeadingsWidth]
   );
 
-  const handlePaste = () => pasteFiles(path);
+  const handlePaste = useCallback(() => pasteFiles(path), [pasteFiles, path]);
 
   const handleRightClick = (e) =>
     renderOptions(
@@ -72,6 +72,7 @@ const FileExplorerFolderContents = ({
         createFSO={createFSO}
         addToGrid={addToGrid}
         handlePaste={handlePaste}
+        isClipboardEmpty={isClipboardEmpty}
       />
     );
 
@@ -129,6 +130,15 @@ const FileExplorerFolderContents = ({
   useEffect(() => {
     setWatcherPath(path);
   }, [path]);
+
+  const updatePasteHandler = useKeyboardShortcut(
+    ['ctrl', 'v'],
+    !isClipboardEmpty ? handlePaste : undefined
+  );
+
+  useEffect(() => {
+    updatePasteHandler(!isClipboardEmpty ? handlePaste : undefined);
+  }, [handlePaste]);
 
   return (
     <div

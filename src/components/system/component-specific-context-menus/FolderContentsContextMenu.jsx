@@ -7,12 +7,18 @@ const FolderContentsContextMenu = ({
   closeMenu,
   addToGrid,
   handlePaste,
+  isClipboardEmpty,
 }) => {
   const [openSubmenu, setOpenSubmenu] = useState('');
   const handleMouseOver = (name) => setOpenSubmenu(name);
   return (
     <>
-      <ContextMenuItem name='Paste' onClick={handlePaste} closeMenu={closeMenu} />
+      <ContextMenuItem
+        name='Paste'
+        onClick={handlePaste}
+        disabled={isClipboardEmpty}
+        closeMenu={closeMenu}
+      />
       <ContextMenuItem
         name='View'
         openSubmenu={openSubmenu === 'View'}

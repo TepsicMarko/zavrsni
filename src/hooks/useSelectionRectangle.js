@@ -25,11 +25,15 @@ const useSelectionRectangle = () => {
   const handleSelection = (e) => {
     e.stopPropagation();
     const { top, left } = e.target.getBoundingClientRect();
+    const newWidth = position.x - e.clientX + left;
+    const newHeight = position.y - e.clientY + top;
 
-    setDimensions({
-      width: position.x - e.clientX + left,
-      height: position.y - e.clientY + top,
-    });
+    if (newWidth !== dimensions.width || newHeight !== dimensions.height) {
+      setDimensions({
+        width: newWidth,
+        height: newHeight,
+      });
+    }
   };
 
   const calcRectStyle = () => {

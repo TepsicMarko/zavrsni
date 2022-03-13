@@ -51,6 +51,7 @@ export const FileSystemProvider = ({ children }) => {
         const currentPath = Path.join(path, name);
         const newFilePath = Path.join(newPath, name);
 
+        console.log(name);
         await copyFSO(currentPath, newFilePath, type);
       }
 
@@ -79,7 +80,6 @@ export const FileSystemProvider = ({ children }) => {
           }
         });
       } else {
-        await mkdirAsync(newPath);
         resolveParent(await copyDirRecursive(currentPath, newPath));
       }
     });
@@ -90,6 +90,8 @@ export const FileSystemProvider = ({ children }) => {
         if (err) reject(err);
         else {
           if (files.length) {
+            await mkdirAsync(newPath);
+
             resolve(
               await Promise.all(
                 files.map(async (file) => {

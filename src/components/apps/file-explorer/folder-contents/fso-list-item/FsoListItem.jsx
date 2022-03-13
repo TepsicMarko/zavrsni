@@ -1,5 +1,13 @@
 import './FsoListItem.css';
-import { memo, useRef, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import {
+  memo,
+  useRef,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useCallback,
+} from 'react';
 import getFileTypeIcon from '../../../../../utils/helpers/getFileTypeIcon';
 import FsoListItemContextMenu from '../../../../system/component-specific-context-menus/FsoListItemContextMenu';
 import selectInputContent from '../../../../../utils/helpers/selectInputContent';
@@ -12,6 +20,8 @@ import openWithDefaultApp from '../../../../../utils/helpers/openWithDefaultApp'
 import getFileType from '../../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../../utils/helpers/isInSelection';
 import useClickOutside from '../../../../../hooks/useClickOutside';
+import useKeyboardShortcut from '../../../../../hooks/useKeyboardShortcut';
+
 import chrome from '../../../../../assets/chrome.svg';
 import pdf from '../../../../../assets/pdf.jpg';
 
@@ -64,26 +74,32 @@ const FsoListItem = ({
       renameFSO(path, { old: name, new: inputValue });
   };
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (Object.keys(selectedElements).length)
       Object.values(selectedElements).forEach(({ path, name, type }) => {
         deleteFSO(path, name, type.toLowerCase());
       });
     else deleteFSO(path, name, type.toLowerCase());
-  };
+  }, [deleteFSO, selectedElements]);
 
-  const handleCopy = () =>
-    copyFiles(
-      Object.keys(selectedElements).length
-        ? Object.values(selectedElements)
-        : [{ path, name, type }]
-    );
-  const handleCut = () =>
-    cutFiles(
-      Object.keys(selectedElements).length
-        ? Object.values(selectedElements)
-        : [{ path, name, type }]
-    );
+  const handleCopy = useCallback(
+    () =>
+      copyFiles(
+        Object.keys(selectedElements).length
+          ? Object.values(selectedElements)
+          : [{ path, name, type }]
+      ),
+    [selectedElements, copyFiles]
+  );
+  const handleCut = useCallback(
+    () =>
+      cutFiles(
+        Object.keys(selectedElements).length
+          ? Object.values(selectedElements)
+          : [{ path, name, type }]
+      ),
+    [selectedElements, cutFiles]
+  );
 
   const handleRightClick = (e) =>
     renderOptions(
@@ -211,6 +227,19 @@ const FsoListItem = ({
       else !isCut && setIsCut(true);
     else isCut && setIsCut(false);
   }, [cut]);
+
+  const updateCutHandler = useKeyboardShortcut(['ctrl', 'x'], handleCut);
+  const updateCopyHandler = useKeyboardShortcut(['ctrl', 'c'], handleCopy);
+  const updateDeleteHandler = useKeyboardShortcut(
+    ['delete'],
+    isSelected ? handleDelete : undefined
+  );
+
+  useEffect(() => {
+    updateCutHandler(isSelected ? handleCut : undefined);
+    updateCopyHandler(isSelected ? handleCopy : undefined);
+    updateDeleteHandler(isSelected ? handleDelete : undefined);
+  }, [handleCut, handleCopy, handleDelete, isSelected]);
 
   return (
     <div
