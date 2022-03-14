@@ -16,6 +16,7 @@ const FolderContentsContextMenu = ({
       <ContextMenuItem
         name='Paste'
         onClick={handlePaste}
+        onMouseOver={handleMouseOver}
         disabled={isClipboardEmpty}
         closeMenu={closeMenu}
       />

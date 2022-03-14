@@ -14,8 +14,7 @@ const NavigationPaneBranchContextMenu = ({
   addToGrid,
 }) => {
   const [openSubmenu, setOpenSubmenu] = useState('');
-  const handleClick = (name) => setOpenSubmenu(name);
-
+  const handleMouseOver = (name) => setOpenSubmenu(name);
   const createNewFolder = async () => {
     const folderName = await createFSO(createPath, 'New Folder', 'directory');
     if (createPath === '/C/users/admin/Desktop') {
@@ -33,13 +32,26 @@ const NavigationPaneBranchContextMenu = ({
         name={isOpen ? 'Collapse' : 'Expand'}
         onClick={toggleOpen}
         closeMenu={closeMenu}
+        onMouseOver={handleMouseOver}
       />
-      <ContextMenuItem name='Delete' onClick={deleteFolder} closeMenu={closeMenu} />
-      <ContextMenuItem name='Rename' onClick={focusInput} closeMenu={closeMenu} />
+      <ContextMenuItem devider />
+      <ContextMenuItem
+        name='Delete'
+        onClick={deleteFolder}
+        onMouseOver={handleMouseOver}
+        closeMenu={closeMenu}
+      />
+      <ContextMenuItem
+        name='Rename'
+        onClick={focusInput}
+        onMouseOver={handleMouseOver}
+        closeMenu={closeMenu}
+      />
+      <ContextMenuItem devider />
       <ContextMenuItem
         name='New'
         openSubmenu={openSubmenu === 'New'}
-        onClick={handleClick}
+        onMouseOver={handleMouseOver}
       >
         <ContextMenuItem name='Folder' onClick={createNewFolder} closeMenu={closeMenu} />
       </ContextMenuItem>

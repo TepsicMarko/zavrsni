@@ -33,3 +33,10 @@
 .cm-checkbox-checked {
   background-color: #56b0fa;
 }
+
+.context-menu-devider {
+  box-sizing: border-box;
+  height: 1px;
+  background-color: gray;
+  margin: 0.15rem 0.3rem;
+}

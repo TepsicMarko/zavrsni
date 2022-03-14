@@ -19,6 +19,7 @@ const DesktopContextMenu = ({
       <ContextMenuItem
         name='Paste'
         onClick={handlePaste}
+        onMouseOver={handleMouseOver}
         closeMenu={closeMenu}
         disabled={isClipboardEmpty}
       />

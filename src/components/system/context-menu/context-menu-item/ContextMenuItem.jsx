@@ -10,7 +10,7 @@ const ContextMenuItem = ({
   onClick = () => undefined,
   onMouseOver,
   children,
-  divider,
+  devider,
   radio,
   active,
   closeMenu,
@@ -58,7 +58,9 @@ const ContextMenuItem = ({
     }
   }, [openSubmenu]);
 
-  return (
+  return devider ? (
+    <div className='context-menu-devider'></div>
+  ) : (
     <div
       className='context-menu-item'
       onClick={children ? (e) => onClick(name, e) : handleClick}

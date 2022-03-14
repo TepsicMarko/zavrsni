@@ -31,8 +31,10 @@ const FsoListItemContextMenu = ({
           closeMenu={closeMenu}
         />
       )}
+      <ContextMenuItem devider />
       <ContextMenuItem name='Cut' onClick={handleCut} closeMenu={closeMenu} />
       <ContextMenuItem name='Copy' onClick={handleCopy} closeMenu={closeMenu} />
+      <ContextMenuItem devider />
       <ContextMenuItem name='Delete' onClick={handleDelete} closeMenu={closeMenu} />
       <ContextMenuItem name='Rename' onClick={focusInput} closeMenu={closeMenu} />
     </>
