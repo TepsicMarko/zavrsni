@@ -96,7 +96,7 @@ const DesktopIcon = ({
   };
 
   const handleClick = (e) => {
-    e.stopPropagation();
+    // e.stopPropagation();
     !isSelected && setIsSelected(true);
   };
 

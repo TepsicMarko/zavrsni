@@ -31,7 +31,7 @@ const FileExplorer = ({
   const [itemCount, setItemCount] = useState('');
   const [expandBranches, setExpandBranches] = useState(false);
   const [selectedFile, setSelectedFile] = useState('');
-  const { startChildProcess, endProcess } = useContext(ProcessesContext);
+  const { startChildProcess, endProcess, processes } = useContext(ProcessesContext);
 
   const changeTab = (e) => setActiveTab(e.target.textContent);
 
@@ -104,6 +104,7 @@ const FileExplorer = ({
             addToGrid={addToGrid}
             mode={mode}
             setSelectedFile={setSelectedFile}
+            isFocused={processes['File Explorer'][pid].isFocused}
           />
         </div>
       </WindowContent>

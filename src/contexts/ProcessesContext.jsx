@@ -28,7 +28,6 @@ export const ProcessesProvider = ({ children }) => {
       .map((processFocusLevel, i) => ({
         ...processFocusLevel,
         focusLevel: (i + 1) * 10,
-        isFocused: false,
       }));
   };
 
@@ -212,6 +211,17 @@ export const ProcessesProvider = ({ children }) => {
     }
   };
 
+  // - note to self: this coused app to chrash two times in a row but then it stopped for some reason
+  const unfocusProcess = (name, pid) =>
+    setProcesses((currProcesses) => {
+      const newProcessesState = deepCloneProcesses(currProcesses);
+
+      if (newProcessesState[name][pid].isFocused) {
+        newProcessesState[name][pid].isFocused = false;
+        return newProcessesState;
+      } else return newProcessesState;
+    });
+
   return (
     <ProcessesContext.Provider
       value={{
@@ -221,6 +231,7 @@ export const ProcessesProvider = ({ children }) => {
         endProcess,
         minimizeToTaskbar,
         focusProcess,
+        unfocusProcess,
       }}
     >
       {children}

@@ -5,7 +5,10 @@ const WindowContent = ({ children, backgroundColor, flex, flexDirection, flexWra
   return (
     <div
       draggable
-      onDragStart={(e) => e.preventDefault()}
+      onDragStart={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       style={{
         backgroundColor,
         flexDirection,

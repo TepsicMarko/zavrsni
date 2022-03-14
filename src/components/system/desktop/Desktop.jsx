@@ -60,7 +60,7 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
           calculateGridPosition({ x: e?.clientX || 1, y: e?.clientY || 1 })
         );
     },
-    [grid, pasteFiles]
+    [grid, pasteFiles, processes]
   );
 
   const handleRightClick = (e) => {
@@ -172,8 +172,14 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
   );
 
   useEffect(() => {
-    updatePasteHandler(!isClipboardEmpty ? handlePaste : undefined);
-  }, [handlePaste]);
+    const isFileExplorerFocused = Object.values(processes['File Explorer'] || {}).some(
+      (processInstance) => processInstance.isFocused === true
+    );
+
+    updatePasteHandler(
+      !isClipboardEmpty && !isFileExplorerFocused ? handlePaste : undefined
+    );
+  }, [handlePaste, processes]);
 
   return (
     <div

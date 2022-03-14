@@ -24,6 +24,7 @@ const FileExplorerFolderContents = ({
   addToGrid,
   mode,
   setSelectedFile,
+  isFocused,
 }) => {
   const { watch, getFolder, createFSO, moveFSO, pasteFiles, isClipboardEmpty } =
     useContext(FileSystemContext);
@@ -137,8 +138,8 @@ const FileExplorerFolderContents = ({
   );
 
   useEffect(() => {
-    updatePasteHandler(!isClipboardEmpty ? handlePaste : undefined);
-  }, [handlePaste]);
+    updatePasteHandler(!isClipboardEmpty && isFocused ? handlePaste : undefined);
+  }, [handlePaste, isFocused]);
 
   return (
     <div

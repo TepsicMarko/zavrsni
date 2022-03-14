@@ -11,6 +11,7 @@ import remToPx from '../../../utils/helpers/remToPx';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
 import { ThumbnailPreviewsContext } from '../../../contexts/ThumbnailPreviewsContext';
 import TitleBar from './title-bar/TitleBar';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 const Window = ({
   children,
@@ -42,13 +43,14 @@ const Window = ({
     resizable ? document.documentElement.clientHeight * 0.7 : minHeight
   );
 
-  const { endProcess, minimizeToTaskbar, processes, focusProcess } =
+  const { endProcess, minimizeToTaskbar, processes, focusProcess, unfocusProcess } =
     useContext(ProcessesContext);
   const { addThumbnailPreview, removeThumbnailPreview } = useContext(
     ThumbnailPreviewsContext
   );
   const appDataRef = useRef({ width, height, position });
   const previousDimensionsAndPositionRef = useRef({});
+  const windowRef = useClickOutside('click', () => unfocusProcess(process, pid));
 
   const updateWindowPosition = (e) => {
     e.stopPropagation();
@@ -241,6 +243,7 @@ const Window = ({
 
   return (
     <div
+      ref={windowRef}
       className='window'
       id={pid}
       style={{
