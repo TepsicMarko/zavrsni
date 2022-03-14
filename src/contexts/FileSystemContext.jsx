@@ -20,18 +20,22 @@ export const FileSystemProvider = ({ children }) => {
     if (cut.length) {
       const pastedFiles = [...cut];
       const currentPath = Path.join(cut[0].path, cut[0].name);
+      const isCopiedIntoItSelf =
+        Path.join(currentPath, cut[0].name) === Path.join(newPath, cut[0].name);
 
-      if (currentPath === Path.join(newPath, cut[0].name)) {
-        setCut([]);
-        return [];
-      } else deleFromGrid && pastedFiles.forEach((file) => deleFromGrid(file.name));
+      if (!isCopiedIntoItSelf) {
+        if (currentPath === Path.join(newPath, cut[0].name)) {
+          setCut([]);
+          return [];
+        } else deleFromGrid && pastedFiles.forEach((file) => deleFromGrid(file.name));
 
-      for (let { path, name, type } of cut) {
-        const currentPath = Path.join(path, name);
-        const newFilePath = Path.join(newPath, name);
+        for (let { path, name, type } of cut) {
+          const currentPath = Path.join(path, name);
+          const newFilePath = Path.join(newPath, name);
 
-        await copyFSO(currentPath, newFilePath, type);
-        await deleteFSO(path, name, type);
+          await copyFSO(currentPath, newFilePath, type);
+          await deleteFSO(path, name, type);
+        }
       }
 
       setCut([]);
@@ -41,18 +45,22 @@ export const FileSystemProvider = ({ children }) => {
     if (copied.length) {
       const pastedFiles = [...copied];
       const currentPath = Path.join(copied[0].path, copied[0].name);
+      const isCopiedIntoItSelf =
+        Path.join(currentPath, copied[0].name) === Path.join(newPath, copied[0].name);
 
-      if (currentPath === Path.join(newPath, copied[0].name)) {
-        setCopied([]);
-        return [];
-      } else deleFromGrid && pastedFiles.forEach((file) => deleFromGrid(file.name));
+      if (!isCopiedIntoItSelf) {
+        if (currentPath === Path.join(newPath, copied[0].name)) {
+          setCopied([]);
+          return [];
+        } else deleFromGrid && pastedFiles.forEach((file) => deleFromGrid(file.name));
 
-      for (let { path, name, type } of copied) {
-        const currentPath = Path.join(path, name);
-        const newFilePath = Path.join(newPath, name);
+        for (let { path, name, type } of copied) {
+          const currentPath = Path.join(path, name);
+          const newFilePath = Path.join(newPath, name);
 
-        console.log(name);
-        await copyFSO(currentPath, newFilePath, type);
+          console.log(name);
+          await copyFSO(currentPath, newFilePath, type);
+        }
       }
 
       setCopied([]);
