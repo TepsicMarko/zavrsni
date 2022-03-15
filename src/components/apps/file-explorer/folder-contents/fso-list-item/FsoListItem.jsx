@@ -21,13 +21,13 @@ import getFileType from '../../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../../utils/helpers/isInSelection';
 import useClickOutside from '../../../../../hooks/useClickOutside';
 import useKeyboardShortcut from '../../../../../hooks/useKeyboardShortcut';
+import moment from 'moment';
 
 import chrome from '../../../../../assets/chrome.svg';
 import pdf from '../../../../../assets/pdf.jpg';
 
 const FsoListItem = ({
-  fso: { name, dateModified, type, size, location },
-  columnHeadingsWidth: { Name, Location, ['Date Modified']: DateModified, Size, Type },
+  fso: { name, mtime, type, size, location },
   path,
   changePath,
   setExpandBranches,
@@ -242,7 +242,7 @@ const FsoListItem = ({
   }, [handleCut, handleCopy, handleDelete, isSelected]);
 
   return (
-    <div
+    <tr
       ref={fsoRef}
       draggable
       onDragEnter={preventDefault}
@@ -258,7 +258,7 @@ const FsoListItem = ({
       onClick={handleClick}
       onDragStart={handleDragStart}
     >
-      <div style={{ minWidth: Name, maxWidth: Name }}>
+      <td>
         <span className='fso-list-item-icon' style={{ opacity: isCut ? 0.5 : 1 }}>
           {renderIcon()}
         </span>
@@ -275,14 +275,14 @@ const FsoListItem = ({
         >
           {name}
         </span>
-      </div>
-      {location && (
-        <div style={{ minWidth: Location, maxWidth: Location }}>{location}</div>
-      )}
-      <div style={{ minWidth: DateModified, maxWidth: DateModified }}>{dateModified}</div>
-      <div style={{ minWidth: Type, minWidth: Type }}>{type.toLowerCase()}</div>
-      <div style={{ minWidth: Size, minWidth: Size }}>{size}</div>
-    </div>
+      </td>
+      {location && <td>{location}</td>}
+      <td className='fso-mtime'>
+        <span>{moment(mtime).format('DD/MM/YYYY hh:mm a')}</span>
+      </td>
+      <td>{type.toLowerCase()}</td>
+      <td>{size}</td>
+    </tr>
   );
 };
 

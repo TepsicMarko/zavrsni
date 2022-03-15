@@ -1,11 +1,9 @@
 .fso-list-item {
   width: 100%;
   height: 1.25rem;
-  display: flex;
-  align-items: center;
 }
 
-.fso-list-item > div {
+.fso-list-item > td {
   line-height: 1.25rem;
   color: white;
   padding: 0 0.5rem;
@@ -13,18 +11,26 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  height: 100%;
+  height: 1.25rem;
   font-size: 0.7rem;
   font-weight: 100;
 }
 
-.fso-list-item > div:first-child {
+.fso-list-item > td:first-child {
   position: relative;
   line-height: normal;
   display: flex;
   align-items: center;
+  white-space: nowrap;
   flex-wrap: wrap;
   overflow: visible;
+}
+
+.fso-mtime {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .fso-list-item-icon {

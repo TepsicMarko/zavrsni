@@ -1,9 +1,8 @@
 import './FileExplorerFolderContents.css';
 import ColumnHeading from './column-heading/ColumnHeading';
 import FsoListItem from './fso-list-item/FsoListItem';
-import { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import { useEffect, useContext, useCallback } from 'react';
 import useWatchFolder from '../../../../hooks/useWatchFolder';
-import remToPx from '../../../../utils/helpers/remToPx';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../../contexts/ProcessesContext';
 import { RightClickMenuContext } from '../../../../contexts/RightClickMenuContext';
@@ -38,13 +37,6 @@ const FileExplorerFolderContents = ({
     setItemCount
   );
 
-  const [columnHeadingsWidth, setColumnHeadingsWidth] = useState({
-    Name: '4.5rem',
-    Location: '4.5rem',
-    'Date Modified': '4.5rem',
-    Type: '4.5rem',
-    Size: '4.5rem',
-  });
   const {
     rectRef,
     calcRectStyle,
@@ -55,13 +47,6 @@ const FileExplorerFolderContents = ({
     setSelectedElements,
     dimensions,
   } = useSelectionRectangle();
-
-  const setColumnHeadingWidth = useCallback(
-    (name, width) => {
-      setColumnHeadingsWidth({ ...columnHeadingsWidth, [name]: width });
-    },
-    [columnHeadingsWidth]
-  );
 
   const handlePaste = useCallback(() => pasteFiles(path), [pasteFiles, path]);
 
@@ -114,15 +99,6 @@ const FileExplorerFolderContents = ({
     }
   };
 
-  const calcWidth = () => {
-    let sum = 0;
-    for (let [key, value] of Object.entries(columnHeadingsWidth)) {
-      if (!searchResults.length && key === 'Location');
-      else typeof value !== 'number' ? (sum += remToPx(value)) : (sum += value);
-    }
-    return sum;
-  };
-
   const handleDragStart = (e) => {
     e.stopPropagation();
     mode === 'v' && enableSelection(e);
@@ -144,59 +120,57 @@ const FileExplorerFolderContents = ({
 
   return (
     <div
+      className='fx-folder-contents-container'
       draggable
       onDragStart={handleDragStart}
       onDrag={handleSelection}
       onDragEnd={disableSelection}
-      className='fx-folder-contents'
       onContextMenu={handleRightClick}
       onDragEnter={preventDefault}
       onDragOver={preventDefault}
       onDrop={handleDrop}
     >
-      <div className='column-headings'>
-        {Object.keys(columnHeadingsWidth).map((columnHeading) => (
-          <ColumnHeading
-            name={columnHeading}
-            width={columnHeadingsWidth[columnHeading]}
-            setColumnHeadingWidth={setColumnHeadingWidth}
-            visible={
-              columnHeading === 'Location'
-                ? searchResults.length > 0 && columnHeading === 'Location'
-                : true
-            }
-          />
-        ))}
-      </div>
-      <div
-        className='fso-list'
-        style={{
-          width: calcWidth(),
-        }}
-        onDragEnter={(e) => e.stopPropagation()}
-      >
-        {[...(searchResults.length ? searchResults : folderContent)].map((fso, i) => {
-          return (
-            <FsoListItem
-              key={fso.node}
-              fso={fso}
-              columnHeadingsWidth={columnHeadingsWidth}
-              path={path}
-              changePath={changePath}
-              setExpandBranches={setExpandBranches}
-              openFile={openFile}
-              endProcess={endProcess}
-              ppid={ppid}
-              rectRef={rectRef}
-              selectedElements={selectedElements}
-              setSelectedElements={setSelectedElements}
-              dimensions={dimensions}
-              setSelectedFile={setSelectedFile}
-              mode={mode}
-            />
-          );
-        })}
-      </div>
+      <table className='fx-folder-contents' cellspacing='0'>
+        <thead>
+          <tr>
+            {[' Name', 'Location', 'Date Modified', 'Type', 'Size'].map(
+              (columnHeading) => (
+                <ColumnHeading
+                  name={columnHeading}
+                  visible={
+                    columnHeading === 'Location'
+                      ? searchResults.length > 0 && columnHeading === 'Location'
+                      : true
+                  }
+                />
+              )
+            )}
+          </tr>
+        </thead>
+        <tbody onDragEnter={(e) => e.stopPropagation()}>
+          <tr style={{ height: '0.5rem' }}></tr>
+          {[...(searchResults.length ? searchResults : folderContent)].map((fso, i) => {
+            return (
+              <FsoListItem
+                key={fso.node}
+                fso={fso}
+                path={path}
+                changePath={changePath}
+                setExpandBranches={setExpandBranches}
+                openFile={openFile}
+                endProcess={endProcess}
+                ppid={ppid}
+                rectRef={rectRef}
+                selectedElements={selectedElements}
+                setSelectedElements={setSelectedElements}
+                dimensions={dimensions}
+                setSelectedFile={setSelectedFile}
+                mode={mode}
+              />
+            );
+          })}
+        </tbody>
+      </table>
       <div ref={rectRef} className='rect-selection' style={{ ...calcRectStyle() }}></div>
     </div>
   );

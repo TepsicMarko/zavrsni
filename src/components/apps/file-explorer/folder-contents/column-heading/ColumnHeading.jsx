@@ -2,8 +2,9 @@ import './ColumnHeading.css';
 import { useState, memo } from 'react';
 import remToPx from '../../../../../utils/helpers/remToPx';
 
-const ColumnHeading = ({ name, width, setColumnHeadingWidth, visible }) => {
-  const [initialWidth, setInitialWidth] = useState(remToPx(width));
+const ColumnHeading = ({ name, visible }) => {
+  const [minWidth] = useState(remToPx('4.5rem'));
+  const [width, setWidth] = useState(remToPx('4.5rem'));
 
   const handleResizeStart = (e) => {
     e.stopPropagation();
@@ -12,16 +13,15 @@ const ColumnHeading = ({ name, width, setColumnHeadingWidth, visible }) => {
 
   const handleResize = (e) => {
     e.stopPropagation();
-    if (typeof width === 'string') width = remToPx(width);
     const { offsetX } = e.nativeEvent;
     const newWidth = width + offsetX;
-    setColumnHeadingWidth(name, newWidth >= initialWidth ? newWidth : initialWidth);
+    setWidth(newWidth >= minWidth ? newWidth : minWidth);
   };
 
   return (
     <>
       {visible && (
-        <div style={{ width }} className='column-heading'>
+        <th style={{ width, minWidth: width }} className='column-heading'>
           {name}
           <div
             draggable
@@ -30,7 +30,7 @@ const ColumnHeading = ({ name, width, setColumnHeadingWidth, visible }) => {
             onDragEnd={handleResize}
             className='column-heading-resize'
           ></div>
-        </div>
+        </th>
       )}
     </>
   );
