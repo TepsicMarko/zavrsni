@@ -29,20 +29,17 @@ const DesktopContextMenu = ({
         onMouseOver={handleMouseOver}
         hoverColor='rgba(255, 255, 255, 0.15)'
       >
-        {[
-          ['Name'],
-          ['Size', 'size'],
-          ['Item Type', 'type'],
-          ['Date Modified', 'mtimeMs'],
-        ].map(([name, alt]) => (
-          <ContextMenuItem
-            name={name}
-            onClick={() => {
-              sortGrid(alt || name);
-            }}
-            closeMenu={closeMenu}
-          />
-        ))}
+        {[['Name'], ['Size'], ['Item Type', 'type'], ['Date Modified', 'mtimeMs']].map(
+          ([name, alt]) => (
+            <ContextMenuItem
+              name={name}
+              onClick={() => {
+                sortGrid(alt || name.toLowerCase());
+              }}
+              closeMenu={closeMenu}
+            />
+          )
+        )}
       </ContextMenuItem>
       <ContextMenuItem
         name='New'

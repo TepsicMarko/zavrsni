@@ -31,7 +31,7 @@ const FileExplorerFolderContents = ({
   const { startProcess } = useContext(ProcessesContext);
   const { renderOptions } = useContext(RightClickMenuContext);
 
-  const [folderContent, setWatcherPath] = useWatchFolder(
+  const [folderContent, setWatcherPath, sortFolderContent] = useWatchFolder(
     path,
     watch,
     getFolder,
@@ -74,6 +74,7 @@ const FileExplorerFolderContents = ({
         addToGrid={addToGrid}
         handlePaste={handlePaste}
         isClipboardEmpty={isClipboardEmpty}
+        sortFolderContent={sortFolderContent}
       />
     );
 

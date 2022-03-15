@@ -8,6 +8,7 @@ const FolderContentsContextMenu = ({
   addToGrid,
   handlePaste,
   isClipboardEmpty,
+  sortFolderContent,
 }) => {
   const [openSubmenu, setOpenSubmenu] = useState('');
   const handleMouseOver = (name) => setOpenSubmenu(name);
@@ -21,13 +22,20 @@ const FolderContentsContextMenu = ({
         closeMenu={closeMenu}
       />
       <ContextMenuItem
-        name='View'
-        openSubmenu={openSubmenu === 'View'}
+        name='Sort'
+        openSubmenu={openSubmenu === 'Sort'}
         onMouseOver={handleMouseOver}
       >
-        {['Large', 'Medium', 'Small'].map((el) => (
-          <ContextMenuItem name={el + ' icons'} radio closeMenu={closeMenu} />
-        ))}
+        {[['Name'], ['Size'], ['Item Type', 'type'], ['Date Modified', 'mtimeMs']].map(
+          ([name, alt]) => (
+            <ContextMenuItem
+              name={name}
+              onClick={() => sortFolderContent(alt || name.toLowerCase())}
+              radio
+              closeMenu={closeMenu}
+            />
+          )
+        )}
       </ContextMenuItem>
       <ContextMenuItem
         name='New'

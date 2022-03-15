@@ -280,34 +280,19 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
     let sortedGrid = { ...grid };
     let columnOffset = 0;
 
-    if (sortBy === 'Name') {
-      let sortedKeys = Object.keys(sortedGrid).sort((a, b) => a.localeCompare(b));
+    const sortedFolderContents = folderContent.sort((a, b) =>
+      typeof a[sortBy] === 'string'
+        ? a[sortBy].localeCompare(b[sortBy])
+        : a[sortBy] - b[sortBy]
+    );
 
-      sortedKeys.forEach((key, index) => {
-        sortedGrid[key] = {
-          column: 1 + columnOffset,
-          row: index + 1 - columnOffset * maxRows,
-        };
-        (index + 1) % maxRows === 0 && (columnOffset += 1);
-      });
-    } else {
-      console.log(sortBy, folderContent, typeof folderContent[0].size);
-      const sortedFolderContents = folderContent.sort((a, b) =>
-        typeof a[sortBy] === 'string'
-          ? a[sortBy].localeCompare(b[sortBy])
-          : a[sortBy] - b[sortBy]
-      );
-
-      console.log(sortedFolderContents);
-
-      sortedFolderContents.forEach(({ name }, index) => {
-        sortedGrid[name] = {
-          column: 1 + columnOffset,
-          row: index + 1 - columnOffset * maxRows,
-        };
-        (index + 1) % maxRows === 0 && (columnOffset += 1);
-      });
-    }
+    sortedFolderContents.forEach(({ name }, index) => {
+      sortedGrid[name] = {
+        column: 1 + columnOffset,
+        row: index + 1 - columnOffset * maxRows,
+      };
+      (index + 1) % maxRows === 0 && (columnOffset += 1);
+    });
 
     setGrid(sortedGrid);
   };

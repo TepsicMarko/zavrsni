@@ -6,6 +6,7 @@ const ColumnHeading = ({ name, width, setColumnHeadingWidth, visible }) => {
   const [initialWidth, setInitialWidth] = useState(remToPx(width));
 
   const handleResizeStart = (e) => {
+    e.stopPropagation();
     e.dataTransfer.setDragImage(new Image(), 0, 0);
   };
 
