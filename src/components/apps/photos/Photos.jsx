@@ -10,6 +10,7 @@ import { AiOutlineExpandAlt } from 'react-icons/ai';
 import Panzoom from '@panzoom/panzoom';
 import useFullScreenToggle from '../../../hooks/useFullScreenToggle';
 import { path as Path } from 'filer';
+import mime from 'mime-types';
 
 const Photos = ({ path, pid }) => {
   const imageContainerRef = useRef(null);
@@ -17,7 +18,7 @@ const Photos = ({ path, pid }) => {
   const [zoom, setZoom] = useState(100);
   const [panzoom, setPanzoom] = useState();
   const [isFullScreen, toggleFullScreen] = useFullScreenToggle();
-  const { readFileContent, deleteFSO } = useContext(FileSystemContext);
+  const { readBlob, deleteFSO } = useContext(FileSystemContext);
   const { endProcess } = useContext(ProcessesContext);
 
   const setImageSource = (source) => {
@@ -74,8 +75,8 @@ const Photos = ({ path, pid }) => {
     observer.observe(imageContainerRef.current.parentElement);
   }, []);
 
-  useEffect(() => {
-    path && readFileContent(path, setImageSource);
+  useEffect(async () => {
+    path && setImageSource(await readBlob(path, mime.lookup(path)));
   }, [path]);
 
   useEffect(() => {

@@ -22,6 +22,7 @@ import isInSelection from '../../../../../utils/helpers/isInSelection';
 import useClickOutside from '../../../../../hooks/useClickOutside';
 import useKeyboardShortcut from '../../../../../hooks/useKeyboardShortcut';
 import moment from 'moment';
+import downloadFile from '../../../../../utils/helpers/downloadFile';
 
 import chrome from '../../../../../assets/chrome.svg';
 import pdf from '../../../../../assets/pdf.jpg';
@@ -43,8 +44,16 @@ const FsoListItem = ({
   const inputRef = useRef(null);
   const { renderOptions } = useContext(RightClickMenuContext);
   const { startProcess } = useContext(ProcessesContext);
-  const { renameFSO, deleteFSO, moveFSO, cutFiles, copyFiles, cut } =
-    useContext(FileSystemContext);
+  const {
+    renameFSO,
+    deleteFSO,
+    moveFSO,
+    cutFiles,
+    copyFiles,
+    cut,
+    readBlob,
+    readFileContent,
+  } = useContext(FileSystemContext);
   const [inputValue, handleInputChange] = useInput(name);
   const [isSelected, setIsSelected] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -101,6 +110,10 @@ const FsoListItem = ({
     [selectedElements, cutFiles]
   );
 
+  const handleDownload = () => {
+    downloadFile(path, name, type.toLowerCase(), readBlob, readFileContent);
+  };
+
   const handleRightClick = (e) =>
     renderOptions(
       e,
@@ -115,6 +128,7 @@ const FsoListItem = ({
         startProcess={startProcess}
         handleCopy={handleCopy}
         handleCut={handleCut}
+        handleDownload={handleDownload}
       />
     );
 

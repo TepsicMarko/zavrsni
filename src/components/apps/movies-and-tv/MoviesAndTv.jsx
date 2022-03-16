@@ -6,6 +6,7 @@ import { FileSystemContext } from '../../../contexts/FileSystemContext';
 import 'rc-slider/assets/index.css';
 import VideoControls from './video-controls/VideoControls';
 import { path as Path } from 'filer';
+import mime from 'mime-types';
 
 const MoviesAndTv = ({ path, pid }) => {
   const videoRef = useRef(null);
@@ -24,7 +25,7 @@ const MoviesAndTv = ({ path, pid }) => {
   const handleClick = () => setVideoContorlsVisibility(!videoContorlsVisibility);
 
   useEffect(async () => {
-    path && setSrc(await readBlob(path, 'video/mp4'));
+    path && setSrc(await readBlob(path, mime.lookup(path)));
   }, []);
 
   useEffect(() => {

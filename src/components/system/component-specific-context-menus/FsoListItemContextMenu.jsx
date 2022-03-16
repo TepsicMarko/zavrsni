@@ -14,6 +14,7 @@ const FsoListItemContextMenu = ({
   startProcess,
   handleCopy,
   handleCut,
+  handleDownload,
 }) => {
   const openFSO = () => {
     if (type === 'DIRECTORY') {
@@ -24,6 +25,7 @@ const FsoListItemContextMenu = ({
   return (
     <>
       <ContextMenuItem name='Open' onClick={openFSO} closeMenu={closeMenu} />
+      <ContextMenuItem name='Download' onClick={handleDownload} closeMenu={closeMenu} />
       {type === 'DIRECTORY' && (
         <ContextMenuItem
           name='Open in new window'

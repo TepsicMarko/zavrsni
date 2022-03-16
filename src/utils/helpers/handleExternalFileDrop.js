@@ -52,76 +52,18 @@ const handleExternalFileDrop = async (
     const entry = entries[0];
 
     if (entry.isFile) {
-      const fileType = getFileType(Path.extname(entry.name));
-
       return await new Promise((resolve, reject) => {
-        if (!fileType) {
-          entry.file((file) => {
-            reader.onprogress = handleProgress;
+        entry.file((file) => {
+          reader.onprogress = handleProgress;
 
-            reader.onload = (e) => {
-              const content = e.target.result;
-              createFSO(
-                dropzone,
-                Path.basename(entry.name, Path.extname(entry.name)),
-                Path.extname(entry.name),
-                content
-              );
-              resolve();
-            };
+          reader.onload = (e) => {
+            const buffer = e.target.result;
+            createBlob(dropzone, entry.name, buffer);
+            resolve();
+          };
 
-            reader.readAsText(file);
-          });
-        }
-
-        if (fileType === 'text')
-          entry.file((file) => {
-            reader.onprogress = handleProgress;
-
-            reader.onload = (e) => {
-              const content = e.target.result;
-              createFSO(
-                dropzone,
-                Path.basename(entry.name, Path.extname(entry.name)),
-                Path.extname(entry.name),
-                content
-              );
-              resolve();
-            };
-
-            reader.readAsText(file);
-          });
-
-        if (fileType === 'image')
-          entry.file((file) => {
-            reader.onprogress = handleProgress;
-
-            reader.onload = (e) => {
-              const content = e.target.result;
-              createFSO(
-                dropzone,
-                Path.basename(entry.name, Path.extname(entry.name)),
-                Path.extname(entry.name),
-                content
-              );
-              resolve();
-            };
-
-            reader.readAsDataURL(file);
-          });
-
-        if (fileType === 'video' || fileType === 'document')
-          entry.file((file) => {
-            reader.onprogress = handleProgress;
-
-            reader.onload = (e) => {
-              const buffer = e.target.result;
-              createBlob(dropzone, entry.name, buffer);
-              resolve();
-            };
-
-            reader.readAsArrayBuffer(file);
-          });
+          reader.readAsArrayBuffer(file);
+        });
       });
     }
 

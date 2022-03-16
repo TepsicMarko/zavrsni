@@ -15,6 +15,8 @@ import isInSelection from '../../../../utils/helpers/isInSelection';
 import chrome from '../../../../assets/chrome.svg';
 import pdf from '../../../../assets/pdf.jpg';
 import useKeyboardShortcut from '../../../../hooks/useKeyboardShortcut';
+import mime from 'mime-types';
+import downloadFile from '../../../../utils/helpers/downloadFile';
 
 const DesktopIcon = ({
   name,
@@ -189,6 +191,10 @@ const DesktopIcon = ({
     setIsCut(true);
   }, [selectedElements, cutFiles]);
 
+  const handleFileDownload = () => {
+    downloadFile(path, name, type, readBlob, readFileContent);
+  };
+
   const handleRightClick = (e) => {
     e.stopPropagation();
     !selectedElements[name] && setSelectedElements({});
@@ -205,6 +211,7 @@ const DesktopIcon = ({
         handleFocus={handleFocus}
         handleCopy={handleCopy}
         handleCut={handleCut}
+        handleFileDownload={handleFileDownload}
       />
     );
   };
@@ -234,9 +241,8 @@ const DesktopIcon = ({
   useEffect(async () => {
     const fileType = await getFileType(Path.extname(name));
     if (type === 'file') {
-      fileType === 'image' && setImgSrc(await readFileContent(Path.join(path, name)));
-      fileType === 'video' &&
-        setImgSrc(await readBlob(Path.join(path, name), 'video/mp4'));
+      (fileType === 'video' || fileType === 'image') &&
+        setImgSrc(await readBlob(Path.join(path, name), mime.lookup(name)));
     }
   }, []);
 

@@ -263,7 +263,7 @@ export const FileSystemProvider = ({ children }) => {
     else return content;
   };
 
-  const readBlob = (path, type, callback) =>
+  const readBlob = (path, type) =>
     new Promise((resolve, reject) => {
       readBinaryFile(path).then((buffer) => {
         const blob = new Blob([buffer], { type });

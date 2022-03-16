@@ -67,6 +67,7 @@ const App = () => {
                 taskbarOrientation={taskbarOrientation}
                 setTaskbarDimensions={setTaskbarDimensions}
               />
+              <a style={{ display: 'none' }} id='file-download' />
             </div>
           </ProcessesProvider>
         </ThumbnailPreviewsProvider>
