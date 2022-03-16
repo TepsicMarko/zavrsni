@@ -133,18 +133,23 @@ const FileExplorerFolderContents = ({
       <table className='fx-folder-contents' cellspacing='0'>
         <thead>
           <tr>
-            {[' Name', 'Location', 'Date Modified', 'Type', 'Size'].map(
-              (columnHeading) => (
-                <ColumnHeading
-                  name={columnHeading}
-                  visible={
-                    columnHeading === 'Location'
-                      ? searchResults.length > 0 && columnHeading === 'Location'
-                      : true
-                  }
-                />
-              )
-            )}
+            {[
+              ['Name'],
+              ['Location'],
+              ['Date Modified', 'mtimeMs'],
+              ['Type'],
+              ['Size'],
+            ].map(([name, alt]) => (
+              <ColumnHeading
+                name={name}
+                visible={
+                  name === 'Location'
+                    ? searchResults.length > 0 && name === 'Location'
+                    : true
+                }
+                sortFolderContent={() => sortFolderContent(alt || name.toLowerCase())}
+              />
+            ))}
           </tr>
         </thead>
         <tbody onDragEnter={(e) => e.stopPropagation()}>

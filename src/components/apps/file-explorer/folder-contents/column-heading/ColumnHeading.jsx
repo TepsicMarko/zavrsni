@@ -2,7 +2,7 @@ import './ColumnHeading.css';
 import { useState, memo } from 'react';
 import remToPx from '../../../../../utils/helpers/remToPx';
 
-const ColumnHeading = ({ name, visible }) => {
+const ColumnHeading = ({ name, visible, sortFolderContent }) => {
   const [minWidth] = useState(remToPx('4.5rem'));
   const [width, setWidth] = useState(remToPx('4.5rem'));
 
@@ -21,7 +21,11 @@ const ColumnHeading = ({ name, visible }) => {
   return (
     <>
       {visible && (
-        <th style={{ width, minWidth: width }} className='column-heading'>
+        <th
+          style={{ width, minWidth: width }}
+          className='column-heading'
+          onClick={sortFolderContent}
+        >
           {name}
           <div
             draggable
