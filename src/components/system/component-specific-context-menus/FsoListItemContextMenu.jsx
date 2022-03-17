@@ -15,6 +15,8 @@ const FsoListItemContextMenu = ({
   handleCopy,
   handleCut,
   handleDownload,
+  isZip,
+  extractFiles,
 }) => {
   const openFSO = () => {
     if (type === 'DIRECTORY') {
@@ -25,6 +27,13 @@ const FsoListItemContextMenu = ({
   return (
     <>
       <ContextMenuItem name='Open' onClick={openFSO} closeMenu={closeMenu} />
+      {isZip && (
+        <ContextMenuItem
+          name='Extract Here'
+          onClick={extractFiles}
+          closeMenu={closeMenu}
+        />
+      )}{' '}
       <ContextMenuItem name='Download' onClick={handleDownload} closeMenu={closeMenu} />
       {type === 'DIRECTORY' && (
         <ContextMenuItem

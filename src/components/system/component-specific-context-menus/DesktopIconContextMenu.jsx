@@ -9,6 +9,8 @@ const DesktopIconContextMenu = ({
   handleCopy,
   handleCut,
   handleFileDownload,
+  isZip,
+  extractFiles,
 }) => {
   const focusInput = () => {
     inputRef.current.focus();
@@ -18,6 +20,13 @@ const DesktopIconContextMenu = ({
   return (
     <>
       <ContextMenuItem name='Open' onClick={handleOpen} closeMenu={closeMenu} />
+      {isZip && (
+        <ContextMenuItem
+          name='Extract Here'
+          onClick={extractFiles}
+          closeMenu={closeMenu}
+        />
+      )}{' '}
       <ContextMenuItem
         name='Download'
         onClick={handleFileDownload}

@@ -171,6 +171,7 @@ const FileExplorerFolderContents = ({
                 dimensions={dimensions}
                 setSelectedFile={setSelectedFile}
                 mode={mode}
+                addToGrid={addToGrid}
               />
             );
           })}

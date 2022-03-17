@@ -163,6 +163,7 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
         rectRef={rectRef}
         selectedElements={selectedElements}
         setSelectedElements={setSelectedElements}
+        addToGrid={addToGrid}
       />
     ));
 

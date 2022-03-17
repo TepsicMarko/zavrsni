@@ -23,9 +23,12 @@ import useClickOutside from '../../../../../hooks/useClickOutside';
 import useKeyboardShortcut from '../../../../../hooks/useKeyboardShortcut';
 import moment from 'moment';
 import downloadFile from '../../../../../utils/helpers/downloadFile';
+import jszip from 'jszip';
+import mime from 'mime';
 
 import chrome from '../../../../../assets/chrome.svg';
 import pdf from '../../../../../assets/pdf.jpg';
+import zip from '../../../../../assets/zip.png';
 
 const FsoListItem = ({
   fso: { name, mtime, type, size, location },
@@ -40,6 +43,7 @@ const FsoListItem = ({
   setSelectedElements,
   mode,
   setSelectedFile,
+  addToGrid,
 }) => {
   const inputRef = useRef(null);
   const { renderOptions } = useContext(RightClickMenuContext);
@@ -54,6 +58,8 @@ const FsoListItem = ({
     readBlob,
     readFileContent,
     getFolder,
+    createFSO,
+    createBlob,
   } = useContext(FileSystemContext);
   const [inputValue, handleInputChange] = useInput(name);
   const [isSelected, setIsSelected] = useState(false);
@@ -127,6 +133,28 @@ const FsoListItem = ({
       downloadFile(path, name, type.toLowerCase(), getFolder, readBlob, readFileContent);
   };
 
+  const extractFiles = async () => {
+    const unzip = new jszip();
+    const zipped = await readBlob(Path.join(path, name), mime.lookup(name), true);
+
+    unzip.loadAsync(zipped).then(async (unzipped) => {
+      let rootDirCreated = false;
+      for (let file of Object.values(unzipped.files)) {
+        if (file.dir) {
+          await createFSO(path, file.name, 'directory');
+          !rootDirCreated && addToGrid([file.name.slice(0, -1)], { row: 1, column: 1 });
+          !rootDirCreated && (rootDirCreated = true);
+        } else {
+          await createBlob(
+            path,
+            file.name,
+            file._data.compressedContent || new ArrayBuffer()
+          );
+        }
+      }
+    });
+  };
+
   const handleRightClick = (e) =>
     renderOptions(
       e,
@@ -142,6 +170,8 @@ const FsoListItem = ({
         handleCopy={handleCopy}
         handleCut={handleCut}
         handleDownload={handleDownload}
+        isZip={mime.lookup(name) === 'application/zip'}
+        extractFiles={extractFiles}
       />
     );
 
@@ -200,6 +230,10 @@ const FsoListItem = ({
 
       if (ext === '.html') return <img src={chrome} width='14px' draggable={false} />;
       else if (ext === '.pdf') return <img src={pdf} width='14px' draggable={false} />;
+      else if (ext === '.zip')
+        return (
+          <img src={zip} width='12px' style={{ paddingRight: '2px' }} draggable={false} />
+        );
       else return getFileTypeIcon(getFileType(ext));
     } else {
       return getFileTypeIcon(type);

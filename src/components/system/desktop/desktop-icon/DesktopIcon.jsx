@@ -14,9 +14,11 @@ import getFileType from '../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../utils/helpers/isInSelection';
 import chrome from '../../../../assets/chrome.svg';
 import pdf from '../../../../assets/pdf.jpg';
+import zip from '../../../../assets/zip.png';
 import useKeyboardShortcut from '../../../../hooks/useKeyboardShortcut';
 import mime from 'mime-types';
 import downloadFile from '../../../../utils/helpers/downloadFile';
+import jszip from 'jszip';
 
 const DesktopIcon = ({
   name,
@@ -29,6 +31,7 @@ const DesktopIcon = ({
   rectRef,
   selectedElements,
   setSelectedElements,
+  addToGrid,
 }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [isInputTexSelected, setIsInputTextSelected] = useState(false);
@@ -39,6 +42,7 @@ const DesktopIcon = ({
   const {
     renameFSO,
     deleteFSO,
+    createFSO,
     readFileContent,
     readBlob,
     moveFSO,
@@ -46,6 +50,7 @@ const DesktopIcon = ({
     copyFiles,
     cut,
     getFolder,
+    createBlob,
   } = useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
@@ -73,27 +78,30 @@ const DesktopIcon = ({
 
   const renderIcon = () => {
     if (type === 'file') {
-      const fileType = getFileType(Path.extname(name));
+      const mimeType = mime.lookup(name);
 
-      if (fileType === 'document') {
-        const ext = Path.extname(name);
-        if (ext === '.html')
-          return <img src={chrome} width='45rem' draggable={false} s />;
-        if (ext === '.pdf') return <img src={pdf} width='45rem' draggable={false} />;
-      }
-
-      if (fileType === 'text') return <AiFillFileText size='2.5rem' color='white' />;
-
-      if (fileType === 'image') {
+      if (mimeType.startsWith('image'))
         return <img src={imgSrc} width='70%' height='100%' draggable={false} />;
-      }
 
-      if (fileType === 'video') {
+      if (mimeType.startsWith('video'))
         return <video src={imgSrc} width='70%' height='100%' draggable={false} />;
-      }
 
-      if (fileType === undefined)
-        return <BsFileEarmarkFill size='2.5rem' color='white' />;
+      switch (mimeType) {
+        case 'application/pdf':
+          return <img src={pdf} width='45rem' draggable={false} />;
+
+        case 'application/zip':
+          return <img src={zip} width='35rem' draggable={false} />;
+
+        case 'text/html':
+          return <img src={chrome} width='45rem' draggable={false} s />;
+
+        case 'text/plain':
+          return <AiFillFileText size='2.5rem' color='white' />;
+
+        default:
+          return <BsFileEarmarkFill size='2.5rem' color='white' />;
+      }
     } else if (type === 'link') return <GoFileSymlinkFile size='2.5rem' color='white' />;
     else return <FcFolder size='2.5rem' />;
   };
@@ -200,6 +208,28 @@ const DesktopIcon = ({
     } else downloadFile(path, name, type, getFolder, readBlob, readFileContent);
   };
 
+  const extractFiles = async () => {
+    const unzip = new jszip();
+    const zipped = await readBlob(Path.join(path, name), mime.lookup(name), true);
+
+    unzip.loadAsync(zipped).then(async (unzipped) => {
+      let rootDirCreated = false;
+      for (let file of Object.values(unzipped.files)) {
+        if (file.dir) {
+          await createFSO(path, file.name, 'directory');
+          !rootDirCreated && addToGrid([file.name.slice(0, -1)], { row: 1, col: 1 });
+          !rootDirCreated && (rootDirCreated = true);
+        } else {
+          await createBlob(
+            path,
+            file.name,
+            file._data.compressedContent || new ArrayBuffer()
+          );
+        }
+      }
+    });
+  };
+
   const handleRightClick = (e) => {
     e.stopPropagation();
     !selectedElements[name] && setSelectedElements({});
@@ -217,6 +247,8 @@ const DesktopIcon = ({
         handleCopy={handleCopy}
         handleCut={handleCut}
         handleFileDownload={handleFileDownload}
+        isZip={mime.lookup(name) === 'application/zip'}
+        extractFiles={extractFiles}
       />
     );
   };
