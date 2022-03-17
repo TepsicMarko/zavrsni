@@ -102,16 +102,15 @@ export const FileSystemProvider = ({ children }) => {
 
             resolve(
               await Promise.all(
-                files.map(async (file) => {
+                files.map((file) => {
                   if (file.isDirectory()) {
                     const folderPath = Path.join(newPath, file.name);
-                    await mkdirAsync(folderPath);
-                    return await copyDirRecursive(
+                    return copyDirRecursive(
                       Path.join(currentPath, file.name),
                       folderPath
                     );
                   } else
-                    copyFSO(
+                    return copyFSO(
                       Path.join(currentPath, file.name),
                       Path.join(newPath, file.name),
                       'file'

@@ -111,8 +111,20 @@ const FsoListItem = ({
     [selectedElements, cutFiles]
   );
 
-  const handleDownload = () => {
-    downloadFile(path, name, type.toLowerCase(), getFolder, readBlob, readFileContent);
+  const handleDownload = async () => {
+    if (Object.keys(selectedElements).length) {
+      for (let { path, name, type } of Object.values(selectedElements)) {
+        await downloadFile(
+          path,
+          name,
+          type.toLowerCase(),
+          getFolder,
+          readBlob,
+          readFileContent
+        );
+      }
+    } else
+      downloadFile(path, name, type.toLowerCase(), getFolder, readBlob, readFileContent);
   };
 
   const handleRightClick = (e) =>

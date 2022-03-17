@@ -192,8 +192,12 @@ const DesktopIcon = ({
     setIsCut(true);
   }, [selectedElements, cutFiles]);
 
-  const handleFileDownload = () => {
-    downloadFile(path, name, type, getFolder, readBlob, readFileContent);
+  const handleFileDownload = async () => {
+    if (Object.keys(selectedElements).length) {
+      for (let { path, name, type } of Object.values(selectedElements)) {
+        await downloadFile(path, name, type, getFolder, readBlob, readFileContent);
+      }
+    } else downloadFile(path, name, type, getFolder, readBlob, readFileContent);
   };
 
   const handleRightClick = (e) => {

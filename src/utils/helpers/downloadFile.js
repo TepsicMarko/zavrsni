@@ -17,7 +17,6 @@ const getFileUrl = (path, name, type, readBlob, readFileContent) =>
 const readDirRecursive = (parentFolder, readdir, readBlob, path) =>
   new Promise(async (resolve, reject) => {
     const folderContent = await readdir(path);
-    console.log(folderContent);
     const files = folderContent.filter((fso) => fso.isFile());
     const folders = folderContent.filter((fso) => fso.isDirectory());
 
@@ -42,23 +41,26 @@ const readDirRecursive = (parentFolder, readdir, readBlob, path) =>
     resolve(true);
   });
 
-const downloadFile = async (path, name, type, readdir, readBlob, readFileContent) => {
-  const a = document.getElementById('file-download');
+const downloadFile = (path, name, type, readdir, readBlob, readFileContent) =>
+  new Promise(async (resolve, reject) => {
+    const a = document.getElementById('file-download');
 
-  if (type === 'file') {
-    a.href = await getFileUrl(path, name, type, readBlob, readFileContent);
-    a.download = name;
-  } else {
-    const zip = new jszip();
+    if (type === 'file') {
+      a.href = await getFileUrl(path, name, type, readBlob, readFileContent);
+      a.download = name;
+    } else {
+      const zip = new jszip();
+      const root = zip.folder(name);
 
-    await readDirRecursive(zip, readdir, readBlob, Path.join(path, name));
+      await readDirRecursive(root, readdir, readBlob, Path.join(path, name));
 
-    const base64 = await zip.generateAsync({ type: 'base64' });
-    a.href = 'data:application/zip;base64,' + base64;
-  }
+      const base64 = await zip.generateAsync({ type: 'base64' });
+      a.href = 'data:application/zip;base64,' + base64;
+    }
 
-  a.click();
-  a.href = '';
-};
+    a.click();
+    a.href = '';
+    resolve();
+  });
 
 export default downloadFile;
