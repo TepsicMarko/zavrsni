@@ -263,11 +263,13 @@ export const FileSystemProvider = ({ children }) => {
     else return content;
   };
 
-  const readBlob = (path, type) =>
+  const readBlob = (path, type, returnArrayBuffer = false) =>
     new Promise((resolve, reject) => {
       readBinaryFile(path).then((buffer) => {
-        const blob = new Blob([buffer], { type });
-        resolve(window.URL.createObjectURL(blob));
+        if (!returnArrayBuffer) {
+          const blob = new Blob([buffer], { type });
+          resolve(window.URL.createObjectURL(blob));
+        } else resolve(buffer);
       });
     });
 

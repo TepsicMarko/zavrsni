@@ -45,6 +45,7 @@ const DesktopIcon = ({
     cutFiles,
     copyFiles,
     cut,
+    getFolder,
   } = useContext(FileSystemContext);
   const { renderOptions } = useContext(RightClickMenuContext);
   const inputRef = useRef(null);
@@ -192,7 +193,7 @@ const DesktopIcon = ({
   }, [selectedElements, cutFiles]);
 
   const handleFileDownload = () => {
-    downloadFile(path, name, type, readBlob, readFileContent);
+    downloadFile(path, name, type, getFolder, readBlob, readFileContent);
   };
 
   const handleRightClick = (e) => {

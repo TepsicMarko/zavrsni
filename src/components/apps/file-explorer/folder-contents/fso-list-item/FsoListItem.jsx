@@ -53,6 +53,7 @@ const FsoListItem = ({
     cut,
     readBlob,
     readFileContent,
+    getFolder,
   } = useContext(FileSystemContext);
   const [inputValue, handleInputChange] = useInput(name);
   const [isSelected, setIsSelected] = useState(false);
@@ -111,7 +112,7 @@ const FsoListItem = ({
   );
 
   const handleDownload = () => {
-    downloadFile(path, name, type.toLowerCase(), readBlob, readFileContent);
+    downloadFile(path, name, type.toLowerCase(), getFolder, readBlob, readFileContent);
   };
 
   const handleRightClick = (e) =>
