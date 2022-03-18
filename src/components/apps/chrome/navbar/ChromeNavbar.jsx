@@ -1,24 +1,16 @@
-import "./ChromeNavbar.css";
-import { MdArrowBack, MdArrowForward } from "react-icons/md";
-import { GrRefresh } from "react-icons/gr";
-import { useState, useEffect } from "react";
+import './ChromeNavbar.css';
+import { MdArrowBack, MdArrowForward } from 'react-icons/md';
+import { GrRefresh } from 'react-icons/gr';
+import { useState, useEffect } from 'react';
 
-const ChromeNavbar = ({
-  previous,
-  goBack,
-  url,
-  setUrl,
-  goForth,
-  next,
-  refreshPage,
-}) => {
+const ChromeNavbar = ({ previous, goBack, url, setUrl, goForth, next, refreshPage }) => {
   const [input, setInput] = useState(url);
   const handleInputChange = (e) => {
     setInput(e.target.value);
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       setUrl(e.target.value);
     }
   };
@@ -30,22 +22,16 @@ const ChromeNavbar = ({
   return (
     <div className='chrome-navbar'>
       <div className='chrome-nav-buttons'>
-        <div
-          className={
-            "flex-center" + (previous ? " chrome-nav-hover-effect" : "")
-          }
-        >
+        <div className={'flex-center' + (previous ? ' chrome-nav-hover-effect' : '')}>
           <MdArrowBack
-            color={previous ? "white" : "#7D7F81"}
-            onClick={goBack}
+            color={previous ? 'white' : '#7D7F81'}
+            onClick={previous ? goBack : undefined}
           />
         </div>
-        <div
-          className={"flex-center" + (next ? " chrome-nav-hover-effect" : "")}
-        >
+        <div className={'flex-center' + (next ? ' chrome-nav-hover-effect' : '')}>
           <MdArrowForward
-            color={next ? "white" : "#7D7F81"}
-            onClick={goForth}
+            color={next ? 'white' : '#7D7F81'}
+            onClick={next ? goForth : undefined}
           />
         </div>
         <div className='flex-center chrome-nav-hover-effect'>

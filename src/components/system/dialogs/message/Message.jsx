@@ -56,12 +56,11 @@ const Message = ({
           {warning}
         </div>
       </WindowContent>
-      {errCode === ERROR_FILE_NOT_FOUND ||
-        (errCode === ERROR_PATH_NOT_FOUND && (
-          <div className='warning-status-bar'>
-            <button onClick={dismissMessage}>OK</button>
-          </div>
-        ))}
+      {(errCode === ERROR_FILE_NOT_FOUND || errCode === ERROR_PATH_NOT_FOUND) && (
+        <div className='warning-status-bar'>
+          <button onClick={dismissMessage}>OK</button>
+        </div>
+      )}
       {errCode === ERROR_ALREADY_EXISTS && (
         <div className='warning-status-bar'>
           <button onClick={handleReplace}>Yes</button>
