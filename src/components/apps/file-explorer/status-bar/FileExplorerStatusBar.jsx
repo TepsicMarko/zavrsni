@@ -29,7 +29,8 @@ const FileExplorerStatusBar = ({
   const inputRef = useRef();
 
   const replaceFile = async () => {
-    await deleteFSO(path, fileName + fileType);
+    await deleteFSO(path, fileName + fileType, 'file');
+    endProcess('File Explorer', pid, 'Notepad', ppid);
     handleSave(path, fileName, fileType, startChildProcess, endProcess);
   };
 

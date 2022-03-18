@@ -42,12 +42,13 @@ const appConfigurations = {
     pinnedToTaskbar: true,
     isFocused: false,
   },
-  TaskManager: {
+  'Task Manager': {
     source: <TaskManager icon={<img src={taskManager} height='20px' />} />,
     minimized: false,
     icon: <img src={taskManager} height='30px' />,
     pinnedToTaskbar: true,
     isFocused: false,
+    unique: true,
   },
   Photos: {
     source: <Photos />,

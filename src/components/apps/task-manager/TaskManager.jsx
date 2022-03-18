@@ -17,7 +17,7 @@ const TaskManager = ({ icon, pid }) => {
 
   return (
     <Window
-      process='TaskManager'
+      process='Task Manager'
       pid={pid}
       icon={icon}
       minWindowWidth='9rem'

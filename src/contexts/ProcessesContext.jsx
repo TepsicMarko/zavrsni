@@ -43,6 +43,12 @@ export const ProcessesProvider = ({ children }) => {
   };
 
   const startProcess = (name, props = {}) => {
+    console.log(
+      processConfigurations[name].unique && Object.keys(processes[name] || {}).length
+    );
+    if (processConfigurations[name].unique && Object.keys(processes[name] || {}).length)
+      return null;
+
     const hasProps = Object.keys(props).length;
     const pid = nanoid();
     const focusLevel = (processesFocusLevel.length + 1) * 10;
@@ -65,43 +71,52 @@ export const ProcessesProvider = ({ children }) => {
     setProcessesFocusLevel([...processesFocusLevel, { name, pid, focusLevel }]);
   };
 
-  const startChildProcess = (parent, ppid, child, props) => {
+  const startChildProcess = async (parent, ppid, child, props) => {
     const pid = nanoid();
     const hasProps = Object.keys(props).length;
     const focusLevel = (processesFocusLevel.length + 1) * 10;
 
-    setProcesses((processes) => {
-      const newProcessesState = {
-        ...processes,
-        [parent]: {
-          ...processes[parent],
-          [ppid]: {
-            ...processes[parent][ppid],
-            childProcess: {
-              name: child,
-              pid,
+    const wasChildProcessCreated = await new Promise((resolve, reject) =>
+      setProcesses((processes) => {
+        if (!Object.keys(processes[parent][ppid].childProcess).length) {
+          const newProcessesState = {
+            ...processes,
+            [parent]: {
+              ...processes[parent],
+              [ppid]: {
+                ...processes[parent][ppid],
+                childProcess: {
+                  name: child,
+                  pid,
+                },
+              },
             },
-          },
-        },
-        [child]: {
-          ...processes[child],
-          [pid]: {
-            ...processConfigurations[child],
-            focusLevel,
-            source: hasProps
-              ? cloneElement(processConfigurations[child].source, { ...props })
-              : processConfigurations[child].source,
-            isChildProcess: true,
-          },
-        },
-      };
+            [child]: {
+              ...processes[child],
+              [pid]: {
+                ...processConfigurations[child],
+                focusLevel,
+                source: hasProps
+                  ? cloneElement(processConfigurations[child].source, { ...props })
+                  : processConfigurations[child].source,
+                isChildProcess: true,
+              },
+            },
+          };
 
-      return newProcessesState;
-    });
+          resolve(true);
+          return newProcessesState;
+        } else {
+          resolve(false);
+          return processes;
+        }
+      })
+    );
 
-    setProcessesFocusLevel((prev) => {
-      return [...prev, { name: child, pid, focusLevel }];
-    });
+    wasChildProcessCreated &&
+      setProcessesFocusLevel((prev) => {
+        return [...prev, { name: child, pid, focusLevel }];
+      });
   };
 
   const endAllChildProcesses = (newProcessesFocusLevel, newProcessesState, name, pid) => {
