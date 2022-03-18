@@ -330,14 +330,14 @@ const FsoListItem = ({
           suppressContentEditableWarning={true}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          style={{ maxWidth: 'calc(inherit - 2rem)' }}
+          // style={{ maxWidth: 'calc(inherit - 2rem)' }}
           onInput={handleInputChange}
           onDoubleClick={(e) => (isInputFocused ? e.stopPropagation() : undefined)}
         >
           {name}
         </span>
       </td>
-      {location && <td>{location}</td>}
+      {location && <td className='fso-location'>{location}</td>}
       <td className='fso-mtime'>
         <span>{moment(mtime).format('DD/MM/YYYY hh:mm a')}</span>
       </td>

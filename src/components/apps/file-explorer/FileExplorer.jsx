@@ -78,9 +78,10 @@ const FileExplorer = ({
         <div
           className='navigation-pane-and-folder-contents-container'
           style={{
-            height: `calc(100%${
+            height: '100%',
+            maxHeight: `calc(100%${
               mode === 'w' || mode === 'r' ? '' : ' - 1.25rem - 5.25rem'
-            } - 2.25rem)`,
+            } - 2.3rem)`,
           }}
         >
           <FileExplorerNavigationPane

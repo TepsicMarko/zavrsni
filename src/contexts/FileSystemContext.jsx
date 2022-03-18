@@ -338,14 +338,14 @@ export const FileSystemProvider = ({ children }) => {
               if (fso.name == searchTerm) {
                 found.push({
                   ...fso,
-                  path: Path.join(root, fso.name),
+                  location: Path.join(root, fso.name),
                 });
               }
             } else {
               if (fso.name.includes(searchTerm)) {
                 found.push({
                   ...fso,
-                  path: Path.join(root, fso.name),
+                  location: Path.join(root, fso.name),
                 });
               }
             }

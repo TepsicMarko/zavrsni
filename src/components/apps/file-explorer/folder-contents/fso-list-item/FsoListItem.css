@@ -1,4 +1,5 @@
 .fso-list-item {
+  min-width: 0px;
   width: 100%;
   height: 1.25rem;
 }
@@ -9,24 +10,14 @@
   padding: 0 0.5rem;
   box-sizing: border-box;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   height: 1.25rem;
   font-size: 0.7rem;
   font-weight: 100;
 }
 
+.fso-mtime,
+.fso-location,
 .fso-list-item > td:first-child {
-  position: relative;
-  line-height: normal;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  flex-wrap: wrap;
-  overflow: visible;
-}
-
-.fso-mtime {
   max-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -35,14 +26,6 @@
 
 .fso-list-item-icon {
   padding-right: 0.5rem;
-}
-
-.fso-list-item-name-input {
-  flex-basis: calc(100% - 1.5rem);
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .fso-list-item-name-input:focus {
