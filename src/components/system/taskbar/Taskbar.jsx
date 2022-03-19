@@ -176,7 +176,7 @@ const Taskbar = ({
         >
           <BsWindows color='white' size='1.15rem' />
         </div>
-        <div className='flex-center windows-search-bar'>
+        <div className={isVerticalClassName('windows-search-bar')}>
           <VscSearch
             className={isVerticalClassName('search-icon')}
             color={isSearchFocused ? 'black' : 'white'}
@@ -204,7 +204,7 @@ const Taskbar = ({
           />
         </div>
       </div>
-      <div className='app-shortcuts'>
+      <div className={isVerticalClassName('app-shortcuts')}>
         {Object.entries(processConfigurations)
           .filter(([name, appConfig]) => appConfig.pinnedToTaskbar)
           .map(([name, appConfig]) => (
