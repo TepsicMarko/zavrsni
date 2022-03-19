@@ -17,15 +17,15 @@ const TaskbarIcon = ({
   const [isMouseOver, setIsMouseOver] = useState(false);
   const [wasThumbnailShown, setWasThumbnailShown] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    e.stopPropagation();
+    setIsMouseOver(false);
     const numberOfInstances = Object.keys(processes[name] || {}).length;
     const isOnlyInstanceAChildProcess =
       Object.values(processes[name] || {})[0]?.isChildProcess || false;
     const isAtLeastOneInstanceARegularProcess = Object.values(processes[name] || {}).some(
       (processInstance) => !processInstance.isChildProcess
     );
-
-    console.log(numberOfInstances, isOnlyInstanceAChildProcess);
 
     if (
       !processes[name] ||
@@ -43,7 +43,7 @@ const TaskbarIcon = ({
             ? !processInstance.isFocused
               ? focusProcess(name, pid)
               : !Object.keys(processInstance.childProcess || {}).length &&
-                minimizeToTaskbar(name, pid)
+                minimizeToTaskbar(name, pid, { x: e.clientX, y: e.clientY })
             : focusProcess(name, pid);
         }
       });

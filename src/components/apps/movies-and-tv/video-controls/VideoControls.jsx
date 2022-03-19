@@ -171,7 +171,11 @@ const VideoControls = ({
                 <div className='flex-center'>{volume}</div>
               </div>
             )}
-            <div className='video-controls-btn' onClick={toggleVolumeSettings}>
+            <div
+              className='video-controls-btn'
+              onClick={toggleVolumeSettings}
+              onMouseDown={stopPropagation}
+            >
               <BsVolumeUp color='white' size='1.5rem' />
             </div>
           </div>

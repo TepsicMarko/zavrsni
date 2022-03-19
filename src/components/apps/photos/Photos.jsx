@@ -3,7 +3,7 @@ import Window from '../../system/window/Window';
 import WindowContent from '../../system/window/window-content/WindowContent';
 import { FileSystemContext } from '../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
-import { useState, useContext, useEffect, useRef } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import { HiOutlineZoomIn, HiOutlineZoomOut } from 'react-icons/hi';
 import { BsTrash } from 'react-icons/bs';
 import { AiOutlineExpandAlt } from 'react-icons/ai';
@@ -13,7 +13,7 @@ import { path as Path } from 'filer';
 import mime from 'mime-types';
 
 const Photos = ({ path, pid }) => {
-  const imageContainerRef = useRef(null);
+  const [imageContainerRef, setImageContainerRef] = useState(null);
   const [src, setSrc] = useState('');
   const [zoom, setZoom] = useState(100);
   const [panzoom, setPanzoom] = useState();
@@ -58,22 +58,26 @@ const Photos = ({ path, pid }) => {
     toggleFullScreen(Photos);
   };
 
+  const onRefChange = useCallback((node) => setImageContainerRef(node), []);
+
   useEffect(() => {
-    setPanzoom(
-      Panzoom(imageContainerRef.current, {
-        maxScale: 60,
-        minScale: 1,
-        cursor: 'default',
-        panOnlyWhenZoomed: true,
-      })
-    );
+    if (imageContainerRef) {
+      setPanzoom(
+        Panzoom(imageContainerRef, {
+          maxScale: 60,
+          minScale: 1,
+          cursor: 'default',
+          panOnlyWhenZoomed: true,
+        })
+      );
 
-    const observer = new ResizeObserver(() => {
-      resetZoom();
-    });
+      const observer = new ResizeObserver(() => {
+        resetZoom();
+      });
 
-    observer.observe(imageContainerRef.current.parentElement);
-  }, []);
+      observer.observe(imageContainerRef.parentElement);
+    }
+  }, [imageContainerRef]);
 
   useEffect(async () => {
     path && setImageSource(await readBlob(path, mime.lookup(path)));
@@ -113,7 +117,7 @@ const Photos = ({ path, pid }) => {
           </div>
         </div>
         <div className='image-container' onWheel={handleMouseWhele}>
-          <div ref={imageContainerRef} className='performance-wrapper'>
+          <div ref={onRefChange} className='performance-wrapper'>
             <img id='test' src={src} />
           </div>
         </div>

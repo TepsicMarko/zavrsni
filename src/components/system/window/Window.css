@@ -12,7 +12,6 @@
 .resize-t,
 .resize-r,
 .resize-b {
-  /* background-color: aquamarine; */
   position: absolute;
 }
 
@@ -46,7 +45,6 @@
 .resize-tl,
 .resize-tr,
 .resize-br {
-  /* background-color: rgb(245, 28, 28); */
   position: absolute;
   width: 0.75rem;
   height: 0.75rem;

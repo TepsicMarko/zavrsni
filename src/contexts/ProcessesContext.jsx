@@ -170,7 +170,7 @@ export const ProcessesProvider = ({ children }) => {
     setProcesses(newProcessesState);
   };
 
-  const minimizeToTaskbar = (name, pid) => {
+  const minimizeToTaskbar = (name, pid, minimizePositon) => {
     const maxFocusLevel =
       processesFocusLevel.filter(
         (processesFocusLevel) =>
@@ -179,6 +179,7 @@ export const ProcessesProvider = ({ children }) => {
     let minimized = deepCloneProcesses();
     minimized[name][pid].minimized = true;
     minimized[name][pid].isFocused = false;
+    minimized[name][pid].minimizePositon = minimizePositon;
 
     if (
       processesFocusLevel.some(({ name, pid }) => !minimized[name][pid].minimized) &&

@@ -34,14 +34,11 @@ const Window = ({
 }) => {
   const [minWidth] = useState(remToPx(minWindowWidth));
   const [minHeight] = useState(remToPx(minWindowHeight));
-  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [position, setPosition] = useState({ top: null, left: null });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
-  const [width, setWidth] = useState(
-    resizable ? document.documentElement.clientWidth * 0.75 : minWidth
-  );
-  const [height, setHeight] = useState(
-    resizable ? document.documentElement.clientHeight * 0.7 : minHeight
-  );
+  const [isDragging, setIsDragging] = useState(false);
+  const [width, setWidth] = useState(null);
+  const [height, setHeight] = useState(null);
 
   const { endProcess, minimizeToTaskbar, processes, focusProcess, unfocusProcess } =
     useContext(ProcessesContext);
@@ -63,6 +60,7 @@ const Window = ({
   const handleDragStart = useCallback(
     (e) => {
       e.stopPropagation();
+      setIsDragging(true);
       setFocus();
       const { offsetX, offsetY } = e.nativeEvent;
       e.dataTransfer.setDragImage(new Image(), 0, 0);
@@ -72,8 +70,15 @@ const Window = ({
   );
 
   const handleDrag = useCallback((e) => updateWindowPosition(e), [offset]);
-  const handleDragEnd = useCallback((e) => updateWindowPosition(e), [offset]);
+  const handleDragEnd = useCallback(
+    (e) => {
+      setIsDragging(false);
+      updateWindowPosition(e);
+    },
+    [offset]
+  );
   const handleResizeStart = (e) => {
+    setIsDragging(true);
     setFocus();
     disableIframe && disableIframe();
     e.stopPropagation();
@@ -159,6 +164,7 @@ const Window = ({
     }
   };
   const handleResizeEnd = (e) => {
+    setIsDragging(false);
     enableIframe && enableIframe();
     e.stopPropagation();
   };
@@ -166,9 +172,13 @@ const Window = ({
   const closeWindow = useCallback(
     (e) => {
       e.stopPropagation();
-      if (onClose) {
-        onClose(endProcess);
-      } else endProcess(process, pid, parentProcess, ppid);
+      windowRef.current.style.opacity = '0';
+      windowRef.current.style.transform += 'scale(0.8)';
+      setTimeout(() => {
+        if (onClose) {
+          onClose(endProcess);
+        } else endProcess(process, pid, parentProcess, ppid);
+      }, 200);
     },
     [process, endProcess, parentProcess, onClose]
   );
@@ -220,6 +230,10 @@ const Window = ({
         setHeight(height);
         setPosition(position);
         previousDimensionsAndPositionRef.current = previousDimensionsAndPosition;
+      } else {
+        setWidth(resizable ? document.documentElement.clientWidth * 0.75 : minWidth);
+        setHeight(resizable ? document.documentElement.clientHeight * 0.7 : minHeight);
+        setPosition({ top: 0, left: 0 });
       }
     };
 
@@ -241,60 +255,70 @@ const Window = ({
       !processes[process][pid].isChildProcess && removeThumbnailPreview(process, pid);
   }, [process, pid, titleBar.title]);
 
+  const minimizeX = processes[process][pid]?.minimizePositon?.x || 0;
+  const minimizeY = processes[process][pid]?.minimizePositon?.y || 0;
+
   return (
-    <div
-      ref={windowRef}
-      className='window'
-      id={pid}
-      style={{
-        width,
-        height,
-        ...position,
-        minWidth,
-        minHeight,
-        zIndex:
-          zIndex ||
-          processes[parentProcess || process][ppid || pid].focusLevel +
-            (parentProcess ? 1 : 0),
-        visibility: !processes[process][pid].minimized ? 'visible' : 'hidden',
-      }}
-      onClick={setFocus}
-    >
-      {resizable &&
-        [
-          'resize-l',
-          'resize-t',
-          'resize-r',
-          'resize-b',
-          'resize-bl',
-          'resize-tl',
-          'resize-tr',
-          'resize-br',
-        ].map((el) => (
-          <div
-            draggable
-            className={el}
-            onDragStart={handleResizeStart}
-            onDrag={resize}
-            onDragEnd={handleResizeEnd}
-          ></div>
-        ))}
-      <TitleBar
-        backgroundColor={titleBar.backgroundColor}
-        color={titleBar.color}
-        maximiseWindow={maximiseWindow}
-        closeWindow={closeWindow}
-        minimizeWindow={minimizeWindow}
-        handleDragStart={handleDragStart}
-        handleDrag={handleDrag}
-        handleDragEnd={handleDragEnd}
-        title={displayTitle ? titleBar.title || process : ''}
-        icon={icon}
-        limitedWindowControls={limitedWindowControls}
-        overlay={titleBar.overlay}
-      />
-      {children}
-    </div>
+    position.top !== null && (
+      <div
+        ref={windowRef}
+        className='window'
+        id={pid}
+        style={{
+          width,
+          height,
+          minWidth,
+          minHeight,
+          zIndex:
+            zIndex ||
+            processes[parentProcess || process][ppid || pid].focusLevel +
+              (parentProcess ? 1 : 0),
+          visibility: !processes[process][pid].minimized ? 'visible' : 'hidden',
+          transform: processes[process][pid].minimized
+            ? `translate(calc(${minimizeX}px - ${width / 2}px), calc( ${minimizeY}px - ${
+                height * 0.5
+              }px)) scale(0)`
+            : `translate(${position.left}px, ${position.top}px) scale(1)`,
+          transition: !isDragging ? '0.15s ease-out, opacity 0.1s linear' : '',
+        }}
+        onClick={setFocus}
+      >
+        {resizable &&
+          [
+            'resize-l',
+            'resize-t',
+            'resize-r',
+            'resize-b',
+            'resize-bl',
+            'resize-tl',
+            'resize-tr',
+            'resize-br',
+          ].map((el) => (
+            <div
+              draggable
+              className={el}
+              onDragStart={handleResizeStart}
+              onDrag={resize}
+              onDragEnd={handleResizeEnd}
+            ></div>
+          ))}
+        <TitleBar
+          backgroundColor={titleBar.backgroundColor}
+          color={titleBar.color}
+          maximiseWindow={maximiseWindow}
+          closeWindow={closeWindow}
+          minimizeWindow={minimizeWindow}
+          handleDragStart={handleDragStart}
+          handleDrag={handleDrag}
+          handleDragEnd={handleDragEnd}
+          title={displayTitle ? titleBar.title || process : ''}
+          icon={icon}
+          limitedWindowControls={limitedWindowControls}
+          overlay={titleBar.overlay}
+        />
+        {children}
+      </div>
+    )
   );
 };
 
