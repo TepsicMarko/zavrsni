@@ -12,10 +12,10 @@ export const ProcessesProvider = ({ children }) => {
 
     Object.entries(clonedProcesses).forEach(([processName, processInstances]) => {
       Object.entries(processInstances).forEach(([processInstanceId, processInstance]) => {
-        clonedProcesses[processName][processInstanceId].source =
-          processes[processName][processInstanceId].source;
-        clonedProcesses[processName][processInstanceId].icon =
-          processes[processName][processInstanceId].icon;
+        processInstance.source = (obj || processes)[processName][
+          processInstanceId
+        ].source;
+        processInstance.icon = (obj || processes)[processName][processInstanceId].icon;
       });
     });
 
@@ -43,9 +43,6 @@ export const ProcessesProvider = ({ children }) => {
   };
 
   const startProcess = (name, props = {}) => {
-    console.log(
-      processConfigurations[name].unique && Object.keys(processes[name] || {}).length
-    );
     if (processConfigurations[name].unique && Object.keys(processes[name] || {}).length)
       return null;
 
@@ -226,7 +223,6 @@ export const ProcessesProvider = ({ children }) => {
     }
   };
 
-  // - note to self: this coused app to chrash two times in a row but then it stopped for some reason
   const unfocusProcess = (name, pid) =>
     setProcesses((currProcesses) => {
       const newProcessesState = deepCloneProcesses(currProcesses);
