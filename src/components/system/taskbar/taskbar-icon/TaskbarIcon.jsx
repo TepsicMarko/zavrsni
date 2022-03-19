@@ -15,6 +15,7 @@ const TaskbarIcon = ({
 }) => {
   const timeoutIdRef = useRef(null);
   const [isMouseOver, setIsMouseOver] = useState(false);
+  const [wasThumbnailShown, setWasThumbnailShown] = useState(false);
 
   const handleClick = () => {
     const numberOfInstances = Object.keys(processes[name] || {}).length;
@@ -57,7 +58,9 @@ const TaskbarIcon = ({
     setIsMouseOver(true);
   };
   const handleMouseLeave = () =>
-    (timeoutIdRef.current = setTimeout(() => setIsMouseOver(false), 250));
+    wasThumbnailShown
+      ? (timeoutIdRef.current = setTimeout(() => setIsMouseOver(false), 250))
+      : setIsMouseOver(false);
 
   const isAnyInstanceFocused = () =>
     Object.values(processes[name] || {}).some((process) => process.isFocused);
@@ -78,13 +81,15 @@ const TaskbarIcon = ({
       ) ? (
         <span style={{ width: isAnyInstanceFocused() ? '100%' : '' }}></span>
       ) : null}
-      {isMouseOver && (
+      {isMouseOver && Object.keys(processes[name] || {}).length ? (
         <ThumbnailPreview
           name={name}
           endProcess={endProcess}
           focusProcess={focusProcess}
+          wasThumbnailShown={wasThumbnailShown}
+          setWasThumbnailShown={setWasThumbnailShown}
         />
-      )}
+      ) : null}
     </div>
   );
 };

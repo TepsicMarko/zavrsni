@@ -4,10 +4,17 @@ import domtoimage from 'dom-to-image';
 import { MdClose } from 'react-icons/md';
 import { ThumbnailPreviewsContext } from '../../../../contexts/ThumbnailPreviewsContext';
 
-const ThumbnailPreview = ({ name, endProcess, focusProcess }) => {
+const ThumbnailPreview = ({
+  name,
+  endProcess,
+  focusProcess,
+  wasThumbnailShown,
+  setWasThumbnailShown,
+}) => {
   const [thumbnails, setThubmnails] = useState({});
   const { thumbnailPreviews } = useContext(ThumbnailPreviewsContext);
   const animationRef = useRef(null);
+  const timeoutIdRef = useRef(null);
 
   const animation = (elements) => {
     (thumbnailPreviews[name] || []).forEach(({ pid }, i) =>
@@ -24,6 +31,7 @@ const ThumbnailPreview = ({ name, endProcess, focusProcess }) => {
         .then((imgUrl) => {
           setThubmnails((thumbnails) => ({ ...thumbnails, [pid]: imgUrl }));
         })
+        .catch((err) => console.log(err))
     );
     animationRef.current = window.requestAnimationFrame(() => animation(elements));
   };
@@ -32,10 +40,24 @@ const ThumbnailPreview = ({ name, endProcess, focusProcess }) => {
     const elements = (thumbnailPreviews[name] || []).map(({ pid }) =>
       document.getElementById(pid)
     );
-    animationRef.current = window.requestAnimationFrame(() => animation(elements));
 
-    return () => window.cancelAnimationFrame(animationRef.current);
-  }, [thumbnailPreviews[name]]);
+    timeoutIdRef.current = setTimeout(
+      () =>
+        (animationRef.current = window.requestAnimationFrame(() => animation(elements))),
+      wasThumbnailShown ? 0 : 250
+    );
+
+    return () => {
+      window.cancelAnimationFrame(animationRef.current);
+      clearTimeout(timeoutIdRef.current);
+    };
+  }, [thumbnailPreviews]);
+
+  useEffect(() => {
+    Object.keys(thumbnails || {}).length &&
+      !wasThumbnailShown &&
+      setWasThumbnailShown(() => true);
+  }, [thumbnails]);
 
   return Object.keys(thumbnails).length ? (
     <div className='thumbnail-previews'>
