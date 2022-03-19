@@ -37,6 +37,7 @@ const FsoListItem = ({
   setExpandBranches,
   openFile,
   endProcess,
+  pid,
   ppid,
   rectRef,
   selectedElements,
@@ -176,14 +177,16 @@ const FsoListItem = ({
     );
 
   const handleDoubleClick = (e) => {
-    if (openFile) {
-      openFile(path, name);
-      return endProcess('File Explorer', ppid, 'Notepad');
-    }
     if (type === 'DIRECTORY') {
       setExpandBranches(true);
       changePath(location ? location : Path.join(path, name));
-    } else openWithDefaultApp(type, path, name, startProcess);
+    } else {
+      if (openFile) {
+        openFile(path, name);
+        return endProcess('File Explorer', pid, 'Notepad', ppid);
+      }
+      openWithDefaultApp(type, path, name, startProcess);
+    }
   };
 
   const handleClick = (e) => {

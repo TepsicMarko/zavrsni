@@ -19,6 +19,7 @@ const FileExplorerFolderContents = ({
   setExpandBranches,
   openFile,
   endProcess,
+  pid,
   ppid,
   addToGrid,
   mode,
@@ -164,6 +165,7 @@ const FileExplorerFolderContents = ({
                 setExpandBranches={setExpandBranches}
                 openFile={openFile}
                 endProcess={endProcess}
+                pid={pid}
                 ppid={ppid}
                 rectRef={rectRef}
                 selectedElements={selectedElements}

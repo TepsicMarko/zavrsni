@@ -101,6 +101,7 @@ const FileExplorer = ({
             setExpandBranches={setExpandBranches}
             openFile={openFile}
             endProcess={mode !== 'v' ? endProcess : undefined}
+            pid={pid}
             ppid={ppid}
             addToGrid={addToGrid}
             mode={mode}
