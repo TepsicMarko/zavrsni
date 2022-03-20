@@ -34,6 +34,7 @@ const DesktopIcon = ({
   addToGrid,
 }) => {
   const [isSelected, setIsSelected] = useState(false);
+  const [isUserSelected, setIsUserSelected] = useState(false);
   const [isInputTexSelected, setIsInputTextSelected] = useState(false);
   const [isCut, setIsCut] = useState(false);
   const [dontDeselect, setDontDeselect] = useState(false);
@@ -109,6 +110,7 @@ const DesktopIcon = ({
   const handleClick = (e) => {
     // e.stopPropagation();
     !isSelected && setIsSelected(true);
+    !isUserSelected && setIsUserSelected(true);
   };
 
   const handleKeyPress = (e) => {
@@ -235,6 +237,7 @@ const DesktopIcon = ({
     e.stopPropagation();
     !selectedElements[name] && setSelectedElements({});
     !isSelected && setIsSelected(true);
+    !isUserSelected && setIsUserSelected(true);
     setDontDeselect(true);
 
     renderOptions(
@@ -314,6 +317,7 @@ const DesktopIcon = ({
         if (e.which === 1) {
           if (!Object.keys(selectedElements).length) {
             setIsSelected(false);
+            setIsUserSelected(false);
             setIsInputTextSelected(false);
           } else setSelectedElements({});
         }
@@ -363,7 +367,7 @@ const DesktopIcon = ({
       onDrag={stopPropagation}
       onDrop={handleDrop}
     >
-      {renderIcon(isCut ? 0.5 : 1)}
+      <div className='flex-center'>{renderIcon(isCut ? 0.5 : 1)}</div>
       <div
         ref={inputRef}
         contentEditable={isSelected}
@@ -374,6 +378,7 @@ const DesktopIcon = ({
         onBlur={handleBlur}
         onKeyPress={handleKeyPress}
         onDoubleClick={stopPropagation}
+        style={{ WebkitLineClamp: isUserSelected ? 'initial' : '2' }}
       >
         {name}
       </div>
