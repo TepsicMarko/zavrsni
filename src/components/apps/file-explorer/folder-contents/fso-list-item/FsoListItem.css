@@ -25,7 +25,10 @@
 }
 
 .fso-list-item-icon {
+  height: 100%;
   padding-right: 0.5rem;
+  display: inline-flex;
+  align-items: flex-end;
 }
 
 .fso-list-item-name-input:focus {

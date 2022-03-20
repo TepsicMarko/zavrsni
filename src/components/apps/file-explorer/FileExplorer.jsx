@@ -58,7 +58,14 @@ const FileExplorer = ({
       titleBar={{ color: 'white', backgroundColor: 'black' }}
       limitedWindowControls={mode !== 'v'}
     >
-      <WindowContent backgroundColor='#202020' flex flexDirection='row'>
+      <div
+        className='file-explorer-window-content'
+        draggable
+        onDragStart={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+      >
         {mode === 'v' && (
           <>
             <FileExplorerNavbar activeTab={activeTab} changeTab={changeTab} />
@@ -75,15 +82,7 @@ const FileExplorer = ({
           startChildProcess={startChildProcess}
           mode={mode}
         />
-        <div
-          className='navigation-pane-and-folder-contents-container'
-          style={{
-            height: '100%',
-            maxHeight: `calc(100%${
-              mode === 'w' || mode === 'r' ? '' : ' - 1.25rem - 5.25rem'
-            } - 2.3rem)`,
-          }}
-        >
+        <div className='navigation-pane-and-folder-contents-container'>
           <FileExplorerNavigationPane
             changePath={changePath}
             basePath='/C/users/admin'
@@ -109,7 +108,7 @@ const FileExplorer = ({
             isFocused={processes['File Explorer'][pid].isFocused}
           />
         </div>
-      </WindowContent>
+      </div>
       <StatusBar backgroundColor='#383838' color='#DEDEDE' flex height='fit-content'>
         <FileExplorerStatusBar
           path={path}

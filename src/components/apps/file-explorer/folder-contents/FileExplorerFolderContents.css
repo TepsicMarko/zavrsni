@@ -1,19 +1,18 @@
 .fx-folder-contents-container {
-  height: 100%;
+  overflow: auto;
   flex-basis: 0;
   flex-grow: 1;
-  overflow-x: auto;
   border-left: 2px solid #2e2e2e;
   box-shadow: -1.5px 0px 0px 0px#131313;
   z-index: 2;
   min-width: 10rem;
   position: relative;
+  background-color: #202020;
 }
 
 .fx-folder-contents {
   box-sizing: border-box;
   height: min-content;
-  background-color: #202020;
   width: auto;
   position: relative;
   text-align: left;

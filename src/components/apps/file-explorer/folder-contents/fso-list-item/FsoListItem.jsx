@@ -333,7 +333,6 @@ const FsoListItem = ({
           suppressContentEditableWarning={true}
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
-          // style={{ maxWidth: 'calc(inherit - 2rem)' }}
           onInput={handleInputChange}
           onDoubleClick={(e) => (isInputFocused ? e.stopPropagation() : undefined)}
         >

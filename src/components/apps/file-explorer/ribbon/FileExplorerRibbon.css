@@ -1,6 +1,6 @@
 .fx-ribbon {
-  width: 100%;
-  height: 5.25rem;
+  flex-basis: 5.25rem;
+  min-height: 5.25rem;
   font-weight: 100;
   background-color: #202020;
   border-bottom: 1px solid #3c3c3c;
