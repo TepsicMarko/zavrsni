@@ -21,11 +21,8 @@ const ThumbnailPreview = ({
       domtoimage
         .toPng(elements[i], {
           style: {
-            left: '0',
-            right: '0',
-            bottom: '0',
-            top: '0',
-            visibility: 'visible',
+            transform: 'translate(0,0)',
+            opacity: '1',
           },
         })
         .then((imgUrl) => {
@@ -35,7 +32,6 @@ const ThumbnailPreview = ({
     );
     animationRef.current = window.requestAnimationFrame(() => animation(elements));
   };
-
   useEffect(() => {
     const elements = (thumbnailPreviews[name] || []).map(({ pid }) =>
       document.getElementById(pid)

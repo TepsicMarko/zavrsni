@@ -217,7 +217,8 @@ const DesktopIcon = ({
       for (let file of Object.values(unzipped.files)) {
         if (file.dir) {
           await createFSO(path, file.name, 'directory');
-          !rootDirCreated && addToGrid([file.name.slice(0, -1)], { row: 1, col: 1 });
+          !rootDirCreated &&
+            addToGrid([file.name.slice(0, -1), undefined], { row: 1, column: 1 });
           !rootDirCreated && (rootDirCreated = true);
         } else {
           await createBlob(

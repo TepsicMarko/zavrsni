@@ -4,6 +4,7 @@ export const ThumbnailPreviewsContext = createContext();
 
 export const ThumbnailPreviewsProvider = ({ children }) => {
   const [thumbnailPreviews, setThumbnailPreviews] = useState({});
+  const [thumbnailPreviewLocations, setThumbnailPreviewLocations] = useState({});
 
   const addThumbnailPreview = (appName, appTitle, icon, pid) => {
     setThumbnailPreviews((thumbnailPreviews) => ({
@@ -21,9 +22,22 @@ export const ThumbnailPreviewsProvider = ({ children }) => {
     }));
   };
 
+  const setThumbnailPreviewLocation = (name, position) => {
+    setThumbnailPreviewLocations((thumbnailPreviews) => ({
+      ...thumbnailPreviews,
+      [name]: position,
+    }));
+  };
+
   return (
     <ThumbnailPreviewsContext.Provider
-      value={{ thumbnailPreviews, addThumbnailPreview, removeThumbnailPreview }}
+      value={{
+        thumbnailPreviews,
+        thumbnailPreviewLocations,
+        addThumbnailPreview,
+        removeThumbnailPreview,
+        setThumbnailPreviewLocation,
+      }}
     >
       {children}
     </ThumbnailPreviewsContext.Provider>

@@ -42,9 +42,8 @@ const Window = ({
 
   const { endProcess, minimizeToTaskbar, processes, focusProcess, unfocusProcess } =
     useContext(ProcessesContext);
-  const { addThumbnailPreview, removeThumbnailPreview } = useContext(
-    ThumbnailPreviewsContext
-  );
+  const { addThumbnailPreview, removeThumbnailPreview, thumbnailPreviewLocations } =
+    useContext(ThumbnailPreviewsContext);
   const appDataRef = useRef({ width, height, position });
   const previousDimensionsAndPositionRef = useRef({});
   const windowRef = useClickOutside('click', () => unfocusProcess(process, pid));
@@ -173,7 +172,7 @@ const Window = ({
     (e) => {
       e.stopPropagation();
       windowRef.current.style.opacity = '0';
-      windowRef.current.style.transform += 'scale(0.8)';
+      windowRef.current.style.transform += 'scale(0.9)';
       setTimeout(() => {
         if (onClose) {
           onClose(endProcess);
@@ -255,8 +254,8 @@ const Window = ({
       !processes[process][pid].isChildProcess && removeThumbnailPreview(process, pid);
   }, [process, pid, titleBar.title]);
 
-  const minimizeX = processes[process][pid]?.minimizePositon?.x || 0;
-  const minimizeY = processes[process][pid]?.minimizePositon?.y || 0;
+  const minimizeX = !limitedWindowControls ? thumbnailPreviewLocations[process].x : 0;
+  const minimizeY = !limitedWindowControls ? thumbnailPreviewLocations[process].y : 0;
 
   return (
     position.top !== null && (
@@ -273,13 +272,13 @@ const Window = ({
             zIndex ||
             processes[parentProcess || process][ppid || pid].focusLevel +
               (parentProcess ? 1 : 0),
-          visibility: !processes[process][pid].minimized ? 'visible' : 'hidden',
+          opacity: !processes[process][pid].minimized ? '1' : '0',
           transform: processes[process][pid].minimized
             ? `translate(calc(${minimizeX}px - ${width / 2}px), calc( ${minimizeY}px - ${
                 height * 0.5
               }px)) scale(0)`
             : `translate(${position.left}px, ${position.top}px) scale(1)`,
-          transition: !isDragging ? '0.15s ease-out, opacity 0.1s linear' : '',
+          transition: !isDragging ? '0.15s ease-out, opacity 0.15s linear' : '',
         }}
         onClick={setFocus}
       >

@@ -1,6 +1,7 @@
 import './TaskbarIcon.css';
-import { cloneElement, useState, useRef, useContext } from 'react';
+import { cloneElement, useState, useRef, useContext, useLayoutEffect } from 'react';
 import ThumbnailPreview from '../thumbnail-preview/ThumbnailPreview';
+import { ThumbnailPreviewsContext } from '../../../../contexts/ThumbnailPreviewsContext';
 
 const TaskbarIcon = ({
   name,
@@ -13,9 +14,11 @@ const TaskbarIcon = ({
   closeWindowsSearch,
   minimizeToTaskbar,
 }) => {
+  const taskbarIconRef = useRef(null);
   const timeoutIdRef = useRef(null);
   const [isMouseOver, setIsMouseOver] = useState(false);
   const [wasThumbnailShown, setWasThumbnailShown] = useState(false);
+  const { setThumbnailPreviewLocation } = useContext(ThumbnailPreviewsContext);
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -43,7 +46,7 @@ const TaskbarIcon = ({
             ? !processInstance.isFocused
               ? focusProcess(name, pid)
               : !Object.keys(processInstance.childProcess || {}).length &&
-                minimizeToTaskbar(name, pid, { x: e.clientX, y: e.clientY })
+                minimizeToTaskbar(name, pid)
             : focusProcess(name, pid);
         }
       });
@@ -65,8 +68,18 @@ const TaskbarIcon = ({
   const isAnyInstanceFocused = () =>
     Object.values(processes[name] || {}).some((process) => process.isFocused);
 
+  useLayoutEffect(() => {
+    const { top, right, bottom, left } = taskbarIconRef.current.getBoundingClientRect();
+    console.log(taskbarIconRef.current.getBoundingClientRect());
+    setThumbnailPreviewLocation(name, {
+      y: top + (bottom - top) / 2,
+      x: left + (right - left) / 2,
+    });
+  }, []);
+
   return (
     <div
+      ref={taskbarIconRef}
       className='flex-center taskbar-icon'
       style={{
         backgroundColor: isAnyInstanceFocused() ? 'rgba(255, 255, 255, 0.25)' : '',
