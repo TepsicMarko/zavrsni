@@ -1,23 +1,27 @@
-import { FcFolder } from "react-icons/fc";
-import { AiFillFileText } from "react-icons/ai";
-import {
-  BsFillFileEarmarkImageFill,
-  BsFillFileEarmarkPlayFill,
-  BsFileEarmarkFill,
-} from "react-icons/bs";
+import { AiFillFileText } from 'react-icons/ai';
+import mime from 'mime';
+import imageFile from '../../assets/icons/file-icons/imageFile.ico';
+import videoFile from '../../assets/icons/file-icons/videoFile.ico';
+import unknownFile from '../../assets/icons/file-icons/unknownFile.ico';
+import pdfFile from '../../assets/icons/file-icons/pdfFile.jpg';
+import htmlFile from '../../assets/icons/app-icons/chrome.svg';
+import zipFile from '../../assets/icons/file-icons/zipFile.ico';
 
 const fileTypeIcons = {
-  text: <AiFillFileText size='0.9rem' />,
-  directory: <FcFolder size='0.9rem' />,
-  image: <BsFillFileEarmarkImageFill size='0.9rem' />,
-  video: <BsFillFileEarmarkPlayFill size='0.9rem' />,
+  text: <AiFillFileText size='100%' color='white' />,
+  image: <img src={imageFile} />,
+  video: <img src={videoFile} />,
+  'application/pdf': <img src={pdfFile} />,
+  'application/zip': <img src={zipFile} />,
+  'text/html': <img src={htmlFile} />,
 };
 
-const getFileTypeIcon = (fileType) => {
-  return fileType ? (
-    fileTypeIcons[fileType.toLowerCase()]
-  ) : (
-    <BsFileEarmarkFill size='0.9rem' />
+const getFileTypeIcon = (name) => {
+  const mimeType = mime.lookup(name);
+  console.log(mimeType, mimeType.split('/')[0]);
+  return (
+    fileTypeIcons[mimeType] ||
+    fileTypeIcons[mimeType.split('/')[0]] || <img src={unknownFile} />
   );
 };
 

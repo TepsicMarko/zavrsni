@@ -1,8 +1,8 @@
 import './Message.css';
 import Window from '../../window/Window';
 import WindowContent from '../../window/window-content/WindowContent';
-import warningIcon from '../../../../assets/warning.png';
-import errorIcon from '../../../../assets/error.png';
+import warningIcon from '../../../../assets/icons/system-icons/warning.ico';
+import errorIcon from '../../../../assets/icons/system-icons/error.png';
 import { useContext } from 'react';
 import { ProcessesContext } from '../../../../contexts/ProcessesContext';
 import {

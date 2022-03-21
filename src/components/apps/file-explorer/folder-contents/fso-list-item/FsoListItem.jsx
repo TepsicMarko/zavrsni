@@ -7,6 +7,7 @@ import {
   useLayoutEffect,
   useState,
   useCallback,
+  cloneElement,
 } from 'react';
 import getFileTypeIcon from '../../../../../utils/helpers/getFileTypeIcon';
 import FsoListItemContextMenu from '../../../../system/component-specific-context-menus/FsoListItemContextMenu';
@@ -17,7 +18,6 @@ import { FileSystemContext } from '../../../../../contexts/FileSystemContext';
 import { path as Path } from 'filer';
 import useInput from '../../../../../hooks/useInput';
 import openWithDefaultApp from '../../../../../utils/helpers/openWithDefaultApp';
-import getFileType from '../../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../../utils/helpers/isInSelection';
 import useClickOutside from '../../../../../hooks/useClickOutside';
 import useKeyboardShortcut from '../../../../../hooks/useKeyboardShortcut';
@@ -26,9 +26,7 @@ import downloadFile from '../../../../../utils/helpers/downloadFile';
 import jszip from 'jszip';
 import mime from 'mime';
 
-import chrome from '../../../../../assets/chrome.svg';
-import pdf from '../../../../../assets/pdf.jpg';
-import zip from '../../../../../assets/zip.png';
+import fileExplorerFolder from '../../../../../assets/icons/file-icons/fileExplorerFolder.ico';
 
 const FsoListItem = ({
   fso: { name, mtime, type, size, location },
@@ -229,17 +227,9 @@ const FsoListItem = ({
 
   const renderIcon = () => {
     if (type === 'FILE') {
-      const ext = Path.extname(name);
-
-      if (ext === '.html') return <img src={chrome} width='14px' draggable={false} />;
-      else if (ext === '.pdf') return <img src={pdf} width='14px' draggable={false} />;
-      else if (ext === '.zip')
-        return (
-          <img src={zip} width='12px' style={{ paddingRight: '2px' }} draggable={false} />
-        );
-      else return getFileTypeIcon(getFileType(ext));
+      return cloneElement(getFileTypeIcon(name), { style: { width: '18px' } });
     } else {
-      return getFileTypeIcon(type);
+      return <img src={fileExplorerFolder} width='20px' draggable={false} />;
     }
   };
 

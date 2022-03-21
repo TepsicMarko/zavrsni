@@ -113,9 +113,9 @@ const WindowsSearchBestMatch = ({
                                 <div className='name-and-icon-hover-container'>
                                   <div className='flex-center relavant-search-icon'>
                                     {cloneElement(result.icon, {
-                                      size: '15px',
-                                      width: '15px',
-                                      height: '15px',
+                                      size: '18px',
+                                      width: '18px',
+                                      height: '18px',
                                       color: 'white',
                                     })}
                                   </div>

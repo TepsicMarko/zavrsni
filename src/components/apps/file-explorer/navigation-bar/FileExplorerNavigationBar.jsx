@@ -2,13 +2,13 @@ import './FileExplorerNavigationBar.css';
 import { IoArrowBack, IoArrowForward, IoArrowUp, IoReload } from 'react-icons/io5';
 import { VscSearch } from 'react-icons/vsc';
 import { useState, memo, useEffect, useContext, useRef } from 'react';
-import { FcFolder } from 'react-icons/fc';
 import { VscClose } from 'react-icons/vsc';
 import { path as Path } from 'filer';
 import remToPx from '../../../../utils/helpers/remToPx';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import usePathHistory from '../../../../hooks/usePathHistory';
 import { ERROR_PATH_NOT_FOUND } from '../../../system/dialogs/message/errorCodes';
+import fileExplorerFolder from '../../../../assets/icons/file-icons/fileExplorerFolder.ico';
 
 const FileExplorerNavigationBar = ({
   pid,
@@ -128,8 +128,8 @@ const FileExplorerNavigationBar = ({
       </div>
 
       <div className='flex-center address-bar'>
-        <div className='folder-icon'>
-          <FcFolder />
+        <div className='flex-center folder-icon'>
+          <img src={fileExplorerFolder} width='20px' />
         </div>
         <input
           type='text'

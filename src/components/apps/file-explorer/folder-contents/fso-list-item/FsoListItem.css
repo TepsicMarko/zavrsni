@@ -5,7 +5,7 @@
 }
 
 .fso-list-item > td {
-  line-height: 1.25rem;
+  line-height: 1.4rem;
   color: white;
   padding: 0 0.5rem;
   box-sizing: border-box;
@@ -22,18 +22,21 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  position: relative;
 }
 
 .fso-list-item-icon {
+  position: absolute;
   height: 100%;
-  padding-right: 0.5rem;
-  display: inline-flex;
-  align-items: flex-end;
+  display: flex;
+  align-items: center;
+}
+
+.fso-list-item-name-input {
+  margin-left: 1.25rem;
 }
 
 .fso-list-item-name-input:focus {
-  position: absolute;
-  left: 2rem;
   z-index: 10;
   white-space: nowrap;
   overflow: initial;

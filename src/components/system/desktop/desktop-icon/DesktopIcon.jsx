@@ -1,9 +1,13 @@
 import './DesktopIcon.css';
-import { FcFolder } from 'react-icons/fc';
-import { AiFillFileText } from 'react-icons/ai';
 import { GoFileSymlinkFile } from 'react-icons/go';
-import { BsFileEarmarkFill } from 'react-icons/bs';
-import { useContext, useState, useEffect, useRef, useCallback } from 'react';
+import {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  cloneElement,
+} from 'react';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { RightClickMenuContext } from '../../../../contexts/RightClickMenuContext';
 import useInput from '../../../../hooks/useInput';
@@ -12,13 +16,12 @@ import openWithDefaultApp from '../../../../utils/helpers/openWithDefaultApp';
 import { path as Path } from 'filer';
 import getFileType from '../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../utils/helpers/isInSelection';
-import chrome from '../../../../assets/chrome.svg';
-import pdf from '../../../../assets/pdf.jpg';
-import zip from '../../../../assets/zip.png';
+import emptyFolder from '../../../../assets/icons/file-icons/emptyFolder.ico';
 import useKeyboardShortcut from '../../../../hooks/useKeyboardShortcut';
 import mime from 'mime-types';
 import downloadFile from '../../../../utils/helpers/downloadFile';
 import jszip from 'jszip';
+import getFileTypeIcon from '../../../../utils/helpers/getFileTypeIcon';
 
 const DesktopIcon = ({
   name,
@@ -87,24 +90,12 @@ const DesktopIcon = ({
       if (mimeType.startsWith('video'))
         return <video src={imgSrc} width='70%' height='100%' draggable={false} />;
 
-      switch (mimeType) {
-        case 'application/pdf':
-          return <img src={pdf} width='45rem' draggable={false} />;
-
-        case 'application/zip':
-          return <img src={zip} width='35rem' draggable={false} />;
-
-        case 'text/html':
-          return <img src={chrome} width='45rem' draggable={false} s />;
-
-        case 'text/plain':
-          return <AiFillFileText size='2.5rem' color='white' />;
-
-        default:
-          return <BsFileEarmarkFill size='2.5rem' color='white' />;
-      }
+      return cloneElement(getFileTypeIcon(name), {
+        style: { width: '2.5rem' },
+        draggable: false,
+      });
     } else if (type === 'link') return <GoFileSymlinkFile size='2.5rem' color='white' />;
-    else return <FcFolder size='2.5rem' />;
+    else return <img src={emptyFolder} width='50rem' draggable={false} />;
   };
 
   const handleClick = (e) => {

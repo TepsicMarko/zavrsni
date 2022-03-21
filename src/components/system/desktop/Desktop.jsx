@@ -45,7 +45,7 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
     sortGrid,
   } = useDesktopGrid({
     maxRows: Math.floor(
-      (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
+      (document.documentElement.clientHeight - evalTaskbarHeight()) / 85 - 1
     ),
     maxColumns: Math.floor(document.documentElement.clientWidth / 68),
   });
@@ -197,8 +197,8 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
           document.documentElement.clientWidth / 68
         )}, 4.25rem)`,
         gridTemplateRows: `repeat(${Math.floor(
-          (document.documentElement.clientHeight - evalTaskbarHeight()) / 80 - 1
-        )}, 5rem)`,
+          (document.documentElement.clientHeight - evalTaskbarHeight()) / 85 - 1
+        )}, 5.5rem)`,
       }}
       onDragEnter={preventDefault}
       onDragOver={preventDefault}

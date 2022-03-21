@@ -2,7 +2,6 @@ import './FolderNavigationBranch.css';
 import { useContext, useMemo, useRef, useEffect, memo } from 'react';
 import useToggle from '../../../../../hooks/useToggle';
 import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
-import { FcFolder } from 'react-icons/fc';
 import useWatchFolder from '../../../../../hooks/useWatchFolder';
 import { path as Path } from 'filer';
 import { RightClickMenuContext } from '../../../../../contexts/RightClickMenuContext';
@@ -10,6 +9,7 @@ import NavigationPaneBranchContextMenu from '../../../../system/component-specif
 import { FileSystemContext } from '../../../../../contexts/FileSystemContext';
 import useInput from '../../../../../hooks/useInput';
 import selectInputContent from '../../../../../utils/helpers/selectInputContent';
+import fileExplorerFolder from '../../../../../assets/icons/file-icons/fileExplorerFolder.ico';
 
 const FolderNavigationBranch = ({
   branchName,
@@ -22,7 +22,7 @@ const FolderNavigationBranch = ({
   expandBranches,
   setExpandBranches,
   addToGrid,
-  resetSearch
+  resetSearch,
 }) => {
   const { watch, getFolder, createFSO, deleteFSO, renameFSO, moveFSO } =
     useContext(FileSystemContext);
@@ -157,7 +157,10 @@ const FolderNavigationBranch = ({
               ),
             [isOpen]
           )}
-          {useMemo(() => (icon ? icon() : <FcFolder size='0.9rem' />), [])}
+          {useMemo(
+            () => (icon ? icon() : <img src={fileExplorerFolder} width='20px' />),
+            []
+          )}
           <div
             ref={inputRef}
             suppressContentEditableWarning={true}

@@ -8,12 +8,12 @@ import AppsOrFilesSearchResult from './results/AppsOrFilesSearchResult';
 import WebSearchResults from './results/WebSearchResults';
 import { appConfigurations } from '../../../utils/constants/processConfigurations';
 import { FileSystemContext } from '../../../contexts/FileSystemContext';
-import getFileType from '../../../utils/helpers/getFileType';
 import getFileTypeIcon from '../../../utils/helpers/getFileTypeIcon';
 import { path as Path } from 'filer';
 import openWithDefaultApp from '../../../utils/helpers/openWithDefaultApp';
 import moment from 'moment';
 import axios from 'axios';
+import fileExploerFolder from '../../../assets/icons/file-icons/fileExplorerFolder.ico';
 
 const WindowsSearch = ({
   searchFor,
@@ -54,9 +54,12 @@ const WindowsSearch = ({
       name: fso.name,
       path: fso.path,
       type: fso.type.toLowerCase(),
-      icon: getFileTypeIcon(
-        fso.type === 'DIRECTORY' ? 'directory' : getFileType(Path.extname(fso.name))
-      ),
+      icon:
+        fso.type === 'DIRECTORY' ? (
+          <img src={fileExploerFolder} style={{ minWidth: '20px', minHeight: '20px' }} />
+        ) : (
+          getFileTypeIcon(fso.name)
+        ),
       mtime: moment(fso.mtime).format('DD/MM/YYYY h:mm A'),
     }));
   };
