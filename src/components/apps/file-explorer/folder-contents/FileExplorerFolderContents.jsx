@@ -6,7 +6,7 @@ import useWatchFolder from '../../../../hooks/useWatchFolder';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../../contexts/ProcessesContext';
 import { RightClickMenuContext } from '../../../../contexts/RightClickMenuContext';
-import FolderContentsContextMenu from '../../../system/component-specific-context-menus/FolderContentsContextMenu';
+import FolderContentsContextMenu from '../../../system/context-menus/FolderContentsContextMenu';
 import { path as Path } from 'filer';
 import useSelectionRectangle from '../../../../hooks/useSelectionRectangle';
 import useKeyboardShortcut from '../../../../hooks/useKeyboardShortcut';

@@ -5,7 +5,7 @@ import { FileSystemContext } from '../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
 import useDesktopGrid from '../../../hooks/useDesktopGrid';
 import DesktopIcon from './desktop-icon/DesktopIcon';
-import DesktopContextMenu from '../component-specific-context-menus/DesktopContextMenu';
+import DesktopContextMenu from '../context-menus/DesktopContextMenu';
 import useWatchFolder from '../../../hooks/useWatchFolder';
 import { path as Path } from 'filer';
 import useSelectionRectangle from '../../../hooks/useSelectionRectangle';

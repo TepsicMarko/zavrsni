@@ -10,7 +10,7 @@ import {
   cloneElement,
 } from 'react';
 import getFileTypeIcon from '../../../../../utils/helpers/getFileTypeIcon';
-import FsoListItemContextMenu from '../../../../system/component-specific-context-menus/FsoListItemContextMenu';
+import FileContextMenu from '../../../../system/context-menus/FileContextMenu';
 import selectInputContent from '../../../../../utils/helpers/selectInputContent';
 import { RightClickMenuContext } from '../../../../../contexts/RightClickMenuContext';
 import { ProcessesContext } from '../../../../../contexts/ProcessesContext';
@@ -154,23 +154,32 @@ const FsoListItem = ({
     });
   };
 
+  const handleOpen = () => {
+    if (type === 'DIRECTORY') {
+      changePath(Path.join(path, name));
+    } else openWithDefaultApp(type, path, name, startProcess);
+  };
+
+  const openInFileExplorer = () =>
+    startProcess('File Explorer', { customPath: Path.join(path, name) });
+  const openInNotepad = () => startProcess('Notepad ', { path: Path.join(path, name) });
+
   const handleRightClick = (e) =>
     renderOptions(
       e,
-      <FsoListItemContextMenu
-        name={name}
-        deletePath={path}
-        handleDelete={handleDelete}
+      <FileContextMenu
+        fileName={name}
+        fileType={type}
+        deleteFile={handleDelete}
+        openFile={handleOpen}
+        openInNotepad={openInNotepad}
+        openInFileExplorer={openInFileExplorer}
+        copyFile={handleCopy}
+        cutFile={handleCut}
         focusInput={focusInput}
-        path={path}
-        changePath={changePath}
-        type={type}
-        startProcess={startProcess}
-        handleCopy={handleCopy}
-        handleCut={handleCut}
-        handleDownload={handleDownload}
+        downloadFile={handleDownload}
         isZip={mime.lookup(name) === 'application/zip'}
-        extractFiles={extractFiles}
+        extractZip={extractFiles}
       />
     );
 

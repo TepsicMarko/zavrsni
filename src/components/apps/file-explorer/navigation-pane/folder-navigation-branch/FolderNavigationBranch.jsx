@@ -5,7 +5,7 @@ import { IoIosArrowDown, IoIosArrowForward } from 'react-icons/io';
 import useWatchFolder from '../../../../../hooks/useWatchFolder';
 import { path as Path } from 'filer';
 import { RightClickMenuContext } from '../../../../../contexts/RightClickMenuContext';
-import NavigationPaneBranchContextMenu from '../../../../system/component-specific-context-menus/NavigationPaneBranchContextMenu';
+import NavigationPaneBranchContextMenu from '../../../../system/context-menus/NavigationPaneBranchContextMenu';
 import { FileSystemContext } from '../../../../../contexts/FileSystemContext';
 import useInput from '../../../../../hooks/useInput';
 import selectInputContent from '../../../../../utils/helpers/selectInputContent';

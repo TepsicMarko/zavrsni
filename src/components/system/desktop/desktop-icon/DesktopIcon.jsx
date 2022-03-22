@@ -11,7 +11,7 @@ import {
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { RightClickMenuContext } from '../../../../contexts/RightClickMenuContext';
 import useInput from '../../../../hooks/useInput';
-import DesktopIconContextMenu from '../../component-specific-context-menus/DesktopIconContextMenu';
+import FileContextMenu from '../../context-menus/FileContextMenu';
 import openWithDefaultApp from '../../../../utils/helpers/openWithDefaultApp';
 import { path as Path } from 'filer';
 import getFileType from '../../../../utils/helpers/getFileType';
@@ -232,6 +232,11 @@ const DesktopIcon = ({
     });
   };
 
+  const focusInput = () => {
+    inputRef.current.focus();
+    selectDivText(inputRef.current);
+  };
+
   const handleRightClick = (e) => {
     e.stopPropagation();
     !selectedElements[name] && setSelectedElements({});
@@ -241,23 +246,28 @@ const DesktopIcon = ({
 
     renderOptions(
       e,
-      <DesktopIconContextMenu
-        inputRef={inputRef}
-        handleDelete={handleDelete}
-        handleOpen={handleOpen}
-        selectDivText={selectDivText}
-        handleFocus={handleFocus}
-        handleCopy={handleCopy}
-        handleCut={handleCut}
-        handleFileDownload={handleFileDownload}
+      <FileContextMenu
+        fileName={name}
+        fileType={type}
+        deleteFile={handleDelete}
+        openFile={handleOpen}
+        openInNotepad={openInNotepad}
+        copyFile={handleCopy}
+        cutFile={handleCut}
+        focusInput={focusInput}
+        downloadFile={handleFileDownload}
         isZip={mime.lookup(name) === 'application/zip'}
-        extractFiles={extractFiles}
+        extractZip={extractFiles}
       />
     );
   };
 
-  const stopPropagation = (e) => e.stopPropagation();
+  const openInNotepad = () =>
+    startProcess('Notepad', {
+      path: Path.join(path, name),
+    });
 
+  const stopPropagation = (e) => e.stopPropagation();
   const handleDoubleClick = (e) => openWithDefaultApp(type, path, name, startProcess);
 
   const handleDrop = (e) => {
