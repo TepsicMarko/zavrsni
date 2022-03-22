@@ -13,6 +13,7 @@ const fileTypeIcons = {
   video: <img src={videoFile} />,
   'application/pdf': <img src={pdfFile} />,
   'application/zip': <img src={zipFile} />,
+  'application/rtf': <AiFillFileText size='100%' color='white' />,
   'text/html': <img src={htmlFile} />,
 };
 

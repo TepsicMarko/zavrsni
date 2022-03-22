@@ -1,5 +1,4 @@
 import { path as Path } from 'filer';
-import getFileType from './getFileType';
 
 const getFolderContent = async (dirReader) => {
   let results = await readEntriesPromise(dirReader);

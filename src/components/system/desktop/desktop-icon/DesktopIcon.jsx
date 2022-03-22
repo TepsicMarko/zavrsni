@@ -14,7 +14,6 @@ import useInput from '../../../../hooks/useInput';
 import FileContextMenu from '../../context-menus/FileContextMenu';
 import openWithDefaultApp from '../../../../utils/helpers/openWithDefaultApp';
 import { path as Path } from 'filer';
-import getFileType from '../../../../utils/helpers/getFileType';
 import isInSelection from '../../../../utils/helpers/isInSelection';
 import emptyFolder from '../../../../assets/icons/file-icons/emptyFolder.ico';
 import useKeyboardShortcut from '../../../../hooks/useKeyboardShortcut';
@@ -289,9 +288,9 @@ const DesktopIcon = ({
   };
 
   useEffect(async () => {
-    const fileType = await getFileType(Path.extname(name));
+    const mimeType = mime.lookup(name);
     if (type === 'file') {
-      (fileType === 'video' || fileType === 'image') &&
+      (mimeType.startsWith('video') || mimeType.startsWith('image')) &&
         setImgSrc(await readBlob(Path.join(path, name), mime.lookup(name)));
     }
   }, []);

@@ -162,7 +162,7 @@ const FsoListItem = ({
 
   const openInFileExplorer = () =>
     startProcess('File Explorer', { customPath: Path.join(path, name) });
-  const openInNotepad = () => startProcess('Notepad ', { path: Path.join(path, name) });
+  const openInNotepad = () => startProcess('Notepad', { path: Path.join(path, name) });
 
   const handleRightClick = (e) =>
     renderOptions(
