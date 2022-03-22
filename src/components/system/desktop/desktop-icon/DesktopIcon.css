@@ -42,6 +42,7 @@
   -webkit-line-clamp: 2;
   overflow: hidden;
   overflow-wrap: break-word;
+  z-index: 3;
 }
 
 .desktop-icon-name:focus {
@@ -50,4 +51,32 @@
   outline: none;
   color: black;
   border: 1px solid;
+}
+
+.video-icon-container {
+  position: relative;
+}
+
+.video-icon-container > img {
+  width: 92.5%;
+  margin: 0;
+  position: absolute;
+  top: -2.75px;
+  left: 3px;
+  z-index: 2;
+}
+
+.video-icon-container > div {
+  position: absolute;
+  background-color: white;
+  height: 30px;
+  width: 4px;
+  left: 4.75px;
+  top: 0px;
+  z-index: 1;
+}
+
+.video-icon-container > div:last-child {
+  left: initial;
+  right: 4.75px;
 }

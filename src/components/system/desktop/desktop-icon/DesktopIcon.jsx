@@ -22,6 +22,7 @@ import mime from 'mime-types';
 import downloadFile from '../../../../utils/helpers/downloadFile';
 import jszip from 'jszip';
 import getFileTypeIcon from '../../../../utils/helpers/getFileTypeIcon';
+import videoOverlay from '../../../../assets/icons/system-icons/videoOverlay.ico';
 
 const DesktopIcon = ({
   name,
@@ -82,13 +83,20 @@ const DesktopIcon = ({
 
   const renderIcon = () => {
     if (type === 'file') {
-      const mimeType = mime.lookup(name);
+      const mimeType = mime.lookup(name) || '';
 
       if (mimeType.startsWith('image'))
         return <img src={imgSrc} width='70%' height='100%' draggable={false} />;
 
       if (mimeType.startsWith('video'))
-        return <video src={imgSrc} width='70%' height='100%' draggable={false} />;
+        return (
+          <div className='video-icon-container flex-center'>
+            <video src={imgSrc} width='70%' height='100%' draggable={false} />
+            <img src={videoOverlay} width='70%' draggable={false} />
+            <div></div>
+            <div></div>
+          </div>
+        );
 
       return cloneElement(getFileTypeIcon(name), {
         style: { width: '2.5rem' },
