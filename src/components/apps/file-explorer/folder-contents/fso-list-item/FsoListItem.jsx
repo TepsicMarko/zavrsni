@@ -168,6 +168,7 @@ const FsoListItem = ({
     renderOptions(
       e,
       <FileContextMenu
+        filePath={path}
         fileName={name}
         fileType={type}
         deleteFile={handleDelete}
@@ -180,6 +181,7 @@ const FsoListItem = ({
         downloadFile={handleDownload}
         isZip={mime.lookup(name) === 'application/zip'}
         extractZip={extractFiles}
+        readBlob={readBlob}
       />
     );
 

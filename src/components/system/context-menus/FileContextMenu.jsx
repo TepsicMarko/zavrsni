@@ -1,8 +1,11 @@
 import ContextMenuItem from '../context-menu/context-menu-item/ContextMenuItem';
 import mime from 'mime';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { WallpaperContext } from '../../../contexts/WallpaperContext';
+import { path as Path } from 'filer';
 
 const FileContextMenu = ({
+  filePath,
   fileName,
   fileType,
   closeMenu,
@@ -16,10 +19,15 @@ const FileContextMenu = ({
   downloadFile,
   isZip,
   extarctZip,
+  readBlob,
 }) => {
   const [openSubmenu, setOpenSubmenu] = useState('');
   const handleMouseOver = (name) => setOpenSubmenu(name);
+  const { setWallpaper } = useContext(WallpaperContext);
   const mimeType = mime.lookup(fileName) || '';
+
+  const setAsWallpaper = async () =>
+    setWallpaper(await readBlob(Path.join(filePath, fileName), mime.lookup(fileName)));
 
   return (
     <>
@@ -51,6 +59,14 @@ const FileContextMenu = ({
               closeMenu={closeMenu}
             />
           )}
+      {fileType.toLowerCase() !== 'directory' && mimeType.startsWith('image/') && (
+        <ContextMenuItem
+          name='Set as desktop background'
+          onClick={setAsWallpaper}
+          closeMenu={closeMenu}
+          onMouseOver={handleMouseOver}
+        />
+      )}
       {isZip && (
         <ContextMenuItem
           name='Extract Here'

@@ -6,6 +6,7 @@ import unknownFile from '../../assets/icons/file-icons/unknownFile.ico';
 import pdfFile from '../../assets/icons/file-icons/pdfFile.jpg';
 import htmlFile from '../../assets/icons/app-icons/chrome.svg';
 import zipFile from '../../assets/icons/file-icons/zipFile.ico';
+import rtfFile from '../../assets/icons/file-icons/rtfFile.ico';
 
 const fileTypeIcons = {
   text: <AiFillFileText size='100%' color='white' />,
@@ -13,7 +14,7 @@ const fileTypeIcons = {
   video: <img src={videoFile} />,
   'application/pdf': <img src={pdfFile} />,
   'application/zip': <img src={zipFile} />,
-  'application/rtf': <AiFillFileText size='100%' color='white' />,
+  'application/rtf': <img src={rtfFile} />,
   'text/html': <img src={htmlFile} />,
 };
 

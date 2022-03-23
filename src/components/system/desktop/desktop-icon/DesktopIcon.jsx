@@ -246,6 +246,7 @@ const DesktopIcon = ({
     renderOptions(
       e,
       <FileContextMenu
+        filePath={path}
         fileName={name}
         fileType={type}
         deleteFile={handleDelete}
@@ -257,6 +258,7 @@ const DesktopIcon = ({
         downloadFile={handleFileDownload}
         isZip={mime.lookup(name) === 'application/zip'}
         extractZip={extractFiles}
+        readBlob={readBlob}
       />
     );
   };
