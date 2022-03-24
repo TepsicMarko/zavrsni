@@ -20,7 +20,7 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
 
   const handleChange = (e) => {
     setText({
-      content: e.target.innerHTML,
+      content: e.target.innerText,
       lines: (e.target.innerHTML.match(/<div>/g) || '').length + 1,
       chars: e.target.textContent.length,
     });
@@ -32,19 +32,21 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
 
   const stopPropagation = (e) => e.stopPropagation();
   const setTextContent = (content) => {
-    const textInfo = document.createElement('div');
-    textInfo.innerHTML = content;
     setText({
       content,
       lines: (`${content}`.match(/<div>/g) || '').length + 1,
-      chars: textInfo.textContent.length,
+      chars: content.length,
     });
-    divRef.current.innerHTML = content;
-    textInfo.remove();
+    divRef.current.textContent = content;
   };
 
   const createFile = (createPath, name, type) => {
-    createFSO(createPath, name, type, text.content);
+    createFSO(
+      createPath,
+      name,
+      type,
+      text.content.replace('<div>', '\n').replace('</div>', '')
+    );
     setFilePath(Path.join(createPath, name + type));
     if (createPath === '/C/users/admin/Desktop')
       addToGrid([name + type, undefined], { row: 1, column: 1 });
@@ -70,7 +72,11 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
     }
 
     if (filePath) {
-      saveFile(filePath.replace(/\.[^/.]+$/, ''), Path.extname(filePath), text.content);
+      saveFile(
+        filePath.replace(/\.[^/.]+$/, ''),
+        Path.extname(filePath),
+        text.content.replace('<div>', '\n').replace('</div>', '')
+      );
       callback ? callback(startChildProcess) : endProcess('Notepad', pid);
     }
   };
