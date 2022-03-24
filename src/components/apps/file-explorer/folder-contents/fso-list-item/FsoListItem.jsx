@@ -293,18 +293,9 @@ const FsoListItem = ({
     else isCut && setIsCut(false);
   }, [cut]);
 
-  const updateCutHandler = useKeyboardShortcut(['ctrl', 'x'], handleCut);
-  const updateCopyHandler = useKeyboardShortcut(['ctrl', 'c'], handleCopy);
-  const updateDeleteHandler = useKeyboardShortcut(
-    ['delete'],
-    isSelected ? handleDelete : undefined
-  );
-
-  useEffect(() => {
-    updateCutHandler(isSelected ? handleCut : undefined);
-    updateCopyHandler(isSelected ? handleCopy : undefined);
-    updateDeleteHandler(isSelected ? handleDelete : undefined);
-  }, [handleCut, handleCopy, handleDelete, isSelected]);
+  useKeyboardShortcut(['ctrl', 'x'], isSelected ? handleCut : undefined);
+  useKeyboardShortcut(['ctrl', 'c'], isSelected ? handleCopy : undefined);
+  useKeyboardShortcut(['delete'], isSelected ? handleDelete : undefined);
 
   return (
     <tr

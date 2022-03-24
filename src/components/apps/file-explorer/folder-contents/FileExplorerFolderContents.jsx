@@ -1,7 +1,7 @@
 import './FileExplorerFolderContents.css';
 import ColumnHeading from './column-heading/ColumnHeading';
 import FsoListItem from './fso-list-item/FsoListItem';
-import { useEffect, useContext, useCallback } from 'react';
+import { useContext, useCallback } from 'react';
 import useWatchFolder from '../../../../hooks/useWatchFolder';
 import { FileSystemContext } from '../../../../contexts/FileSystemContext';
 import { ProcessesContext } from '../../../../contexts/ProcessesContext';
@@ -31,7 +31,7 @@ const FileExplorerFolderContents = ({
   const { startProcess } = useContext(ProcessesContext);
   const { renderOptions } = useContext(RightClickMenuContext);
 
-  const [folderContent, setWatcherPath, sortFolderContent] = useWatchFolder(
+  const [folderContent, sortFolderContent] = useWatchFolder(
     path,
     watch,
     getFolder,
@@ -106,18 +106,10 @@ const FileExplorerFolderContents = ({
     e.dataTransfer.setDragImage(new Image(), 0, 0);
   };
 
-  useEffect(() => {
-    setWatcherPath(path);
-  }, [path]);
-
-  const updatePasteHandler = useKeyboardShortcut(
+  useKeyboardShortcut(
     ['ctrl', 'v'],
-    !isClipboardEmpty ? handlePaste : undefined
+    !isClipboardEmpty && isFocused ? handlePaste : undefined
   );
-
-  useEffect(() => {
-    updatePasteHandler(!isClipboardEmpty && isFocused ? handlePaste : undefined);
-  }, [handlePaste, isFocused]);
 
   return (
     <div

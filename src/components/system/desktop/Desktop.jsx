@@ -167,20 +167,13 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
       />
     ));
 
-  const updatePasteHandler = useKeyboardShortcut(
-    ['ctrl', 'v'],
-    !isClipboardEmpty ? handlePaste : undefined
+  const isFileExplorerFocused = Object.values(processes['File Explorer'] || {}).some(
+    (processInstance) => processInstance.isFocused === true
   );
-
-  useEffect(() => {
-    const isFileExplorerFocused = Object.values(processes['File Explorer'] || {}).some(
-      (processInstance) => processInstance.isFocused === true
-    );
-
-    updatePasteHandler(
-      !isClipboardEmpty && !isFileExplorerFocused ? handlePaste : undefined
-    );
-  }, [handlePaste, processes]);
+  useKeyboardShortcut(
+    ['ctrl', 'v'],
+    !isClipboardEmpty && !isFileExplorerFocused ? handlePaste : undefined
+  );
 
   return (
     <div

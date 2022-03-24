@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
-const useKeyboardShortcut = ([base, key], initilaShortcutHandler) => {
-  const [shortcutHandler, setShortcutHandler] = useState(() => initilaShortcutHandler);
-
+const useKeyboardShortcut = ([base, key], shortcutHandler) => {
   const eventHandler = (e) => {
     if (base && key) {
       if (e[base + 'Key'] && e.key === key) shortcutHandler && shortcutHandler();
@@ -18,8 +16,6 @@ const useKeyboardShortcut = ([base, key], initilaShortcutHandler) => {
 
     return () => document.removeEventListener('keydown', eventHandler);
   }, [shortcutHandler]);
-
-  return (newFunction) => setShortcutHandler(() => newFunction);
 };
 
 export default useKeyboardShortcut;

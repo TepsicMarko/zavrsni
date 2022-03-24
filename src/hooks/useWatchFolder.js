@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-const useWatchFolder = (initialPath, watch, handleChange, setItemCount) => {
-  const [path, setPath] = useState(initialPath);
+const useWatchFolder = (path, watch, handleChange, setItemCount) => {
   const [folderContent, setFolderContent] = useState([]);
   const previusSort = useRef({ sortBy: '', order: 'ascending' });
 
@@ -48,7 +47,7 @@ const useWatchFolder = (initialPath, watch, handleChange, setItemCount) => {
       setItemCount(nItems > 0 ? (nItems > 1 ? nItems + ' items' : '1 item') : '0 items');
   }, [folderContent.length]);
 
-  return [folderContent, setPath, sortFolderContent];
+  return [folderContent, sortFolderContent];
 };
 
 export default useWatchFolder;
