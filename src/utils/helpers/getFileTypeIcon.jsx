@@ -20,7 +20,7 @@ const fileTypeIcons = {
 
 const getFileTypeIcon = (name) => {
   const mimeType = mime.lookup(name);
-  console.log(mimeType, mimeType.split('/')[0]);
+
   return (
     fileTypeIcons[mimeType] ||
     fileTypeIcons[mimeType.split('/')[0]] || <img src={unknownFile} />

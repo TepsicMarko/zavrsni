@@ -15,6 +15,7 @@
   max-width: 15517ch;
   font-family: consolas;
   padding-left: 0.25rem;
+  margin: 0;
 }
 
 .notepad-text-content > * {

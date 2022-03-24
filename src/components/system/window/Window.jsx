@@ -171,13 +171,17 @@ const Window = ({
   const closeWindow = useCallback(
     (e) => {
       e.stopPropagation();
-      windowRef.current.style.opacity = '0';
-      windowRef.current.style.transform += 'scale(0.9)';
-      setTimeout(() => {
-        if (onClose) {
-          onClose(endProcess);
-        } else endProcess(process, pid, parentProcess, ppid);
-      }, 200);
+
+      if (onClose) {
+        onClose(endProcess);
+      } else {
+        windowRef.current.style.opacity = '0';
+        windowRef.current.style.transform += 'scale(0.9)';
+
+        setTimeout(() => {
+          endProcess(process, pid, parentProcess, ppid);
+        }, 200);
+      }
     },
     [process, endProcess, parentProcess, onClose]
   );

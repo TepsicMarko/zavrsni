@@ -152,7 +152,7 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
             paddingBottom: wordWrap ? '1rem' : '',
           }}
         >
-          <div
+          <pre
             ref={divRef}
             className='notepad-text-content'
             contentEditable
@@ -163,7 +163,7 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
               maxWidth: wordWrap ? 'calc(100% - 4px)' : '',
               fontSize: `${zoom}%`,
             }}
-          ></div>
+          ></pre>
         </div>
       </WindowContent>
       {statusBarVisible && (
