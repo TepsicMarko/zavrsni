@@ -1,6 +1,6 @@
-import ContextMenuItem from "../../../../system/context-menu/context-menu-item/ContextMenuItem";
+import ContextMenuItem from '../../../../system/context-menu/context-menu-item/ContextMenuItem';
 
-const FormatDropdownMenu = ({ wordWrap, setWordWrap }) => {
+const FormatDropdownMenu = ({ wordWrap, setWordWrap, closeMenu }) => {
   const toggleWordWrap = () => {
     setWordWrap(!wordWrap);
   };
@@ -14,8 +14,8 @@ const FormatDropdownMenu = ({ wordWrap, setWordWrap }) => {
         checkBox
         active={wordWrap}
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
-      {/* <ContextMenuItem fontWeight='400' name='Font' /> */}
     </>
   );
 };

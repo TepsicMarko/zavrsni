@@ -24,29 +24,16 @@ const NotepadNavbar = ({
 }) => {
   const [activeTab, setActiveTab] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const navRef = useClickOutside('mousedown', () => {
+
+  const closeMenu = () => {
     setActiveTab('');
     setIsDropdownOpen(false);
-  });
-
-  const changeActiveTab = (e) => {
-    setActiveTab(e.target.textContent);
-    setIsDropdownOpen(true);
   };
 
-  const handleMouseDown = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  const handleMouseOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    isDropdownOpen && setActiveTab(e.target.childNodes[0].textContent);
-  };
+  const navRef = useClickOutside('mousedown', closeMenu);
 
   return (
-    <div className='notepad-navbar'>
+    <div className='notepad-navbar' ref={navRef}>
       {[
         { name: 'File', size: '14.5rem' },
         { name: 'Edit', size: '12.5rem' },
@@ -54,11 +41,15 @@ const NotepadNavbar = ({
         { name: 'View', size: '7.5rem' },
       ].map(({ name, size }) => (
         <div
-          ref={navRef}
           className='flex-center notepad-nav-tab'
-          onClick={changeActiveTab}
-          onMouseDown={handleMouseDown}
-          onMouseOver={handleMouseOver}
+          onClick={() => {
+            setActiveTab(name);
+            setIsDropdownOpen(true);
+          }}
+          onMouseOver={(e) => {
+            e.stopPropagation();
+            isDropdownOpen && setActiveTab(e.target.childNodes[0].textContent);
+          }}
         >
           {name}
           {activeTab === name && (
@@ -79,11 +70,18 @@ const NotepadNavbar = ({
                   resetNotepad={resetNotepad}
                   pid={pid}
                   addToGrid={addToGrid}
+                  closeMenu={closeMenu}
                 />
               )}
-              {name === 'Edit' && <EditDropdownMenu divRef={divRef} />}
+              {name === 'Edit' && (
+                <EditDropdownMenu divRef={divRef} closeMenu={closeMenu} />
+              )}
               {name === 'Format' && (
-                <FormatDropdownMenu setWordWrap={setWordWrap} wordWrap={wordWrap} />
+                <FormatDropdownMenu
+                  setWordWrap={setWordWrap}
+                  wordWrap={wordWrap}
+                  closeMenu={closeMenu}
+                />
               )}
               {name === 'View' && (
                 <ViewDropdownMenu
@@ -91,6 +89,7 @@ const NotepadNavbar = ({
                   statusBarVisible={statusBarVisible}
                   setZoom={setZoom}
                   zoom={zoom}
+                  closeMenu={closeMenu}
                 />
               )}
             </div>

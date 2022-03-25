@@ -1,7 +1,7 @@
-import ContextMenuItem from "../../../../system/context-menu/context-menu-item/ContextMenuItem";
-import useClipboard from "../../../../../hooks/useClipboard";
+import ContextMenuItem from '../../../../system/context-menu/context-menu-item/ContextMenuItem';
+import useClipboard from '../../../../../hooks/useClipboard';
 
-const EditDropdownMenu = ({ divRef }) => {
+const EditDropdownMenu = ({ divRef, closeMenu }) => {
   const { executeClipboardComand } = useClipboard();
 
   const handleClick = (name) => {
@@ -20,6 +20,7 @@ const EditDropdownMenu = ({ divRef }) => {
         onClick={executeCommand}
         returnName
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
       <ContextMenuItem
         fontWeight='400'
@@ -27,6 +28,7 @@ const EditDropdownMenu = ({ divRef }) => {
         onClick={executeCommand}
         returnName
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
       <ContextMenuItem
         fontWeight='400'
@@ -34,6 +36,7 @@ const EditDropdownMenu = ({ divRef }) => {
         onClick={handleClick}
         returnName
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
       <ContextMenuItem
         fontWeight='400'
@@ -41,6 +44,7 @@ const EditDropdownMenu = ({ divRef }) => {
         onClick={handleClick}
         returnName
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
       <ContextMenuItem
         fontWeight='400'
@@ -48,6 +52,7 @@ const EditDropdownMenu = ({ divRef }) => {
         onClick={handleClick}
         returnName
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
       <ContextMenuItem
         fontWeight='400'
@@ -55,6 +60,7 @@ const EditDropdownMenu = ({ divRef }) => {
         onClick={handleClick}
         returnName
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
     </>
   );

@@ -12,6 +12,7 @@ const FileDropdownMenu = ({
   resetNotepad,
   pid,
   addToGrid,
+  closeMenu,
 }) => {
   const { startProcess, startChildProcess, endProcess } = useContext(ProcessesContext);
   const { createFSO, saveFile, readFileContent } = useContext(FileSystemContext);
@@ -95,30 +96,35 @@ const FileDropdownMenu = ({
         name='New'
         hoverColor='#91c9f7'
         onClick={createBlankFile}
+        closeMenu={closeMenu}
       />
       <ContextMenuItem
         fontWeight='400'
         name='New Window'
         onClick={openNotepad}
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
       <ContextMenuItem
         fontWeight='400'
         name='Open...'
         onClick={openFile}
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
       <ContextMenuItem
         fontWeight='400'
         name='Save'
         onClick={saveChanges}
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
       <ContextMenuItem
         fontWeight='400'
         name='Save As...'
         onClick={saveAs}
         hoverColor='#91c9f7'
+        closeMenu={closeMenu}
       />
     </>
   );

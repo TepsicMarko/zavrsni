@@ -19,6 +19,7 @@ const ContextMenuItem = ({
   checkBox,
   hoverColor = 'rgba(255, 255, 255, 0.15)',
   disabled,
+  reactiveSubmenu = true,
 }) => {
   const [isMouseOver, setIsMouseOver] = useState(false);
   const [submenuPosition, setSubmenuPosition] = useState({ left: '', bottom: '' });
@@ -36,7 +37,7 @@ const ContextMenuItem = ({
   };
 
   useLayoutEffect(() => {
-    if (openSubmenu && onMouseOver) {
+    if (openSubmenu && onMouseOver && reactiveSubmenu) {
       const newSubmenuPosition = { ...submenuPosition };
       const menu = submenuRef.current.parentElement.parentElement;
       const maxWidth = menu.parentElement.offsetWidth;

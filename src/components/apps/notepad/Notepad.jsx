@@ -115,6 +115,12 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
     divRef.current.innerHTML = '';
   };
 
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData('text/plain');
+    document.execCommand('insertHTML', false, text);
+  };
+
   useEffect(() => {
     filePath.length && readFileContent(filePath, setTextContent);
   }, [filePath]);
@@ -165,6 +171,7 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
             suppressContentEditableWarning
             onInput={handleChange}
             onClick={stopPropagation}
+            onPaste={handlePaste}
             style={{
               maxWidth: wordWrap ? 'calc(100% - 4px)' : '',
               fontSize: `${zoom}%`,
