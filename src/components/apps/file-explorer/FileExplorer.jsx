@@ -1,6 +1,5 @@
 import './FileExplorer.css';
 import Window from '../../system/window/Window';
-import WindowContent from '../../system/window/window-content/WindowContent';
 import StatusBar from '../../system/window/status-bar/StatusBar';
 import FileExplorerNavbar from './navbar/FileExplorerNavbar';
 import FileExplorerRibbon from './ribbon/FileExplorerRibbon';
@@ -53,7 +52,7 @@ const FileExplorer = ({
       pid={pid}
       ppid={ppid}
       icon={icon}
-      minWindowWidth={minWidth || '14rem'}
+      minWindowWidth={minWidth || '26rem'}
       minWindowHeight={minHeight || '16rem'}
       titleBar={{ color: 'white', backgroundColor: 'black' }}
       limitedWindowControls={mode !== 'v'}

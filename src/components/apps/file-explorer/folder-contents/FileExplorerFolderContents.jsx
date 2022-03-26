@@ -147,28 +147,33 @@ const FileExplorerFolderContents = ({
         </thead>
         <tbody onDragEnter={(e) => e.stopPropagation()}>
           <tr style={{ height: '0.5rem' }}></tr>
-          {[...(searchResults.length ? searchResults : folderContent)].map((fso, i) => {
-            return (
-              <FsoListItem
-                key={fso.node}
-                fso={fso}
-                path={path}
-                changePath={changePath}
-                setExpandBranches={setExpandBranches}
-                openFile={openFile}
-                endProcess={endProcess}
-                pid={pid}
-                ppid={ppid}
-                rectRef={rectRef}
-                selectedElements={selectedElements}
-                setSelectedElements={setSelectedElements}
-                dimensions={dimensions}
-                setSelectedFile={setSelectedFile}
-                mode={mode}
-                addToGrid={addToGrid}
-              />
-            );
-          })}
+
+          {!searchResults.length && !folderContent.length ? (
+            <div className='empty-folder'>This folder is empty</div>
+          ) : (
+            [...(searchResults.length ? searchResults : folderContent)].map((fso, i) => {
+              return (
+                <FsoListItem
+                  key={fso.node}
+                  fso={fso}
+                  path={path}
+                  changePath={changePath}
+                  setExpandBranches={setExpandBranches}
+                  openFile={openFile}
+                  endProcess={endProcess}
+                  pid={pid}
+                  ppid={ppid}
+                  rectRef={rectRef}
+                  selectedElements={selectedElements}
+                  setSelectedElements={setSelectedElements}
+                  dimensions={dimensions}
+                  setSelectedFile={setSelectedFile}
+                  mode={mode}
+                  addToGrid={addToGrid}
+                />
+              );
+            })
+          )}
         </tbody>
       </table>
       <div ref={rectRef} className='rect-selection' style={{ ...calcRectStyle() }}></div>

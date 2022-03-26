@@ -30,25 +30,30 @@
   height: 100%;
   display: flex;
   align-items: center;
+  top: 0;
 }
 
 .fso-list-item-name-input {
   margin-left: 1.25rem;
+  height: calc(100% - 5px);
 }
 
 .fso-list-item-name-input:focus {
   z-index: 10;
-  white-space: nowrap;
-  overflow: initial;
-  text-overflow: initial;
   min-width: fit-content;
   background-color: #202020;
   color: white;
   border: none;
   outline: 1px solid white;
   padding-right: 1rem;
-  padding-left: 0.25rem;
+  padding-left: 0.15rem;
   box-sizing: border-box;
+  position: absolute;
+  top: 2.5px;
+  left: 5.5px;
+  display: flex;
+  align-items: center;
+  overflow-y: hidden;
 }
 
 .fso-list-item:hover {

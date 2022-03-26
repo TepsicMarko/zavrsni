@@ -22,7 +22,13 @@ const openWithDefaultApp = (type, path, name, openApp) => {
     const mimeType = mime.lookup(name);
     const defaultApp = mimeTypes[mimeType] || mimeTypes[mimeType.split('/')[0]];
 
-    defaultApp && openApp(defaultApp, { path: 'file:/' + filePath });
+    defaultApp &&
+      openApp(defaultApp, {
+        path:
+          mimeType === 'text/html' || mimeType === 'application/pdf'
+            ? 'file:/' + filePath
+            : filePath,
+      });
   }
 };
 

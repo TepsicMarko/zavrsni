@@ -32,21 +32,30 @@ const FileExplorerNavigationPane = ({
   };
 
   return (
-    <div className='fx-navigation-pane' style={{ width }}>
-      <div className='folder-navigation-tree'>
-        <FolderNavigationBranch
-          branchName='This PC'
-          icon={RiComputerFill}
-          depth={1}
-          basePath={basePath}
-          currentPath={currentPath}
-          changePath={changePath}
-          expandBranches={expandBranches}
-          setExpandBranches={setExpandBranches}
-          addToGrid={addToGrid}
-          resetSearch={resetSearch}
-          open
-        />
+    <div className='resize-container'>
+      <div
+        className='fx-navigation-pane'
+        style={{ width }}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+      >
+        <div className='folder-navigation-tree'>
+          <FolderNavigationBranch
+            branchName='This PC'
+            icon={RiComputerFill}
+            depth={1}
+            basePath={basePath}
+            currentPath={currentPath}
+            changePath={changePath}
+            expandBranches={expandBranches}
+            setExpandBranches={setExpandBranches}
+            addToGrid={addToGrid}
+            resetSearch={resetSearch}
+            open
+          />
+        </div>
       </div>
       <div
         className='resize-navigation-pane'

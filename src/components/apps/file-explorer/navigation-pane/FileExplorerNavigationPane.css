@@ -1,3 +1,7 @@
+.resize-container {
+  position: relative;
+}
+
 .fx-navigation-pane {
   background-color: #191919;
   min-width: 5rem;
@@ -5,7 +9,10 @@
   position: relative;
   flex-basis: unset;
   height: 100%;
+  max-height: 100%;
   max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .folder-navigation-tree {

@@ -164,7 +164,8 @@ const FsoListItem = ({
     startProcess('File Explorer', { customPath: Path.join(path, name) });
   const openInNotepad = () => startProcess('Notepad', { path: Path.join(path, name) });
 
-  const handleRightClick = (e) =>
+  const handleRightClick = (e) => {
+    setIsSelected(true);
     renderOptions(
       e,
       <FileContextMenu
@@ -184,6 +185,7 @@ const FsoListItem = ({
         readBlob={readBlob}
       />
     );
+  };
 
   const handleDoubleClick = (e) => {
     if (type === 'DIRECTORY') {
@@ -314,7 +316,7 @@ const FsoListItem = ({
       onClick={handleClick}
       onDragStart={handleDragStart}
     >
-      <td>
+      <td style={{ overflow: isInputFocused ? 'initial' : '' }}>
         <span className='fso-list-item-icon' style={{ opacity: isCut ? 0.5 : 1 }}>
           {renderIcon()}
         </span>

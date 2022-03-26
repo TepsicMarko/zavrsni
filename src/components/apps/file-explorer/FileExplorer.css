@@ -3,6 +3,7 @@
   display: flex;
   min-height: 0px;
   height: 100%;
+  color-scheme: dark;
 }
 
 .item-count {
