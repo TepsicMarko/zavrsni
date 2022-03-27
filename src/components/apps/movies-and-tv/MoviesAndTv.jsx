@@ -37,8 +37,8 @@ const MoviesAndTv = ({ path, pid }) => {
       process='Movies And TV'
       pid={pid}
       displayTitle={false}
-      minWindowWidth='9rem'
-      minWindowHeight='10rem'
+      minWindowWidth='35rem'
+      minWindowHeight='27.5rem'
       titleBar={{
         color: 'white',
         backgroundColor: !isMiniplayer ? 'black' : 'transparent',

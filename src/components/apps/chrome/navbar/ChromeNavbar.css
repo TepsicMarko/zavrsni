@@ -1,5 +1,6 @@
 .chrome-navbar {
   flex-basis: 2rem;
+  width: 100%;
   background-color: #35363a;
   display: flex;
   padding-right: 0.25rem;

@@ -65,8 +65,8 @@ const Chrome = ({ icon, pid, path }) => {
       process='Chrome'
       pid={pid}
       icon={icon}
-      minWindowWidth='15rem'
-      minWindowHeight='5rem'
+      minWindowWidth='18.5rem'
+      minWindowHeight='10rem'
       titleBar={{ color: 'white', backgroundColor: '#202124' }}
       disableIframe={disableIframe}
       enableIframe={enableIframe}
