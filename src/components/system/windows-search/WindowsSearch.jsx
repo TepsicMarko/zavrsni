@@ -17,6 +17,7 @@ import fileExploerFolder from '../../../assets/icons/file-icons/fileExplorerFold
 
 const WindowsSearch = ({
   searchFor,
+  setSearchFor,
   isWindowsSearchOpen,
   closeWindowsSearch,
   startProcess,
@@ -52,7 +53,7 @@ const WindowsSearch = ({
 
     return found.map((fso) => ({
       name: fso.name,
-      path: fso.path,
+      path: fso.location,
       type: fso.type.toLowerCase(),
       icon:
         fso.type === 'DIRECTORY' ? (
@@ -100,7 +101,13 @@ const WindowsSearch = ({
   const openAppOrFile = (appOrFileName, fileType, filePath) => {
     console.log(appOrFileName, fileType, filePath);
     if (!fileType && !filePath) startProcess(appOrFileName);
-    else openWithDefaultApp(fileType, filePath, '', startProcess);
+    else
+      openWithDefaultApp(
+        fileType,
+        filePath.replace(appOrFileName, ''),
+        appOrFileName,
+        startProcess
+      );
     closeWindowsSearch();
   };
 
@@ -150,6 +157,11 @@ const WindowsSearch = ({
       };
     else previousSearchForRef.current[searchIn] = searchFor;
   }, [searchFor, searchIn]);
+
+  useEffect(() => {
+    setSearchFor('');
+    setSearchIn('All');
+  }, [isWindowsSearchOpen]);
 
   return isWindowsSearchOpen ? (
     <div
@@ -203,6 +215,8 @@ const WindowsSearch = ({
           closeWindowsSearch={closeWindowsSearch}
           startProcess={startProcess}
           searchIn={searchIn}
+          setSearchIn={setSearchIn}
+          setSearchFor={setSearchFor}
         />
       )}
     </div>

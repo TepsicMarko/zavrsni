@@ -1,23 +1,20 @@
-import "./SearchResults.css";
-import { cloneElement } from "react";
-import { IoOpenOutline } from "react-icons/io5";
-import { BsFolder2Open, BsPin } from "react-icons/bs";
-import { MdOutlineFileCopy } from "react-icons/md";
-import { path as Path } from "filer";
+import './SearchResults.css';
+import { cloneElement } from 'react';
+import { IoOpenOutline } from 'react-icons/io5';
+import { BsFolder2Open, BsPin } from 'react-icons/bs';
+import { MdOutlineFileCopy } from 'react-icons/md';
+import { path as Path } from 'filer';
 
-const AppsOrFilesSearchResult = ({
-  result,
-  searchIn,
-  openAppOrFile,
-  focusedResult,
-}) => {
+const AppsOrFilesSearchResult = ({ result, searchIn, openAppOrFile, focusedResult }) => {
   const handleClick = () =>
-    searchIn === "Apps"
+    searchIn === 'Apps'
       ? openAppOrFile(result.name)
       : openAppOrFile(result.name, result.type, result.path);
 
-  const openFileLocation = () =>
-    openAppOrFile(result.name, "directory", Path.dirname(result.path));
+  const openFileLocation = () => {
+    const parentFolder = Path.basename(Path.dirname(result.path));
+    openAppOrFile(parentFolder, 'directory', Path.dirname(result.path));
+  };
 
   const copyToClipboard = () => {
     const selection = window.getSelection();
@@ -31,10 +28,10 @@ const AppsOrFilesSearchResult = ({
       <div className='basic-app-or-file-info'>
         <div className='app-or-file-icon'>
           {cloneElement(result.icon, {
-            size: "70px",
-            width: "70px",
-            height: "70px",
-            color: "white",
+            size: '70px',
+            width: '70px',
+            height: '70px',
+            color: 'white',
           })}
         </div>
         <div className='app-or-file-name' onClick={handleClick}>
@@ -59,8 +56,8 @@ const AppsOrFilesSearchResult = ({
           <IoOpenOutline />
           Open
         </div>
-        {searchIn === "Apps" && (
-          <div onClick={() => alert("comming soon...")}>
+        {searchIn === 'Apps' && (
+          <div onClick={() => alert('comming soon...')}>
             <BsPin />
             Pin To Taskbar
           </div>

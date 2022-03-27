@@ -8,7 +8,6 @@ import { GiSpeaker } from 'react-icons/gi';
 import moment from 'moment';
 import { ProcessesContext } from '../../../contexts/ProcessesContext';
 import useToggle from '../../../hooks/useToggle';
-import useInput from '../../../hooks/useInput';
 import processConfigurations from '../../../utils/constants/processConfigurations';
 import StartMenu from './start-menu/StartMenu';
 import WindowsSearch from '../windows-search/WindowsSearch';
@@ -25,12 +24,11 @@ const Taskbar = ({
   taskbarOrientation,
   setTaskbarDimensions,
 }) => {
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [time, setTime] = useState(moment().format('h:mm A'));
   const [isResizing, toggleResizing] = useToggle();
   const [isStartMenuVisible, setStartMenuVisibility] = useState(false);
   const [isWindowsSearchOpen, setIsWindowsSearchOpen] = useState(false);
-  const [searchVal, handleSearchChange] = useInput();
+  const [searchVal, setSearchVal] = useState('');
   const verticalWidthRef = useRef(0);
   const horizontalHeightRef = useRef(0);
   const { processes, startProcess, focusProcess, endProcess, minimizeToTaskbar } =
@@ -42,10 +40,7 @@ const Taskbar = ({
 
   const colapseStartMenu = () => setStartMenuVisibility(false);
   const closeWindowsSearch = () => setIsWindowsSearchOpen(false);
-  const openWindowsSearch = () => {
-    setIsSearchFocused(true);
-    setIsWindowsSearchOpen(true);
-  };
+  const openWindowsSearch = () => setIsWindowsSearchOpen(true);
 
   const handleResize = (e) => {
     const position = taskbarPosition;
@@ -118,6 +113,8 @@ const Taskbar = ({
     closeWindowsSearch();
   };
 
+  const handleSearchChange = (e) => setSearchVal(e.target.value);
+
   useEffect(() => {
     let interval = null;
 
@@ -179,16 +176,15 @@ const Taskbar = ({
         <div className={isVerticalClassName('windows-search-bar')}>
           <VscSearch
             className={isVerticalClassName('search-icon')}
-            color={isSearchFocused ? 'black' : 'white'}
+            color={isWindowsSearchOpen ? 'black' : 'white'}
           />
           {taskbarOrientation !== 'vertical' && (
             <input
               value={searchVal}
               onChange={handleSearchChange}
-              onBlur={() => setIsSearchFocused(false)}
               type='text'
               placeholder='Type here to search'
-              className='search-input'
+              className={`search-input${isWindowsSearchOpen ? '-focused' : ''}`}
               onMouseDown={(e) => {
                 e.stopPropagation();
                 colapseStartMenu();
@@ -198,6 +194,7 @@ const Taskbar = ({
           )}
           <WindowsSearch
             searchFor={searchVal}
+            setSearchFor={setSearchVal}
             isWindowsSearchOpen={isWindowsSearchOpen}
             closeWindowsSearch={closeWindowsSearch}
             startProcess={startProcess}

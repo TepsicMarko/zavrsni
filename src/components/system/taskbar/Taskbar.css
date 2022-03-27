@@ -62,7 +62,8 @@
   left: 0;
 }
 
-.search-input {
+.search-input,
+.search-input-focused {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
@@ -86,14 +87,14 @@
   padding-left: calc(3rem - 1px);
 }
 
-.search-input:focus {
+.search-input-focused {
   outline: none;
   background-color: white;
   color: black;
   caret-color: black;
 }
 
-.search-input:focus::placeholder {
+.search-input-focused::placeholder {
   color: black;
   opacity: 1;
   font-weight: 400;
