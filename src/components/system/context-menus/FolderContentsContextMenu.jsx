@@ -51,7 +51,7 @@ const FolderContentsContextMenu = ({
             name={name}
             onClick={async () => {
               const fsoName = await createFSO(path, name, type);
-              if (path === '/C/users/admin/Desktop')
+              if (path === '/C/Users/Public/Desktop')
                 addToGrid([fsoName, undefined], { row: 1, column: 1 });
             }}
             closeMenu={closeMenu}

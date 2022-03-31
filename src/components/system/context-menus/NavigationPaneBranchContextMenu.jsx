@@ -17,7 +17,7 @@ const NavigationPaneBranchContextMenu = ({
   const handleMouseOver = (name) => setOpenSubmenu(name);
   const createNewFolder = async () => {
     const folderName = await createFSO(createPath, 'New Folder', 'directory');
-    if (createPath === '/C/users/admin/Desktop') {
+    if (createPath === '/C/Users/Public/Desktop') {
       addToGrid([folderName, undefined], { row: 1, column: 1 });
     }
   };

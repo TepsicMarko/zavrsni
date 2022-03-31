@@ -20,7 +20,7 @@ const FileDropdownMenu = ({
   const createFile = (path, name, type) => {
     createFSO(path, name, type, textContent);
     setFilePath(Path.join(path, name + type));
-    if (path === '/C/users/admin/Desktop')
+    if (path === '/C/Users/Public/Desktop')
       addToGrid([name + type, undefined], { row: 1, column: 1 });
   };
 
@@ -35,7 +35,7 @@ const FileDropdownMenu = ({
 
   const saveAs = () => {
     startChildProcess('Notepad', pid, 'File Explorer', {
-      customPath: '/C/users/admin/Documents',
+      customPath: '/C/Users/Public/Documents',
       mode: 'w',
       parentProcess: 'Notepad',
       endProcess,
@@ -48,7 +48,7 @@ const FileDropdownMenu = ({
 
   const openFileSelection = (startChildProcess, endProcess) => {
     startChildProcess('Notepad', pid, 'File Explorer', {
-      customPath: '/C/users/admin/Documents',
+      customPath: '/C/Users/Public/Documents',
       mode: 'r',
       parentProcess: 'Notepad',
       endProcess,

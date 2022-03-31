@@ -48,14 +48,14 @@ const Notepad = ({ icon, path = '', pid, addToGrid }) => {
       text.content.replace('<div>', '\n').replace('</div>', '')
     );
     setFilePath(Path.join(createPath, name + type));
-    if (createPath === '/C/users/admin/Desktop')
+    if (createPath === '/C/Users/Public/Desktop')
       addToGrid([name + type, undefined], { row: 1, column: 1 });
   };
 
   const handleSave = (callback, endParrentProcess = true) => {
     if (!filePath) {
       startChildProcess('Notepad', pid, 'File Explorer', {
-        customPath: '/C/users/admin/Documents',
+        customPath: '/C/Users/Public/Documents',
         mode: 'w',
         parentProcess: 'Notepad',
         endParrentProcess,

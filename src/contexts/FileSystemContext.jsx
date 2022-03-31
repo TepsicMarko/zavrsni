@@ -178,7 +178,7 @@ export const FileSystemProvider = ({ children }) => {
   const link = (
     filePath,
     linkPath //hard coded for now
-  ) => fs.link(filePath, '/C/users/admin', (err) => console.log(err));
+  ) => fs.link(filePath, '/C/Users/Public', (err) => console.log(err));
 
   const readdir = (path) =>
     new Promise((resolve, reject) => {
@@ -306,13 +306,13 @@ export const FileSystemProvider = ({ children }) => {
   const initilizeFileSystem = () => {
     console.log('initializing file system');
     mkdir('/', 'C');
-    mkdir('/C', 'users');
-    mkdir('/C/users', 'admin');
-    mkdir('/C/users/admin', 'Desktop');
-    mkdir('/C/users/admin', 'Documents');
-    mkdir('/C/users/admin', 'Downloads');
-    mkdir('/C/users/admin', 'Pictures');
-    mkdir('/C/users/admin', 'Videos');
+    mkdir('/C', 'Users');
+    mkdir('/C/Users', 'Public');
+    mkdir('/C/Users/Public', 'Desktop');
+    mkdir('/C/Users/Public', 'Documents');
+    mkdir('/C/Users/Public', 'Downloads');
+    mkdir('/C/Users/Public', 'Pictures');
+    mkdir('/C/Users/Public', 'Videos');
   };
 
   const watch = (path, callback) => {
@@ -366,7 +366,7 @@ export const FileSystemProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    exists('/C/users/admin')
+    exists('/C/Users/Public')
       .then((exists) => console.log('file system already initialized'))
       .catch((err) => initilizeFileSystem());
   }, []);

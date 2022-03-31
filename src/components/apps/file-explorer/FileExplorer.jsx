@@ -25,7 +25,7 @@ const FileExplorer = ({
   addToGrid,
 }) => {
   const [activeTab, setActiveTab] = useState('Home');
-  const [path, setPath] = useState(customPath || '/C/users/admin');
+  const [path, setPath] = useState(customPath || '/C/Users/Public');
   const [searchResults, setSearchResults] = useState([]);
   const [itemCount, setItemCount] = useState('');
   const [expandBranches, setExpandBranches] = useState(false);
@@ -84,7 +84,7 @@ const FileExplorer = ({
         <div className='navigation-pane-and-folder-contents-container'>
           <FileExplorerNavigationPane
             changePath={changePath}
-            basePath='/C/users/admin'
+            basePath='/C/Users/Public'
             currentPath={path}
             expandBranches={expandBranches}
             setExpandBranches={setExpandBranches}

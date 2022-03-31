@@ -18,7 +18,7 @@ const FileContextMenu = ({
   cutFile,
   downloadFile,
   isZip,
-  extarctZip,
+  extractZip,
   readBlob,
 }) => {
   const [openSubmenu, setOpenSubmenu] = useState('');
@@ -29,17 +29,27 @@ const FileContextMenu = ({
   const setAsWallpaper = async () =>
     setWallpaper(await readBlob(Path.join(filePath, fileName), mime.lookup(fileName)));
 
+  const isSupportedMimeType = () =>
+    ['text', 'image', 'video', 'application/pdf', 'application/rtf'].some(
+      (el) => el === mimeType || mimeType.startsWith(el)
+    );
+
   return (
     <>
-      <ContextMenuItem
-        name='Open'
-        onClick={openFile}
-        closeMenu={closeMenu}
-        onMouseOver={handleMouseOver}
-      />
+      {(fileType.toLowerCase() === 'directory' || isSupportedMimeType()) && (
+        <ContextMenuItem
+          name='Open'
+          onClick={openFile}
+          closeMenu={closeMenu}
+          onMouseOver={handleMouseOver}
+        />
+      )}
       {fileType.toLowerCase() !== 'directory'
         ? mimeType !== 'text/plain' &&
-          (mimeType.startsWith('text/') || mimeType.startsWith('application/')) && (
+          (mimeType.startsWith('text/') ||
+            ['json', 'javascript', 'html', 'css'].some((el) =>
+              mimeType.includes(el)
+            )) && (
             <ContextMenuItem
               name='Open with'
               openSubmenu={openSubmenu === 'Open with'}
@@ -70,7 +80,7 @@ const FileContextMenu = ({
       {isZip && (
         <ContextMenuItem
           name='Extract Here'
-          onClick={extarctZip}
+          onClick={extractZip}
           closeMenu={closeMenu}
           onMouseOver={handleMouseOver}
         />

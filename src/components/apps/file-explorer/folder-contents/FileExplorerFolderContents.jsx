@@ -86,7 +86,7 @@ const FileExplorerFolderContents = ({
         return null;
       }
       if (dataTransfer.origin === 'Desktop') {
-        const origin = '/C/users/admin/Desktop';
+        const origin = '/C/Users/Public/Desktop';
         dataTransfer.dragObjects.forEach((name) => {
           moveFSO(Path.join(origin, name), Path.join(path, name));
         });

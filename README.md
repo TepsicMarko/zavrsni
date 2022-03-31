@@ -18,16 +18,16 @@ This project is my highschool final paper, and it was inspired by a [portfolio b
 - Drag and drop of desktop icons
 - Drag and drop of multiple desktop icons selected with rectange selection
 - Automatic rearrangement of icons if the dragged icon, or group of icons is dropped onto an occupied position in desktop grid
-- Drag and drop files from your PC to the desktop
+- Drag and drop files from your PC to the desktop+
+- Paste copied files with context menu or keyboard shortcuts
 
 <br>
 
 ### Desktop Icon
 
 - Represents File System entry under /Desktop folder
-- Edit icon (file) name
-- Delete icon (file)
-- Open icon (file) with default app
+- Open, open with, extract, download, set as background, cut, copy, delete, rename with context menu
+- Cut, copy, delete with keyboard shortcuts
 
 <br>
 
@@ -46,7 +46,7 @@ This project is my highschool final paper, and it was inspired by a [portfolio b
 - #### Taskbar icon
   - Represents a pinned app
   - Opens app on click
-  - Shows app State (opened, closed, <span style="color:gray">minimized</span>, <span style="color:gray">in focus</span>)
+  - Shows app State (opened, closed, minimized, in focus)
 - #### Thumbnail preview
   - Shows a preview of open app or app instances
   - Shows the window title of open app or app instances
@@ -76,6 +76,9 @@ This project is my highschool final paper, and it was inspired by a [portfolio b
   - Specifies the drop location and file count
   - Shows transfer progress
   - End transfer (only closes the dialog, but doesn't actually stop file transfer)
+- #### Message Dialog
+  - Showed when a warning or a error occurs
+  - Can provide options for handling the message
 
 <br>
 
@@ -91,12 +94,12 @@ This project is my highschool final paper, and it was inspired by a [portfolio b
 
 - Uses [filerjs](https://github.com/filerjs/filer) which saves to IndexedDb
 - Create, read, update, delete
-- Default folder structure (likely to change)
+- Default folder structure
 
 ```
 C
-└─ users
-   └─ admin
+└─ Users
+   └─ Public
       └─ Desktop
       └─ Documents
       └─ Downloads
@@ -135,7 +138,8 @@ C
 - #### Folder Contents
   - Shows all items inside a folder
   - Resizable column headings allow for layout adjustment
-  - Create, rename, open and delete files and folders with context menu
+  - Open, open with, extract, download, set as background, cut, copy, delete, rename files with context menu
+  - Cut, copy, delete, paste files with keyboard shortcuts
   - On double click open files with default app or navigate to folders
   - Select multiple files or folders with selection rectangle
 - #### Status Bar
@@ -158,6 +162,7 @@ C
 - Navigation via back and forth buttons, or the url bar
 - Uses iframe for showing google search results
 - Iframe is in sync with url bar
+- Open html and pdf files from the file system using the url bar and prefixing the file path with 'file:/'
 
 <br>
 

@@ -13,7 +13,7 @@ import ContextMenu from '../context-menu/ContextMenu';
 import useKeyboardShortcut from '../../../hooks/useKeyboardShortcut';
 
 const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
-  const origin = '/C/users/admin/Desktop';
+  const origin = '/C/Users/Public/Desktop';
   const { renderOptions } = useContext(RightClickMenuContext);
   const { processes, startProcess } = useContext(ProcessesContext);
   const { createFSO, watch, getFolder, moveFSO, pasteFiles, isClipboardEmpty } =

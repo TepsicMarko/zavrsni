@@ -23,7 +23,7 @@ const CommandPrompt = ({ icon, pid }) => {
     moveFSO,
   } = useContext(FileSystemContext);
   const { endProcess, processes } = useContext(ProcessesContext);
-  const [currentPath, setCurrentPath] = useState('/C/users/admin');
+  const [currentPath, setCurrentPath] = useState('/C/Users/Public');
   const terminal = useRef(null);
 
   const changePath = async (path) => {

@@ -49,7 +49,7 @@ const WindowsSearch = ({
     return results;
   };
   const searchInFiles = async () => {
-    let found = await findFSO('/C/users/admin', false, searchFor);
+    let found = await findFSO('/C/Users/Public', false, searchFor);
 
     return found.map((fso) => ({
       name: fso.name,

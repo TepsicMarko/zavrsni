@@ -1,20 +1,20 @@
-import "./StartMenu.css";
-import { useState, useContext } from "react";
+import './StartMenu.css';
+import { useState, useContext } from 'react';
 import {
   AiOutlineUser,
   AiOutlineFile,
   AiOutlinePicture,
   AiOutlinePoweroff,
-} from "react-icons/ai";
-import { MdOutlineSettings } from "react-icons/md";
-import { VscMenu } from "react-icons/vsc";
-import AppsAndFeatures from "./app-and-features/AppsAndFeatures";
-import { ProcessesContext } from "../../../../contexts/ProcessesContext";
-import useClickOutside from "../../../../hooks/useClickOutside";
+} from 'react-icons/ai';
+import { MdOutlineSettings } from 'react-icons/md';
+import { VscMenu } from 'react-icons/vsc';
+import AppsAndFeatures from './app-and-features/AppsAndFeatures';
+import { ProcessesContext } from '../../../../contexts/ProcessesContext';
+import useClickOutside from '../../../../hooks/useClickOutside';
 
 const StartMenu = ({ isStartMenuVisible, colapseStartMenu }) => {
   const [isSidebarVisible, setSidebarVisibility] = useState(false);
-  const clickOutsideRef = useClickOutside("mousedown", colapseStartMenu);
+  const clickOutsideRef = useClickOutside('mousedown', colapseStartMenu);
   const { startProcess } = useContext(ProcessesContext);
 
   const expandSidebar = () => setSidebarVisibility(true);
@@ -22,11 +22,11 @@ const StartMenu = ({ isStartMenuVisible, colapseStartMenu }) => {
 
   const openDocuments = () => {
     colapseStartMenu();
-    startProcess("File Explorer", { customPath: "/C/users/admin/Documents" });
+    startProcess('File Explorer', { customPath: '/C/Users/Public/Documents' });
   };
   const openPictures = () => {
     colapseStartMenu();
-    startProcess("File Explorer", { customPath: "/C/users/admin/Pictures" });
+    startProcess('File Explorer', { customPath: '/C/Users/Public/Pictures' });
   };
   const shutDown = () => {
     colapseStartMenu();
@@ -36,16 +36,14 @@ const StartMenu = ({ isStartMenuVisible, colapseStartMenu }) => {
   return (
     <div
       ref={clickOutsideRef}
-      className={`start-menu ${isStartMenuVisible ? "height-animation" : ""}`}
+      className={`start-menu ${isStartMenuVisible ? 'height-animation' : ''}`}
     >
       {isStartMenuVisible && (
         <>
           <div
             onMouseEnter={expandSidebar}
             onMouseLeave={colapseSidebar}
-            className={`start-menu-sidebar ${
-              isSidebarVisible ? "width-animation" : ""
-            }`}
+            className={`start-menu-sidebar ${isSidebarVisible ? 'width-animation' : ''}`}
           >
             <div
               className='sidebar-list-item align-top'
@@ -64,7 +62,7 @@ const StartMenu = ({ isStartMenuVisible, colapseStartMenu }) => {
               </div>
               <div
                 className={`sidebar-list-item-content ${
-                  isSidebarVisible ? "visibility-animation" : ""
+                  isSidebarVisible ? 'visibility-animation' : ''
                 }`}
               >
                 Marko Tepšić
@@ -75,7 +73,7 @@ const StartMenu = ({ isStartMenuVisible, colapseStartMenu }) => {
               <AiOutlineFile size='1.25rem' />
               <div
                 className={`sidebar-list-item-content ${
-                  isSidebarVisible ? "visibility-animation" : ""
+                  isSidebarVisible ? 'visibility-animation' : ''
                 }`}
               >
                 Documents
@@ -86,7 +84,7 @@ const StartMenu = ({ isStartMenuVisible, colapseStartMenu }) => {
               <AiOutlinePicture size='1.25rem' />
               <div
                 className={`sidebar-list-item-content ${
-                  isSidebarVisible ? "visibility-animation" : ""
+                  isSidebarVisible ? 'visibility-animation' : ''
                 }`}
               >
                 Pictures
@@ -97,7 +95,7 @@ const StartMenu = ({ isStartMenuVisible, colapseStartMenu }) => {
               <MdOutlineSettings size='1.25rem' />
               <div
                 className={`sidebar-list-item-content ${
-                  isSidebarVisible ? "visibility-animation" : ""
+                  isSidebarVisible ? 'visibility-animation' : ''
                 }`}
               >
                 Settings
@@ -108,7 +106,7 @@ const StartMenu = ({ isStartMenuVisible, colapseStartMenu }) => {
               <AiOutlinePoweroff size='1.25rem' />
               <div
                 className={`sidebar-list-item-content ${
-                  isSidebarVisible ? "visibility-animation" : ""
+                  isSidebarVisible ? 'visibility-animation' : ''
                 }`}
               >
                 Power
