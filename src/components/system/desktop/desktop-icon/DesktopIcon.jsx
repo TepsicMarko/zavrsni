@@ -211,15 +211,10 @@ const DesktopIcon = ({
   const extractFiles = async () => {
     const unzip = new jszip();
     const zipped = await readBlob(Path.join(path, name), mime.lookup(name), true);
-    console.log('extractFiles 1');
 
     unzip.loadAsync(zipped).then(async (unzipped) => {
-      console.log('extractFiles 2');
-
       let rootDirCreated = false;
       for (let file of Object.values(unzipped.files)) {
-        console.log('extractFiles 3');
-
         if (file.dir) {
           await createFSO(path, file.name, 'directory');
           !rootDirCreated &&

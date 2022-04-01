@@ -180,7 +180,6 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
       let movedRows = 0;
 
       if (!grid[items[0]]) {
-        console.log('adding to grid');
         items.forEach((item) => {
           item && (newGrid[item] = newCellPosition);
         });
@@ -195,7 +194,6 @@ const useDesktopGrid = ({ maxColumns, maxRows }) => {
 
       for (let name of items) {
         if (name) {
-          console.log(name);
           const newColumnValue = newGrid[name].column + movedColumns;
           const newRowValue = newGrid[name].row + movedRows;
 

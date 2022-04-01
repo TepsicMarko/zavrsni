@@ -123,7 +123,7 @@ const FileExplorerFolderContents = ({
       onDragOver={preventDefault}
       onDrop={handleDrop}
     >
-      <table className='fx-folder-contents' cellspacing='0'>
+      <table className='fx-folder-contents' cellSpacing='0'>
         <thead>
           <tr>
             {[

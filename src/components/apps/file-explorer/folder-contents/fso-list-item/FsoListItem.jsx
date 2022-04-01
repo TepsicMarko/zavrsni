@@ -229,7 +229,6 @@ const FsoListItem = ({
       JSON.parse(e.dataTransfer.getData('json'));
 
       const dragObject = dataTransfer.dragObject;
-      console.log(dragObject, path);
       if (type === 'DIRECTORY') {
         moveFSO(
           Path.join(dragObject.path, dragObject.name),

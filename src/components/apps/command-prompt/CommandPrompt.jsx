@@ -104,14 +104,11 @@ const CommandPrompt = ({ icon, pid }) => {
     if (args.length > 1) {
       const folderPaths = formatCommandLineArguments(...args);
 
-      console.log(folderPaths);
-
       const failedFolderPaths = await Promise.all(
         folderPaths.map(async (folderPath) => {
           try {
             await deleteFSO(currentPath, folderPath, 'directory', recusive);
           } catch (err) {
-            console.log(err);
             return err.errno == 53
               ? command === 'rm'
                 ? `rm: cannot remove '${folderPath}': Is a directory`
@@ -193,7 +190,6 @@ const CommandPrompt = ({ icon, pid }) => {
               await renameFSO(currentPath, { old: oldName, new: newName });
               return null;
             } catch (err) {
-              console.log(err);
               return `The system cannot find the file specified.`;
             }
           } else {
@@ -226,15 +222,6 @@ const CommandPrompt = ({ icon, pid }) => {
         //do nothing
       }
       try {
-        console.log(
-          Path.join(currentPath, origin),
-          Path.join(
-            currentPath,
-            destinationExists
-              ? Path.join(destination, Path.basename(origin))
-              : destination
-          )
-        );
         await moveFSO(
           Path.join(currentPath, origin),
           Path.join(
@@ -245,7 +232,6 @@ const CommandPrompt = ({ icon, pid }) => {
           )
         );
       } catch (err) {
-        console.log(err);
         return err.errno === 34
           ? 'The system cannot find the file specified.'
           : 'File already exists at destination';

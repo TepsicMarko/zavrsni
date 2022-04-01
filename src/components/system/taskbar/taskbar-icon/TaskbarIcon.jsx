@@ -70,7 +70,7 @@ const TaskbarIcon = ({
 
   useLayoutEffect(() => {
     const { top, right, bottom, left } = taskbarIconRef.current.getBoundingClientRect();
-    console.log(taskbarIconRef.current.getBoundingClientRect());
+
     setThumbnailPreviewLocation(name, {
       y: top + (bottom - top) / 2,
       x: left + (right - left) / 2,

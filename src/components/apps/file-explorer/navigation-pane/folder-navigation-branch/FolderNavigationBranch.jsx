@@ -102,7 +102,7 @@ const FolderNavigationBranch = ({
     e.preventDefault();
     const dataTransfer = JSON.parse(e.dataTransfer.getData('json'));
     const dragObject = dataTransfer.dragObject;
-    console.log(dragObject, basePath);
+
     moveFSO(
       Path.join(dragObject.path, dragObject.name),
       Path.join(basePath, branchName === 'This PC' ? '' : branchName, dragObject.name)

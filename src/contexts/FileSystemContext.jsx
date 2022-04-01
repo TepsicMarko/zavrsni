@@ -58,7 +58,6 @@ export const FileSystemProvider = ({ children }) => {
           const currentPath = Path.join(path, name);
           const newFilePath = Path.join(newPath, name);
 
-          console.log(name);
           await copyFSO(currentPath, newFilePath, type);
         }
       }
@@ -81,12 +80,7 @@ export const FileSystemProvider = ({ children }) => {
           });
         });
 
-        fs.writeFile(newPath, file, (err) => {
-          resolveParent();
-          if (err) {
-            console.log(err);
-          }
-        });
+        fs.writeFile(newPath, file, () => resolveParent());
       } else {
         resolveParent(await copyDirRecursive(currentPath, newPath));
       }
@@ -167,18 +161,18 @@ export const FileSystemProvider = ({ children }) => {
             )
           )
           .catch((doesntExist) => {
-            fs.writeFile(path + extName, content, (err) => console.log(err));
+            fs.writeFile(path + extName, content);
             resolve(Path.basename(path) + extName);
           });
       } else {
-        fs.writeFile(path + extName, content, (err) => console.log(err));
+        fs.writeFile(path + extName, content);
         resolve(Path.basename(path) + extName);
       }
     });
   const link = (
     filePath,
     linkPath //hard coded for now
-  ) => fs.link(filePath, '/C/Users/Public', (err) => console.log(err));
+  ) => fs.link(filePath, '/C/Users/Public');
 
   const readdir = (path) =>
     new Promise((resolve, reject) => {
@@ -216,7 +210,7 @@ export const FileSystemProvider = ({ children }) => {
             Promise.all(
               files.map((file) => {
                 if (file.isDirectory()) return rmdirRecursive(`${path}/${file.name}`);
-                else fs.unlink(`${path}/${file.name}`, (err) => console.log(err));
+                else fs.unlink(`${path}/${file.name}`);
               })
             ).then(() => fs.rmdir(path, (err) => (err ? reject(err) : resolve(true))));
           } else fs.rmdir(path, (err) => (err ? reject(err) : resolve(true)));
@@ -245,9 +239,7 @@ export const FileSystemProvider = ({ children }) => {
 
   const createBlob = (path, name, buffer) => {
     const FilerBuffer = Buffer.from(buffer);
-    fs.writeFile(Path.join(path, name), FilerBuffer, (err) => {
-      err && console.log(err);
-    });
+    fs.writeFile(Path.join(path, name), FilerBuffer);
   };
 
   const getFolder = async (path, callback) => {
@@ -304,7 +296,6 @@ export const FileSystemProvider = ({ children }) => {
     });
 
   const initilizeFileSystem = () => {
-    console.log('initializing file system');
     mkdir('/', 'C');
     mkdir('/C', 'Users');
     mkdir('/C/Users', 'Public');
@@ -367,7 +358,7 @@ export const FileSystemProvider = ({ children }) => {
 
   useEffect(() => {
     exists('/C/Users/Public')
-      .then((exists) => console.log('file system already initialized'))
+      .then((exists) => null)
       .catch((err) => initilizeFileSystem());
   }, []);
 

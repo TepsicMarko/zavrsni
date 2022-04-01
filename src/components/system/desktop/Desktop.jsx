@@ -98,7 +98,6 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
       } catch (e) {
         return null;
       }
-      console.log(dataTransfer.dragObjects);
       if (dataTransfer.origin === 'Desktop')
         addToGrid(
           dataTransfer.dragObjects,
@@ -110,7 +109,6 @@ const Desktop = ({ maxWidth, maxHeight, taskbarHeight }) => {
           calculateGridPosition({ x: e.clientX, y: e.clientY })
         );
         dataTransfer.dragObjects.forEach(({ path, name }) => {
-          console.log(path, name);
           moveFSO(Path.join(path, name), Path.join(origin, name));
         });
       }

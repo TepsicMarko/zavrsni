@@ -88,7 +88,6 @@ const WindowsSearch = ({
       timeoutIdRef.current = timeoutId;
     });
 
-    console.log(results, searchFor, timeoutIdRef.current);
     setWebSearchResults(
       results.data.items.map(({ title, link, htmlFormattedUrl, snippet }) => ({
         title: title,
@@ -99,7 +98,6 @@ const WindowsSearch = ({
   };
 
   const openAppOrFile = (appOrFileName, fileType, filePath) => {
-    console.log(appOrFileName, fileType, filePath);
     if (!fileType && !filePath) startProcess(appOrFileName);
     else
       openWithDefaultApp(
