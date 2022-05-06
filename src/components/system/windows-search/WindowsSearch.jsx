@@ -98,7 +98,7 @@ const WindowsSearch = ({
   };
 
   const openAppOrFile = (appOrFileName, fileType, filePath) => {
-    if (!fileType && !filePath) startProcess(appOrFileName);
+    if (!fileType || !filePath) startProcess(appOrFileName);
     else
       openWithDefaultApp(
         fileType,

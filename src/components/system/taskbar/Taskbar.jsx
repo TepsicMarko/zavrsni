@@ -220,9 +220,9 @@ const Taskbar = ({
       </div>
 
       <div className={isVerticalClassName('system-tray')}>
-        <div className='open-apps'>
+        {/* <div className='open-apps'>
           <MdOutlineKeyboardArrowUp size='2rem' />
-        </div>
+        </div> */}
         <div className='network'>
           <AiOutlineWifi size='1.25rem' />
         </div>
@@ -234,9 +234,9 @@ const Taskbar = ({
           {time} <br /> {height >= 96 && [moment().format('dddd'), <br />]}
           {moment().format('M/DD/yyyy')}
         </div>
-        <div className={isVerticalClassName('windows-notifications')}>
+        {/* <div className={isVerticalClassName('windows-notifications')}>
           <MdMessage size='1.35rem' />
-        </div>
+        </div> */}
       </div>
 
       <StartMenu

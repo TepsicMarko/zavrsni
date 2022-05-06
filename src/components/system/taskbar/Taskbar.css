@@ -126,6 +126,7 @@
   display: flex;
   align-items: center;
   height: 100%;
+  padding-right: 0.5rem;
 }
 
 .system-tray > div,

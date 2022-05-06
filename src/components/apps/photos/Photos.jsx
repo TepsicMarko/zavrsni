@@ -44,7 +44,7 @@ const Photos = ({ path, pid }) => {
   const resetZoom = () => setZoom(100);
 
   const deleteImage = () => {
-    deleteFSO(path, '');
+    deleteFSO(path, '', '');
     endProcess('Photos', pid);
   };
 
